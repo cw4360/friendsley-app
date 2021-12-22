@@ -8,6 +8,7 @@ import ExploreScreen from './components/ExploreScreen';
 import LoginScreen from './components/LoginScreen';
 import StateContext from './components/StateContext'; 
 
+// Importing Firebase Authentication, Cloud Firestore, and Storage
 import { initializeApp } from "firebase/app"
 import { 
   // access to authentication features:
@@ -16,10 +17,12 @@ import {
 import { 
   // access to Firestore storage features:
   getFirestore, 
-  // for storage access
-  collection, doc, addDoc, setDoc,
-  query, where, getDocs
 } from "firebase/firestore";
+import { // access to Firebase storage features (for files like images, video, etc.)
+  getStorage, 
+ ref, uploadBytes, uploadBytesResumable, getDownloadURL
+} from "firebase/storage";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDr-0jgwaW6Bt000SLQSRdGa7BnIpOADuY",
   authDomain: "friendsley-beta.firebaseapp.com",
@@ -31,17 +34,21 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
+const storage = getStorage(firebaseApp, 
+  firebaseConfig.storageBucket) // for storaging images in Firebase storage
 
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [signedInUser, setSignedInUser] = useState(null); 
-  const signInUser = username => (setSignedInUser(username));
-  const signOutUser = () => (setSignedInUser(null)); // Only the settings screen needs access to this, because the logout button will be on that screen
-  // Properties to pass to the rest of the screens
-  const stateProps = { signedInUser, signInUser, signOutUser, auth, db }; 
-   
+  // const [signedInUser, setSignedInUser] = useState(null); 
+  // const signInUser = username => (setSignedInUser(username));
+  // const signOutUser = () => (setSignedInUser(null)); // Only the settings screen needs access to this, because the logout button will be on that screen
+  // // Properties to pass to the rest of the screens
+  // const stateProps = { signedInUser, signInUser, signOutUser, auth, db }; 
+  const stateProps = { auth, db, storage }; 
+ 
+
   return (
     <StateContext.Provider value = {stateProps}>
       <NavigationContainer>
