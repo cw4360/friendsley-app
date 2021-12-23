@@ -23,6 +23,12 @@ export default function ViewAllChatsScreens(props) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth; 
     const db = stateProps.db; 
+
+    // Grab currently-logged in user's profile (specifically their messageContacts)
+    async function firebaseGetCurrentProfile() {
+
+    }
+
     return (
         <View>
             <Text>{formatJSON(db)}</Text>
