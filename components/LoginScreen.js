@@ -181,8 +181,8 @@ export default function LoginScreen(props) {
           </View>
           <View>
             <Button title="Go to Profile Screen" onPress={() => props.navigation.navigate('Profile')}/>
+            <Button title = "Go to View All Chats Screen" onPress = {() => props.navigation.navigate("View All Chats")}/>
           </View>
-          
           {/* <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>Logged In User: {formatJSON(loggedInUser)}</Text>
           </ScrollView> */}

@@ -101,7 +101,8 @@ export default function SignupScreen(props) {
                     interestedIndustry: '', 
                     jobExp: '', 
                     internshipExp: '', 
-                }
+                }, 
+                messageContacts: [], 
               }
             );
         }

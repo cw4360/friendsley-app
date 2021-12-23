@@ -68,6 +68,12 @@ export default function ExploreScreen(props) {
                     <Text>Welcome to the Explore!!</Text>
                     <Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>
                 </View>
+                {/* <View>
+                    <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
+                </View>
+                <View>
+                    <Button title = "Go to View All Chats Screen" onPress={() => props.navigation.navigate('View All Chats')}/>
+                </View> */}
             </SafeAreaView>
         </ScrollView>
         
