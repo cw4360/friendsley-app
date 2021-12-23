@@ -3,9 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {  Provider as PaperProvider, } from 'react-native-paper';
 import ProfileScreen from './components/ProfileScreen';
 import ExploreScreen from './components/ExploreScreen';
 import LoginScreen from './components/LoginScreen';
+import EditProfileScreen from './components/EditProfileScreen';
 import StateContext from './components/StateContext'; 
 
 // Importing Firebase Authentication, Cloud Firestore, and Storage
@@ -51,22 +53,17 @@ export default function App() {
 
   return (
     <StateContext.Provider value = {stateProps}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Profile" component={ProfileScreen}/>
-          <Stack.Screen name="Explore" component={ExploreScreen}/>
-          <Stack.Screen name="Login" component={LoginScreen}/>
-        </Stack.Navigator>
-      </NavigationContainer>
+      <PaperProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Login" component={LoginScreen}/>
+            <Stack.Screen name="Profile" component={ProfileScreen}/>
+            <Stack.Screen name="Edit Profile" component={EditProfileScreen}/>
+            <Stack.Screen name="Explore" component={ExploreScreen}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
     </StateContext.Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
