@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Button, ScrollView, Text, TextInput, 
-    TouchableOpacity, View } from 'react-native';import Constants from 'expo-constants';
+    TouchableOpacity, View } from 'react-native';
+import Constants from 'expo-constants';
 import StateContext from './StateContext';
 import { 
     // for email/password authentication: 
@@ -159,10 +160,10 @@ export default function LoginScreen(props) {
                 onChangeText={ textVal => setPassword(textVal)} />
             </View>
             <View style={styles.buttonHolder}>
-              <TouchableOpacity style={styles.button}
+              {/* <TouchableOpacity style={styles.button}
                  onPress={() => signUpUserEmailPassword()}>
                 <Text style={styles.buttonText}>Sign Up</Text>
-              </TouchableOpacity> 
+              </TouchableOpacity>  */}
               <TouchableOpacity style={styles.button}
                  onPress={() => signInUserEmailPassword()}>
                 <Text style={styles.buttonText}>Sign In</Text>
@@ -181,14 +182,14 @@ export default function LoginScreen(props) {
           <View>
             <Button title="Go to Profile Screen" onPress={() => props.navigation.navigate('Profile')}/>
           </View>
-          {/*
-          <ScrollView style={styles.jsonContainer}>
+          
+          {/* <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>Logged In User: {formatJSON(loggedInUser)}</Text>
-          </ScrollView>
-          <ScrollView style={styles.jsonContainer}>
+          </ScrollView> */}
+          {/* <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
-          </ScrollView>
-          */}
+          </ScrollView> */}
+         
         </View>
         </ScrollView>
       );
@@ -216,7 +217,7 @@ export default function LoginScreen(props) {
         fontSize: 20,
     }, 
     textInput: {
-        width: "80%",
+        width: 300,
         fontSize: 20,
         borderRadius: 5,
         paddingVertical: 8,

@@ -27,13 +27,18 @@ export default function EditProfileScreen(props) {
     let userEmail = auth.currentUser.email;
     // // const [curUser, setCurUser] = useState(null);
     // // const [isFinishedLoading, setIsFinishedLoading] = useState(false);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [name, setName] = useState('');
     const [pronouns, setPronouns] = useState('');
     const [bio, setBio] = useState('');
     const [classYear, setClassYear] = useState('');
+    const [major, setMajor] = useState('');
+    const [minor, setMinor] = useState('');
     const [hometown, setHometown] = useState('');
+    const [residenceHall, setResidenceHall] = useState('');
+    const [hobbies, setHobbies] = useState('');
+    const [clubs, setClubs] = useState('');
     const [favPlaceOnCampus, setFavPlaceOnCampus] = useState('');
+    const [favWellesleyMemory, setFavWellesleyMemory] = useState('');
 
     // Get curUser when EditProfileScreen mounts.
     useEffect(() => {
@@ -52,13 +57,18 @@ export default function EditProfileScreen(props) {
         let userDoc = docSnap.data();
         // setCurUser(userDoc);
         // setIsFinishedLoading(true);
-        setFirstName(userDoc.basics.firstName);
-        setLastName(userDoc.basics.lastName);
+        setName(userDoc.basics.name);
         setPronouns(userDoc.basics.pronouns);
         setBio(userDoc.basics.bio);
         setClassYear(userDoc.personal.classYear);
+        setMajor(userDoc.personal.major);
+        setMinor(userDoc.personal.minor);
         setHometown(userDoc.personal.hometown);
+        setResidenceHall(userDoc.personal.residenceHall);
+        setHobbies(userDoc.personal.hobbies);
+        setClubs(userDoc.personal.clubs);
         setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
+        setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
         } else {
         // doc.data() will be undefined in this case
         console.log("No such document!");
@@ -72,14 +82,19 @@ export default function EditProfileScreen(props) {
         setDoc(profileRef, { 
             basics: { 
                 bio: bio,
-                firstName: firstName, 
-                lastName: lastName,
-                pronouns: pronouns, 
+                name: name,
+                pronouns: pronouns.toLowerCase(), 
             },
             personal: {
-                classYear: classYear,
+                classYear: classYear, 
+                major: major, 
+                minor: minor, 
+                hometown: hometown, 
+                residenceHall: residenceHall,
+                clubs: clubs,
+                hobbies: hobbies,
                 favPlaceOnCampus: favPlaceOnCampus,
-                hometown: hometown,
+                favWellesleyMemory: favWellesleyMemory,
             } 
         }, { merge: true });
         props.navigation.navigate('Profile');
@@ -87,8 +102,8 @@ export default function EditProfileScreen(props) {
 
     return (
         <ScrollView>
-        <SafeAreaView style={globalStyles.container}>
-            <Button title="Get user" onPress={() => alert(formatJSON(auth.currentUser))}/>
+        <SafeAreaView style={[globalStyles.container, {marginTop: 20}]}>
+            {/* <Button title="Get user" onPress={() => alert(formatJSON(auth.currentUser))}/> */}
             {/* <Button title="load user" onPress={() => firebaseGetUserProfile(userEmail)}/> */}
             <View style={globalStyles.userInfoSection}>
                 <View style={{alignItems: 'center', marginBottom: 20}}>
@@ -102,18 +117,11 @@ export default function EditProfileScreen(props) {
                 </View>
                 <View style={{flexDirection: 'column'}}>
                     <View style={globalStyles.profileField}>
-                        <Text style={globalStyles.textType}>First Name</Text>
-                        <TextInput placeholder="First Name"
+                        <Text style={globalStyles.textType}>Name</Text>
+                        <TextInput placeholder="Name"
                             style={globalStyles.textInput}
-                            value={firstName}
-                            onChangeText={(value) => setFirstName(value)}/>
-                    </View>
-                    <View style={globalStyles.profileField}>
-                        <Text style={globalStyles.textType}>Last Name</Text>
-                        <TextInput placeholder="Last Name"
-                            style={globalStyles.textInput}
-                            value={lastName}
-                            onChangeText={(value) => setLastName(value)}/>
+                            value={name}
+                            onChangeText={(value) => setName(value)}/>
                     </View>
                     <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Pronouns</Text>
@@ -125,6 +133,8 @@ export default function EditProfileScreen(props) {
                     <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Bio</Text>
                         <TextInput placeholder="Bio"
+                            multiline
+                            numberOfLines={3}
                             style={globalStyles.textInput}
                             value={bio}
                             onChangeText={(value) => setBio(value)}/>
@@ -137,6 +147,20 @@ export default function EditProfileScreen(props) {
                             onChangeText={(value) => setClassYear(value)}/>
                     </View>
                     <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Major</Text>
+                        <TextInput placeholder="Major"
+                            style={globalStyles.textInput}
+                            value={major}
+                            onChangeText={(value) => setMajor(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Minor</Text>
+                        <TextInput placeholder="Minor"
+                            style={globalStyles.textInput}
+                            value={minor}
+                            onChangeText={(value) => setMinor(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Hometown</Text>
                         <TextInput placeholder="Hometown"
                             style={globalStyles.textInput}
@@ -144,11 +168,45 @@ export default function EditProfileScreen(props) {
                             onChangeText={(value) => setHometown(value)}/>
                     </View>
                     <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Residence Hall</Text>
+                        <TextInput placeholder="Residence Hall"
+                            style={globalStyles.textInput}
+                            value={residenceHall}
+                            onChangeText={(value) => setResidenceHall(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Hobbies</Text>
+                        <TextInput placeholder="Hobbies"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={hobbies}
+                            onChangeText={(value) => setHobbies(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Clubs</Text>
+                        <TextInput placeholder="Clubs"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={clubs}
+                            onChangeText={(value) => setClubs(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Favorite Place On Campus</Text>
                         <TextInput placeholder="Favorite Place On Campus"
                             style={globalStyles.textInput}
                             value={favPlaceOnCampus}
                             onChangeText={(value) => setFavPlaceOnCampus(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Favorite Wellesley Memory</Text>
+                        <TextInput placeholder="Favorite Wellesley Memory"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={favWellesleyMemory}
+                            onChangeText={(value) => setFavWellesleyMemory(value)}/>
                     </View>
                 </View>
                 <TouchableOpacity style={globalStyles.submitButton} onPress={() => submitProfile()}>

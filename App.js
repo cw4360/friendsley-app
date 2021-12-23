@@ -9,6 +9,9 @@ import ExploreScreen from './components/ExploreScreen';
 import LoginScreen from './components/LoginScreen';
 import EditProfileScreen from './components/EditProfileScreen';
 import WelcomeScreen from './components/WelcomeScreen';
+import SignupScreen from './components/SignupScreen';
+//import MessageScreen from './components/MessageScreen'; 
+//import ViewAllChatsScreen from './components/ViewAllChatsScreen'; 
 import StateContext from './components/StateContext'; 
 
 // Importing Firebase Authentication, Cloud Firestore, and Storage
@@ -57,14 +60,17 @@ export default function App() {
       <PaperProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            {/*<Stack.Screen name="Welcome" component={WelcomeScreen}/>*/}
+            <Stack.Screen name="Welcome" component={WelcomeScreen}/>
+            <Stack.Screen name="Sign Up" component={SignupScreen}/>
             <Stack.Screen name="Login" component={LoginScreen}/>
             <Stack.Screen name="Profile" component={ProfileScreen}/>
             <Stack.Screen name="Edit Profile" component={EditProfileScreen}/>
             <Stack.Screen name="Explore" component={ExploreScreen}/>
+            {/* <Stack.Screen name="Message" component={MessageScreen}/>  */}
+            {/* <Stack.Screen name="View All Chats" component={ViewAllChatsScreen}/> */}
           </Stack.Navigator>
         </NavigationContainer>
-      </PaperProvider>
+      </PaperProvider> 
     </StateContext.Provider>
   );
 }

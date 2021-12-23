@@ -26,13 +26,18 @@ export default function ProfileScreen(props) {
     let userEmail = auth.currentUser.email;
     // const [curUser, setCurUser] = useState(null);
     // const [isFinishedLoading, setIsFinishedLoading] = useState(false);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [classYear, setClassYear] = useState('');
+    const [name, setName] = useState('');
     const [pronouns, setPronouns] = useState('');
     const [bio, setBio] = useState('');
+    const [classYear, setClassYear] = useState('');
+    const [major, setMajor] = useState('');
+    const [minor, setMinor] = useState('');
     const [hometown, setHometown] = useState('');
+    const [residenceHall, setResidenceHall] = useState('');
+    const [hobbies, setHobbies] = useState('');
+    const [clubs, setClubs] = useState('');
     const [favPlaceOnCampus, setFavPlaceOnCampus] = useState('');
+    const [favWellesleyMemory, setFavWellesleyMemory] = useState('');
 
     // Get user info when ProfileScreen mounts.
     useEffect(() => {
@@ -51,13 +56,18 @@ export default function ProfileScreen(props) {
         let userDoc = docSnap.data();
         // setCurUser(userDoc);
         // setIsFinishedLoading(true);
-        setFirstName(userDoc.basics.firstName);
-        setLastName(userDoc.basics.lastName);
-        setClassYear(userDoc.personal.classYear);
+        setName(userDoc.basics.name);
         setPronouns(userDoc.basics.pronouns);
         setBio(userDoc.basics.bio);
+        setClassYear(userDoc.personal.classYear);
+        setMajor(userDoc.personal.major);
+        setMinor(userDoc.personal.minor);
         setHometown(userDoc.personal.hometown);
+        setResidenceHall(userDoc.personal.residenceHall);
+        setHobbies(userDoc.personal.hobbies);
+        setClubs(userDoc.personal.clubs);
         setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
+        setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
         } else {
         // doc.data() will be undefined in this case
         console.log("No such document!");
@@ -80,7 +90,7 @@ export default function ProfileScreen(props) {
                         <View>
                             <Title style={[globalStyles.title, {
                                 marginTop: 15
-                            }]}>{firstName + " " + lastName}</Title>
+                            }]}>{name}</Title>
                             <Caption style={[globalStyles.caption, {fontStyle: 'italic'}]}>{pronouns}</Caption>
                             <Caption style={globalStyles.caption}>{userEmail}</Caption>
                             <View style={{marginTop: 4, marginBottom: 10}}>
@@ -116,11 +126,11 @@ export default function ProfileScreen(props) {
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Major:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{major}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Minor:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{minor}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Hometown:</Text>
@@ -128,11 +138,15 @@ export default function ProfileScreen(props) {
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Residence Hall:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{residenceHall}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Hobbies:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{hobbies}</Text>
+                        </View>
+                        <View style={globalStyles.infoField}>
+                            <Text style={globalStyles.textType}>Clubs:</Text>
+                            <Text style={globalStyles.profileText}>{clubs}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Favorite Place on Campus:</Text>
@@ -140,7 +154,7 @@ export default function ProfileScreen(props) {
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Favorite Wellesley Memory:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{favWellesleyMemory}</Text>
                         </View>
                     </View>
                 </View>
@@ -148,7 +162,7 @@ export default function ProfileScreen(props) {
                 <View style={globalStyles.userInfoSection}>
                     {/* Academic Section Header */}
                     <View style={{flexDirection: 'row'}}>
-                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="heart-outline" color="#FF6347" size={25}/>
+                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="school-outline" color="#FF6347" size={25}/>
                         <Title style={globalStyles.title}>Academics</Title>
                     </View>
                     {/* Academic Section Details */}
@@ -175,7 +189,7 @@ export default function ProfileScreen(props) {
                 <View style={globalStyles.userInfoSection}>
                     {/* Section Header */}
                     <View style={{flexDirection: 'row'}}>
-                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="heart-outline" color="#FF6347" size={25}/>
+                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="chevron-down-circle-outline" color="#FF6347" size={25}/>
                         <Title style={globalStyles.title}>Career</Title>
                     </View>
                     {/* Section Details */}

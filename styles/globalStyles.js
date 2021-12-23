@@ -28,6 +28,7 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 10,
     elevation: 3,
     backgroundColor: 'lightgrey',
+    marginTop: 10,
   },
   infoField: {
     flexDirection: 'row', 
@@ -47,10 +48,12 @@ export const globalStyles = StyleSheet.create({
   profileField: {
     flexDirection: 'row', 
     // justifyContent: 'space-around',
-    // borderWidth: 1,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgrey',
     // borderColor: 'red',
-    marginBottom: 10,
-    height: 45,
+    marginBottom: 20,
+    // height: 45,
   },
   textType: {
     flex: 0.6,
