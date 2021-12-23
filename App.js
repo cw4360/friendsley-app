@@ -8,6 +8,7 @@ import ProfileScreen from './components/ProfileScreen';
 import ExploreScreen from './components/ExploreScreen';
 import LoginScreen from './components/LoginScreen';
 import EditProfileScreen from './components/EditProfileScreen';
+import WelcomeScreen from './components/WelcomeScreen';
 import StateContext from './components/StateContext'; 
 
 // Importing Firebase Authentication, Cloud Firestore, and Storage
@@ -56,6 +57,7 @@ export default function App() {
       <PaperProvider>
         <NavigationContainer>
           <Stack.Navigator>
+            <Stack.Screen name="Welcome" component={WelcomeScreen}/>
             <Stack.Screen name="Login" component={LoginScreen}/>
             <Stack.Screen name="Profile" component={ProfileScreen}/>
             <Stack.Screen name="Edit Profile" component={EditProfileScreen}/>
