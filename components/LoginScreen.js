@@ -30,11 +30,18 @@ function emailOf(user) {
 export default function LoginScreen(props) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth;
+    const loggedInUser = stateProps.loggedInUser; 
+    const setLoggedInUser = stateProps.setLoggedInUser; 
 
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [errorMsg, setErrorMsg] = React.useState(''); 
-    const [loggedInUser, setLoggedInUser] = React.useState(null);
+    //const [loggedInUser, setLoggedInUser] = React.useState(null); // Move this out of loggedinscreen, move into App.js (everything )
+
+
+    // Download all the data of the current user once they are successfully logged in (right before call to navigate to Explore screen) - local database will be one of the StateProps (ex stateProps.setLoggedInUser('VALUE'))
+    // However, download messages from Firestore every 5-10 minutes (are there messages sooner than this timestamp about me)
+    
 
     function signUpUserEmailPassword() {
         if (auth.currentUser) {

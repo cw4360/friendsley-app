@@ -1,3 +1,8 @@
+/*
+TODO: 
+- When user clicks "message" on the Explore screen, that person should be added to "messageContacts"
+*/
+
 import React, {useContext, useEffect} from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, LogBox } from 'react-native';
 import Constants from 'expo-constants';

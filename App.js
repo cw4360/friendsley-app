@@ -52,7 +52,11 @@ export default function App() {
   // const signOutUser = () => (setSignedInUser(null)); // Only the settings screen needs access to this, because the logout button will be on that screen
   // // Properties to pass to the rest of the screens
   // const stateProps = { signedInUser, signInUser, signOutUser, auth, db }; 
-  const stateProps = { auth, db, storage }; 
+  const [loggedInUser, setLoggedInUser] = React.useState(null);
+  const [loggedInUserDB, setLoggedInUserDB] = React.useState(null); 
+  const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, loggedInUserDB, setLoggedInUserDB }; // Add loggedInUser, setLoggedInuser, AllUsers, AllMessagesRelatedToThisUser
+
+  // Download all profiles of all profiles
  
 
   return (
