@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, LogBox } from 'react-native';
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
@@ -23,15 +23,52 @@ export default function ViewAllChatsScreens(props) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth; 
     const db = stateProps.db; 
+    const userEmail = auth.currentUser.email; 
+    let userContacts = []; 
+
+    useEffect(() => {
+        // Why doesn't this work? 
+        userContacts = (async () => {
+            await firebaseGetCurrentContacts(userEmail); 
+        })();
+        alert("USERCONTACTS", formatJSON(userContacts)); 
+        console.log(userContacts); 
+    }, []);
 
     // Grab currently-logged in user's profile (specifically their messageContacts)
-    async function firebaseGetCurrentProfile() {
-
+    async function firebaseGetCurrentContacts(email) {
+        const docRef = doc(db, "profiles", email);
+        const docSnap = await getDoc(docRef);
+        //alert("BEFORE THE DOCSNAP.EXISTS() CHECK"); 
+        if (docSnap.exists()) {
+            //alert("Document data:", docSnap.data());
+            let contacts = docSnap.data().messageContacts;  
+            console.log("CONTACTS", contacts); 
+            //alert(contacts); // console logs the correct thing...
+            //alert("GOT HERE!", formatJSON(userDoc)); 
+            return contacts; 
+        } else {
+            // doc.data() will be undefined in this case
+            alert("No such document!");
+            return []; 
+        }
     }
 
     return (
         <View>
-            <Text>{formatJSON(db)}</Text>
+            {/* <Text>{formatJSON(firebaseGetCurrentContacts(userEmail))}</Text> */}
+            {/* <Text>{formatJSON((async () => {firebaseGetCurrentContacts(userEmail)})())}</Text> */}
+            <Text>{formatJSON((async () => {await firebaseGetCurrentContacts(userEmail)})())}</Text>
+            <FlatList>
+                data = {userContacts}
+                renderItem = {contact => 
+                    <TouchableOpacity>
+                        <View>
+                            <Text>{contact}</Text>
+                        </View>
+                    </TouchableOpacity>
+                }
+            </FlatList>
         </View>
     );
 }

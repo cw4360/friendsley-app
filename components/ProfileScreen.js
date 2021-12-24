@@ -48,6 +48,7 @@ export default function ProfileScreen(props) {
    * Get current logged-in user's profile info from Firebase's Firestore
    */ 
     async function firebaseGetUserProfile(email) {
+        alert("CURRENT USER'S EMAIL, PROFILE SCREEN", email); 
         const docRef = doc(db, "profiles", email);
         const docSnap = await getDoc(docRef);
 
