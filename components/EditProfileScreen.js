@@ -23,10 +23,11 @@ export default function EditProfileScreen(props) {
     const auth = stateProps.auth;
     const db = stateProps.db;
 
+    const userProfileDoc = stateProps.userProfileDoc;
+    const setUserProfileDoc = stateProps.setUserProfileDoc;
+
     // State for user profiles' data
     let userEmail = auth.currentUser.email;
-    // // const [curUser, setCurUser] = useState(null);
-    // // const [isFinishedLoading, setIsFinishedLoading] = useState(false);
     const [name, setName] = useState('');
     const [pronouns, setPronouns] = useState('');
     const [bio, setBio] = useState('');
@@ -39,6 +40,13 @@ export default function EditProfileScreen(props) {
     const [clubs, setClubs] = useState('');
     const [favPlaceOnCampus, setFavPlaceOnCampus] = useState('');
     const [favWellesleyMemory, setFavWellesleyMemory] = useState('');
+    const [currentClasses, setCurrentClasses] = useState('');
+    const [plannedClasses, setPlannedClasses] = useState('');
+    const [favClasses, setFavClasses] = useState('');
+    const [studyAbroad, setStudyAbroad] = useState('');
+    const [interestedIndustry, setInterestedIndustry] = useState('');
+    const [jobExp, setJobExp] = useState('');
+    const [internshipExp, setInternshipExp] = useState('');
 
     // Get curUser when EditProfileScreen mounts.
     useEffect(() => {
@@ -53,33 +61,40 @@ export default function EditProfileScreen(props) {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-        // console.log("Document data:", docSnap.data());
-        let userDoc = docSnap.data();
-        // setCurUser(userDoc);
-        // setIsFinishedLoading(true);
-        setName(userDoc.basics.name);
-        setPronouns(userDoc.basics.pronouns);
-        setBio(userDoc.basics.bio);
-        setClassYear(userDoc.personal.classYear);
-        setMajor(userDoc.personal.major);
-        setMinor(userDoc.personal.minor);
-        setHometown(userDoc.personal.hometown);
-        setResidenceHall(userDoc.personal.residenceHall);
-        setHobbies(userDoc.personal.hobbies);
-        setClubs(userDoc.personal.clubs);
-        setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
-        setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
+            // console.log("Document data:", docSnap.data());
+            let userDoc = docSnap.data();
+            
+            setName(userDoc.basics.name);
+            setPronouns(userDoc.basics.pronouns);
+            setBio(userDoc.basics.bio);
+            setClassYear(userDoc.personal.classYear);
+            setMajor(userDoc.personal.major);
+            setMinor(userDoc.personal.minor);
+            setHometown(userDoc.personal.hometown);
+            setResidenceHall(userDoc.personal.residenceHall);
+            setHobbies(userDoc.personal.hobbies);
+            setClubs(userDoc.personal.clubs);
+            setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
+            setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
+            setCurrentClasses(userDoc.academics.currentClasses);
+            setPlannedClasses(userDoc.academics.plannedClasses);
+            setFavClasses(userDoc.academics.favClasses);
+            setStudyAbroad(userDoc.academics.studyAbroad);
+            setInterestedIndustry(userDoc.career.interestedIndustry);
+            setJobExp(userDoc.career.jobExp);
+            setInternshipExp(userDoc.career.internshipExp);
         } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-        // alert('No such user!');
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+            // alert('No such user!');
         }
     }
 
-    function submitProfile() {
+    async function submitProfile() {
+        // Set profile data in Firebase
         const profileRef = doc(db, 'profiles', userEmail);
         // alert('Submitted');
-        setDoc(profileRef, { 
+        await setDoc(profileRef, { 
             basics: { 
                 bio: bio,
                 name: name,
@@ -95,8 +110,28 @@ export default function EditProfileScreen(props) {
                 hobbies: hobbies,
                 favPlaceOnCampus: favPlaceOnCampus,
                 favWellesleyMemory: favWellesleyMemory,
+            },
+            academics: {
+                currentClasses: currentClasses,
+                plannedClasses: plannedClasses,
+                favClasses: favClasses,
+                studyAbroad: studyAbroad,
+            },
+            career: {
+                interestedIndustry: interestedIndustry,
+                jobExp: jobExp,
+                internshipExp: internshipExp,
             } 
         }, { merge: true });
+
+        // Get new profile in Firebase and update userProfileDoc in stateProps
+        const docRef = doc(db, "profiles", userEmail);
+        const docSnap = await getDoc(docRef);
+
+        let userDoc = docSnap.data();
+        console.log("Updated Document data:", userDoc);
+        setUserProfileDoc(userDoc);
+        console.log(userProfileDoc);
         props.navigation.navigate('Profile');
     }
 
@@ -133,6 +168,7 @@ export default function EditProfileScreen(props) {
                     <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Bio</Text>
                         <TextInput placeholder="Bio"
+                            maxLength={300}
                             multiline
                             numberOfLines={3}
                             style={globalStyles.textInput}
@@ -142,6 +178,7 @@ export default function EditProfileScreen(props) {
                     <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Class Year</Text>
                         <TextInput placeholder="Class Year"
+                            keyboardType="number-pad"
                             style={globalStyles.textInput}
                             value={classYear}
                             onChangeText={(value) => setClassYear(value)}/>
@@ -149,6 +186,8 @@ export default function EditProfileScreen(props) {
                     <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Major</Text>
                         <TextInput placeholder="Major"
+                            multiline
+                            numberOfLines={3}
                             style={globalStyles.textInput}
                             value={major}
                             onChangeText={(value) => setMajor(value)}/>
@@ -163,6 +202,8 @@ export default function EditProfileScreen(props) {
                     <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Hometown</Text>
                         <TextInput placeholder="Hometown"
+                            multiline
+                            numberOfLines={3}
                             style={globalStyles.textInput}
                             value={hometown}
                             onChangeText={(value) => setHometown(value)}/>
@@ -195,6 +236,8 @@ export default function EditProfileScreen(props) {
                     <View style={globalStyles.profileField}>
                         <Text style={globalStyles.textType}>Favorite Place On Campus</Text>
                         <TextInput placeholder="Favorite Place On Campus"
+                            multiline
+                            numberOfLines={3}
                             style={globalStyles.textInput}
                             value={favPlaceOnCampus}
                             onChangeText={(value) => setFavPlaceOnCampus(value)}/>
@@ -207,6 +250,69 @@ export default function EditProfileScreen(props) {
                             style={globalStyles.textInput}
                             value={favWellesleyMemory}
                             onChangeText={(value) => setFavWellesleyMemory(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Current Classes</Text>
+                        <TextInput placeholder="Current Classes"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={currentClasses}
+                            onChangeText={(value) => setCurrentClasses(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Classes I Plan to Take</Text>
+                        <TextInput placeholder="Classes I Plan to Take"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={plannedClasses}
+                            onChangeText={(value) => setPlannedClasses(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Favorite Classes</Text>
+                        <TextInput placeholder="Favorite Classes"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={favClasses}
+                            onChangeText={(value) => setFavClasses(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Study Abroad Experience</Text>
+                        <TextInput placeholder="Study Abroad Experience"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={studyAbroad}
+                            onChangeText={(value) => setStudyAbroad(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Interested Industry</Text>
+                        <TextInput placeholder="Interested Industry"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={interestedIndustry}
+                            onChangeText={(value) => setInterestedIndustry(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Job Experience</Text>
+                        <TextInput placeholder="Job Experience"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={jobExp}
+                            onChangeText={(value) => setJobExp(value)}/>
+                    </View>
+                    <View style={globalStyles.profileField}>
+                        <Text style={globalStyles.textType}>Internship Experience</Text>
+                        <TextInput placeholder="Internship Experience"
+                            multiline
+                            numberOfLines={3}
+                            style={globalStyles.textInput}
+                            value={internshipExp}
+                            onChangeText={(value) => setInternshipExp(value)}/>
                     </View>
                 </View>
                 <TouchableOpacity style={globalStyles.submitButton} onPress={() => submitProfile()}>

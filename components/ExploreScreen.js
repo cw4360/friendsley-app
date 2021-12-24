@@ -11,39 +11,8 @@ import {
     query, where, getDoc, getDocs
 } from "firebase/firestore";
 
-// async function firebaseGetProfiles() {
-//     const q = query(collection(db, 'profiles'));
-//     const querySnapshot = await getDocs(q);
-//     querySnapshot.forEach((profile) => {
-
-//     });
-// }
-
-const ProfileCard = props => {
-    return (
-        <Card style={{alignSelf: 'center', width: 275, paddingVertical: 10}}>
-            <Avatar.Image 
-                style={{alignSelf: 'center', marginVertical: 10}}
-                size={150}
-                source={{
-                    uri: 'https://picsum.photos/700'
-                }} 
-            />
-            <Card.Content style={{ alignItems: 'center'}}>
-                {/* Name */}
-                <Title style={{marginBottom: 5}}>props.</Title>
-                {/* Class Year */}
-                <Paragraph>Class of 2023</Paragraph>
-                <Paragraph>Computer Science and Economics</Paragraph>
-                <Paragraph>cw4@wellesley.edu</Paragraph>
-            </Card.Content>
-            <Card.Actions style={{ alignSelf: 'center'}}>
-                <Button color='blue'>Message</Button>
-                <Button color='blue'>Friend</Button>
-            </Card.Actions>
-            {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
-        </Card>
-    );
+function formatJSON(jsonVal) {
+    return JSON.stringify(jsonVal, null, 2);
 }
 
 export default function ExploreScreen(props) {
@@ -51,8 +20,53 @@ export default function ExploreScreen(props) {
     const auth = stateProps.auth;
     const db = stateProps.db;
 
+    const [allProfiles, setAllProfiles] = React.useState([]); 
+    // State for search bar
     const [searchQuery, setSearchQuery] = React.useState('');
     const onChangeSearch = query => setSearchQuery(query);
+
+    // Get user info when ExploreScreen mounts.
+    useEffect(() => {
+        // setAllProfiles([]); 
+        firebaseGetAllProfiles();
+    }, []);
+
+    async function firebaseGetAllProfiles() {
+        const querySnapShot = await getDocs(collection(db, "profiles")); 
+        let profiles = []; 
+        if (!querySnapShot.empty) {
+            querySnapShot.forEach(doc => {
+                profiles.push(doc.data());
+            });
+        }
+        setAllProfiles(profiles); 
+        // console.log("All profiles:", profiles);
+    }
+    
+    // Question for Lyn: How to integrate Profile Card in code? Error: props.basics.name is undefined
+    // const ProfileCard = props => {
+    //     return (
+    //         <Card style={{alignSelf: 'center', width: 275, paddingVertical: 10}}>
+    //             <Avatar.Image 
+    //                 style={{alignSelf: 'center', marginVertical: 10}}
+    //                 size={150}
+    //                 source={{
+    //                     uri: 'https://picsum.photos/700'
+    //                 }} 
+    //             />
+    //             <Card.Content style={{ alignItems: 'center'}}>
+    //                 <Title style={{marginBottom: 5}}>{props.basics.name}</Title>
+    //                 <Paragraph>{props.personal.classYear}</Paragraph>
+    //                 <Paragraph>{props.personal.major}</Paragraph>
+    //                 <Paragraph>{props.email}</Paragraph>
+    //             </Card.Content>
+    //             <Card.Actions style={{ alignSelf: 'center'}}>
+    //                 <Button color='blue'>Message</Button>
+    //                 <Button color='blue'>Friend</Button>
+    //             </Card.Actions>
+    //         </Card>
+    //     );
+    // }
 
     return (
         <ScrollView>
@@ -65,32 +79,43 @@ export default function ExploreScreen(props) {
                         value={searchQuery}
                     />
                     <Text>Sort by: </Text>
-                    
+                    {/* <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
+                        style={globalStyles.editProfileButton}>
+                        <Text style={{color: 'black'}}>Get All Profiles</Text>
+                    </TouchableOpacity>                
+                         
+                    <TouchableOpacity onPress={() => alert(formatJSON(allProfiles))} 
+                        style={globalStyles.editProfileButton}>
+                        <Text style={{color: 'black'}}>Test</Text>
+                    </TouchableOpacity>  */}
 
-                    <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
-                        {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
-                        {/* <Card.Title style={{paddingVertical: 20}} title="Catherine Wang" subtitle="Class of 2023"/> */}
-                        <Avatar.Image 
-                            style={{alignSelf: 'center', marginVertical: 10}}
-                            size={150}
-                            source={{
-                                uri: 'https://picsum.photos/700'
-                            }} 
-                        />
-                        <Card.Content style={{ alignItems: 'center'}}>
-                            <Title style={{marginBottom: 5}}>Catherine Wang</Title>
-                            <Paragraph>Class of 2023</Paragraph>
-                            <Paragraph>Computer Science and Economics</Paragraph>
-                            <Paragraph>cw4@wellesley.edu</Paragraph>
-                        </Card.Content>
-                        <Card.Actions style={{ alignSelf: 'center'}}>
-                            <Button color='blue'>Message</Button>
-                            <Button color='blue'>Friend</Button>
-                        </Card.Actions>
-                        {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
-                    </Card>
+                    {allProfiles.length ? (allProfiles.map( (user) => {
+                        // console.log("Current user", formatJSON(user));
+                        return (
+                            <View keyExtractor={user.email}>
+                                <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
+                                    <Avatar.Image 
+                                        style={{alignSelf: 'center', marginVertical: 10}}
+                                        size={150}
+                                        source={{
+                                            uri: 'https://picsum.photos/700'
+                                        }} 
+                                    />
+                                    <Card.Content style={{ alignItems: 'center'}}>
+                                        <Title style={{marginBottom: 5}}>{user.basics.name}</Title>
+                                        <Paragraph>Class of {user.personal.classYear}</Paragraph>
+                                        <Paragraph>{user.personal.major}</Paragraph>
+                                        <Paragraph>{user.email}</Paragraph>
+                                    </Card.Content>
+                                    <Card.Actions style={{ alignSelf: 'center'}}>
+                                        <Button color='blue'>Message</Button>
+                                        <Button color='blue'>Friend</Button>
+                                    </Card.Actions>
+                                </Card>
+                            </View>
+                        );
+                    })): <View></View>}
 
-                    <Text>Welcome to the Explore!!</Text>
                     <Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>
                 </View>
                 {/* <View>

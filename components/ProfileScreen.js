@@ -24,8 +24,7 @@ export default function ProfileScreen(props) {
 
     // State for user profiles' data
     let userEmail = auth.currentUser.email;
-    // const [curUser, setCurUser] = useState(null);
-    // const [isFinishedLoading, setIsFinishedLoading] = useState(false);
+
     const [name, setName] = useState('');
     const [pronouns, setPronouns] = useState('');
     const [bio, setBio] = useState('');
@@ -38,6 +37,13 @@ export default function ProfileScreen(props) {
     const [clubs, setClubs] = useState('');
     const [favPlaceOnCampus, setFavPlaceOnCampus] = useState('');
     const [favWellesleyMemory, setFavWellesleyMemory] = useState('');
+    const [currentClasses, setCurrentClasses] = useState('');
+    const [plannedClasses, setPlannedClasses] = useState('');
+    const [favClasses, setFavClasses] = useState('');
+    const [studyAbroad, setStudyAbroad] = useState('');
+    const [interestedIndustry, setInterestedIndustry] = useState('');
+    const [jobExp, setJobExp] = useState('');
+    const [internshipExp, setInternshipExp] = useState('');
 
     // Get user info when ProfileScreen mounts.
     useEffect(() => {
@@ -48,30 +54,36 @@ export default function ProfileScreen(props) {
    * Get current logged-in user's profile info from Firebase's Firestore
    */ 
     async function firebaseGetUserProfile(email) {
-        alert("CURRENT USER'S EMAIL, PROFILE SCREEN", email); 
+        alert("CURRENT USER'S EMAIL, PROFILE SCREEN", formatJSON(email)); 
         const docRef = doc(db, "profiles", email);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-        let userDoc = docSnap.data();
-        // setCurUser(userDoc);
-        // setIsFinishedLoading(true);
-        setName(userDoc.basics.name);
-        setPronouns(userDoc.basics.pronouns);
-        setBio(userDoc.basics.bio);
-        setClassYear(userDoc.personal.classYear);
-        setMajor(userDoc.personal.major);
-        setMinor(userDoc.personal.minor);
-        setHometown(userDoc.personal.hometown);
-        setResidenceHall(userDoc.personal.residenceHall);
-        setHobbies(userDoc.personal.hobbies);
-        setClubs(userDoc.personal.clubs);
-        setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
-        setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
+            // console.log("Document data:", docSnap.data());
+            let userDoc = docSnap.data();
+            setName(userDoc.basics.name);
+            setPronouns(userDoc.basics.pronouns);
+            setBio(userDoc.basics.bio);
+            setClassYear(userDoc.personal.classYear);
+            setMajor(userDoc.personal.major);
+            setMinor(userDoc.personal.minor);
+            setHometown(userDoc.personal.hometown);
+            setResidenceHall(userDoc.personal.residenceHall);
+            setHobbies(userDoc.personal.hobbies);
+            setClubs(userDoc.personal.clubs);
+            setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
+            setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
+            setCurrentClasses(userDoc.academics.currentClasses);
+            setPlannedClasses(userDoc.academics.plannedClasses);
+            setFavClasses(userDoc.academics.favClasses);
+            setStudyAbroad(userDoc.studyAbroad);
+            setInterestedIndustry(userDoc.career.interestedIndustry);
+            setJobExp(userDoc.career.jobExp);
+            setInternshipExp(userDoc.career.internshipExp);
+
         } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
         }
     }
 
@@ -170,19 +182,19 @@ export default function ProfileScreen(props) {
                     <View style={{marginTop: 10}}>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Current Classes:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{currentClasses}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Classes I Plan To Take:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{plannedClasses}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Favorite Classes:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{favClasses}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Study Abroad Experience:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{studyAbroad}</Text>
                         </View>
                     </View>
                 </View>
@@ -197,15 +209,15 @@ export default function ProfileScreen(props) {
                     <View style={{marginTop: 10}}>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Interested Industry:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{interestedIndustry}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Job Experience:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{jobExp}</Text>
                         </View>
                         <View style={globalStyles.infoField}>
                             <Text style={globalStyles.textType}>Internship Experience:</Text>
-                            <Text style={globalStyles.profileText}></Text>
+                            <Text style={globalStyles.profileText}>{internshipExp}</Text>
                         </View>
                     </View>
                 </View>

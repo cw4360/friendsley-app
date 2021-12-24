@@ -4,12 +4,19 @@ import { StyleSheet, Button, ScrollView, Text, TextInput,
     TouchableOpacity, View } from 'react-native';
 import Constants from 'expo-constants';
 import StateContext from './StateContext';
+
 import { 
     // for email/password authentication: 
     createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification,
     // for logging out:
     signOut
   } from "firebase/auth";
+import { 
+    // access to Firestore storage features:
+    // for storage access
+    collection, doc, addDoc, setDoc,
+    query, where, getDoc, getDocs
+} from "firebase/firestore";
 
 function formatJSON(jsonVal) {
 // Lyn sez: replacing \n by <br/> not necesseary if use this CSS:
@@ -30,64 +37,84 @@ function emailOf(user) {
 export default function LoginScreen(props) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth;
+    const db = stateProps.db;
+
     const loggedInUser = stateProps.loggedInUser; 
     const setLoggedInUser = stateProps.setLoggedInUser; 
+    const userProfileDoc = stateProps.userProfileDoc; 
+    const setUserProfileDoc = stateProps.setUserProfileDoc; 
 
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [errorMsg, setErrorMsg] = React.useState(''); 
-    //const [loggedInUser, setLoggedInUser] = React.useState(null); // Move this out of loggedinscreen, move into App.js (everything )
 
 
     // Download all the data of the current user once they are successfully logged in (right before call to navigate to Explore screen) - local database will be one of the StateProps (ex stateProps.setLoggedInUser('VALUE'))
     // However, download messages from Firestore every 5-10 minutes (are there messages sooner than this timestamp about me)
     
 
-    function signUpUserEmailPassword() {
-        if (auth.currentUser) {
-            signOut(auth); // sign out auth's current user (who is not loggedInUser, 
-                           // or else we wouldn't be here
-        }
-        if (!email.includes('@wellesley.edu')) {
-            setErrorMsg('Not a valid Wellesley email address');
-            return;
-        }
-        if (password.length < 6) {
-            setErrorMsg('Password too short');
-            return;
-        }   
-        // Invoke Firebase authentication API for Email/Password sign up 
-        createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            console.log(`signUpUserEmailPassword: sign up for email ${email} succeeded (but email still needs verification).`);
+    // Receive and set logged-in user's profile from Firebase into stateProps
+    async function firebaseGetUserProfile(email) {
+      alert("CURRENT USER'S EMAIL:", formatJSON(email)); 
+      const docRef = doc(db, "profiles", email);
+      const docSnap = await getDoc(docRef);
 
-            // Clear email/password inputs
-            const savedEmail = email; // Save for email verification
-            setEmail('');
-            setPassword('');
+      if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        let userDoc = docSnap.data();
 
-            // Note: could store userCredential here if wanted it later ...
-            // console.log(`createUserWithEmailAndPassword: setCredential`);
-            // setCredential(userCredential);
+        return userDoc;
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such profile document!");
+      }
+  }
 
-            // Send verication email
-            console.log('signUpUserEmailPassword: about to send verification email');
-            sendEmailVerification(auth.currentUser)
-            .then(() => {
-                console.log('signUpUserEmailPassword: sent verification email');
-                setErrorMsg(`A verification email has been sent to ${savedEmail}. You will not be able to sign in to this account until you click on the verification link in that email.`); 
-                // Email verification sent!
-                // ...
-            });
-        })
-        .catch((error) => {
-            console.log(`signUpUserEmailPassword: sign up failed for email ${email}`);
-            const errorMessage = error.message;
-            // const errorCode = error.code; // Could use this, too.
-            console.log(`createUserWithEmailAndPassword: ${errorMessage}`);
-            setErrorMsg(`createUserWithEmailAndPassword: ${errorMessage}`);
-        });
-    }
+    // function signUpUserEmailPassword() {
+    //     if (auth.currentUser) {
+    //         signOut(auth); // sign out auth's current user (who is not loggedInUser, 
+    //                        // or else we wouldn't be here
+    //     }
+    //     if (!email.includes('@wellesley.edu')) {
+    //         setErrorMsg('Not a valid Wellesley email address');
+    //         return;
+    //     }
+    //     if (password.length < 6) {
+    //         setErrorMsg('Password too short');
+    //         return;
+    //     }   
+    //     // Invoke Firebase authentication API for Email/Password sign up 
+    //     createUserWithEmailAndPassword(auth, email, password)
+    //     .then((userCredential) => {
+    //         console.log(`signUpUserEmailPassword: sign up for email ${email} succeeded (but email still needs verification).`);
+
+    //         // Clear email/password inputs
+    //         const savedEmail = email; // Save for email verification
+    //         setEmail('');
+    //         setPassword('');
+
+    //         // Note: could store userCredential here if wanted it later ...
+    //         // console.log(`createUserWithEmailAndPassword: setCredential`);
+    //         // setCredential(userCredential);
+
+    //         // Send verication email
+    //         console.log('signUpUserEmailPassword: about to send verification email');
+    //         sendEmailVerification(auth.currentUser)
+    //         .then(() => {
+    //             console.log('signUpUserEmailPassword: sent verification email');
+    //             setErrorMsg(`A verification email has been sent to ${savedEmail}. You will not be able to sign in to this account until you click on the verification link in that email.`); 
+    //             // Email verification sent!
+    //             // ...
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         console.log(`signUpUserEmailPassword: sign up failed for email ${email}`);
+    //         const errorMessage = error.message;
+    //         // const errorCode = error.code; // Could use this, too.
+    //         console.log(`createUserWithEmailAndPassword: ${errorMessage}`);
+    //         setErrorMsg(`createUserWithEmailAndPassword: ${errorMessage}`);
+    //     });
+    // }
 
     function signInUserEmailPassword() {
         console.log('called signInUserEmailPassword');
@@ -103,6 +130,9 @@ export default function LoginScreen(props) {
     
             // Only log in auth.currentUser if their email is verified
             checkEmailVerification();
+
+            // Set logged-in user's profile in stateProps
+            setUserProfileDoc(firebaseGetUserProfile(auth.currentUser.email));
     
             // Clear email/password inputs 
             setEmail('');
@@ -127,7 +157,9 @@ export default function LoginScreen(props) {
           console.log(`checkEmailVerification: auth.currentUser.emailVerified=${auth.currentUser.emailVerified}`);
           if (auth.currentUser.emailVerified) {
             console.log(`checkEmailVerification: setLoggedInUser for ${auth.currentUser.email}`);
-            setLoggedInUser(auth.currentUser);
+            setLoggedInUser(auth.currentUser.email);
+            console.log('auth.currentUser:', formatJSON(auth.currentUser));
+            console.log('loggedInUser:', formatJSON(loggedInUser));
             console.log("checkEmailVerification: setErrorMsg('')")
             setErrorMsg('')
           } else {
@@ -144,6 +176,8 @@ export default function LoginScreen(props) {
         console.log(`logOut: setLoggedInUser(null)`);
         setLoggedInUser(null);
         console.log('logOut: signOut(auth)');
+        setUserProfileDoc(null);
+        console.log('logOut: setUserProfileDoc(null)');
         signOut(auth); // Will eventually set auth.currentUser to null     
     }
 

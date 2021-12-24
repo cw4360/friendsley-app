@@ -1,5 +1,7 @@
 /* 
-This screen will be autopopulated with conversation you selected on the "View All Chats" screen
+- This screen will be autopopulated with conversation you selected on the "View All Chats" screen
+- Grab all messages relating to the currently-logged-in user 
+
 */
 
 import React, {useContext, useState} from 'react';
