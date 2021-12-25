@@ -55,19 +55,18 @@ export default function LoginScreen(props) {
 
     // Receive and set logged-in user's profile from Firebase into stateProps
     async function firebaseGetUserProfile(email) {
-      alert("CURRENT USER'S EMAIL:", formatJSON(email)); 
       const docRef = doc(db, "profiles", email);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
         console.log("Document data:", docSnap.data());
         let userDoc = docSnap.data();
-
-        return userDoc;
+        setUserProfileDoc(userDoc); 
       } else {
         // doc.data() will be undefined in this case
         console.log("No such profile document!");
       }
+
   }
 
     // function signUpUserEmailPassword() {
@@ -132,7 +131,8 @@ export default function LoginScreen(props) {
             checkEmailVerification();
 
             // Set logged-in user's profile in stateProps
-            setUserProfileDoc(firebaseGetUserProfile(auth.currentUser.email));
+            // FirebaseGetUserProfile is a promise - doesn't return the actual data (need an await?)
+            firebaseGetUserProfile(auth.currentUser.email);
     
             // Clear email/password inputs 
             setEmail('');
@@ -158,6 +158,8 @@ export default function LoginScreen(props) {
           if (auth.currentUser.emailVerified) {
             console.log(`checkEmailVerification: setLoggedInUser for ${auth.currentUser.email}`);
             setLoggedInUser(auth.currentUser.email);
+            // If the current-logged in user has been verified, log them in and navigate to to the Explore page 
+            props.navigation.navigate("Explore"); 
             console.log('auth.currentUser:', formatJSON(auth.currentUser));
             console.log('loggedInUser:', formatJSON(loggedInUser));
             console.log("checkEmailVerification: setErrorMsg('')")

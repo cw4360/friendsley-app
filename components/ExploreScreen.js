@@ -88,7 +88,7 @@ export default function ExploreScreen(props) {
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Test</Text>
                     </TouchableOpacity>  */}
-
+                    {/*If allProfiles isn't empty, render each profile as a Card*/}
                     {allProfiles.length ? (allProfiles.map( (user) => {
                         // console.log("Current user", formatJSON(user));
                         return (

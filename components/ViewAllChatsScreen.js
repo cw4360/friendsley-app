@@ -29,6 +29,11 @@ export default function ViewAllChatsScreens(props) {
     const auth = stateProps.auth; 
     const db = stateProps.db; 
     const userEmail = auth.currentUser.email; 
+    const userProfileDoc = stateProps.userProfileDoc; 
+
+    console.log("Email and profile", userEmail, formatJSON(userProfileDoc)); 
+
+    /*
     let userContacts = []; 
 
     useEffect(() => {
@@ -58,12 +63,14 @@ export default function ViewAllChatsScreens(props) {
             return []; 
         }
     }
+    */
 
     return (
         <View>
             {/* <Text>{formatJSON(firebaseGetCurrentContacts(userEmail))}</Text> */}
             {/* <Text>{formatJSON((async () => {firebaseGetCurrentContacts(userEmail)})())}</Text> */}
-            <Text>{formatJSON((async () => {await firebaseGetCurrentContacts(userEmail)})())}</Text>
+            {/* <Text>{formatJSON((async () => {await firebaseGetCurrentContacts(userEmail)})())}</Text> */}
+            {/*
             <FlatList>
                 data = {userContacts}
                 renderItem = {contact => 
@@ -74,6 +81,8 @@ export default function ViewAllChatsScreens(props) {
                     </TouchableOpacity>
                 }
             </FlatList>
+            */}
+            <Text>{formatJSON(userProfileDoc)}</Text>
         </View>
     );
 }
