@@ -33,7 +33,13 @@ export default function ViewAllChatsScreens(props) {
     const userEmail = auth.currentUser.email; 
     const userProfileDoc = stateProps.userProfileDoc; 
     const userContacts = userProfileDoc.messageContacts; 
-    console.log("USER CONTACTS", userContacts); 
+
+    /* Will work once we pass in allProfiles as a state property */
+    function getProfileFromEmail(email) {
+
+    }
+
+
 
     /*
     let userContacts = []; 
@@ -82,9 +88,52 @@ export default function ViewAllChatsScreens(props) {
         </View>
         */}
 
-    return (
-        <View>
-            <Text>Hi</Text>
-        </View>
-    )
+        return (
+            <ScrollView>
+            <SafeAreaView>
+                <View style={{margin: 20}}>
+                    <Searchbar
+                        style={{shadowOpacity: 0}}
+                        placeholder="Search"
+                        // onChangeText={onChangeSearch}
+                        // value={searchQuery}
+                    />
+                    {userContacts ? (userContacts.map( (user) => {
+                        // console.log("Current user", formatJSON(user));
+                        return (
+                            <View keyExtractor={user}>
+                                <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
+                                    <Avatar.Image 
+                                        style={{alignSelf: 'center', marginVertical: 10}}
+                                        size={150}
+                                        source={{
+                                            uri: 'https://picsum.photos/700'
+                                        }} 
+                                    />
+                                    <Card.Content style={{ alignItems: 'center'}}>
+                                        <Title style={{marginBottom: 5}}>{user}</Title> {/*FIND A WAY TO EXTRACT THE NAME*/}
+                                        {/* <Paragraph>Class of {user.personal.classYear}</Paragraph> */}
+                                        {/* <Paragraph>{user.personal.major}</Paragraph> */}
+                                        <Paragraph>{user}</Paragraph>
+                                    </Card.Content>
+                                    <Card.Actions style={{ alignSelf: 'center'}}>
+                                        <Button color='blue'>Message</Button> {/*WHY ISN'T THE WORD 'MESSAGE' SHOWING UP?*/}
+                                    </Card.Actions>
+                                </Card>
+                            </View>
+                        );
+                    })): <View></View>}
+    
+                    <Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>
+                </View>
+                {/* <View>
+                    <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
+                </View>
+                <View>
+                    <Button title = "Go to View All Chats Screen" onPress={() => props.navigation.navigate('View All Chats')}/>
+                </View> */}
+            </SafeAreaView>
+        </ScrollView>
+        );
+    
 }
