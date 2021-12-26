@@ -1,6 +1,7 @@
 /*
 TODO: 
 - When user clicks "message" on the Explore screen, that person should be added to "messageContacts"
+- In messageContacts, should we store the entire person's document as the messageContact, or should we just store the person's email and then extract the document from their email?
 */
 
 import React, {useContext, useEffect} from 'react';
@@ -8,6 +9,7 @@ import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollV
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 //import {Picker} from '@react-native-picker/picker';
+import { Avatar, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
 import StateContext from './StateContext'; 
 import { 
     // access to Firestore storage features:
@@ -30,8 +32,8 @@ export default function ViewAllChatsScreens(props) {
     const db = stateProps.db; 
     const userEmail = auth.currentUser.email; 
     const userProfileDoc = stateProps.userProfileDoc; 
-
-    console.log("Email and profile", userEmail, formatJSON(userProfileDoc)); 
+    const userContacts = userProfileDoc.messageContacts; 
+    console.log("USER CONTACTS", userContacts); 
 
     /*
     let userContacts = []; 
@@ -65,14 +67,10 @@ export default function ViewAllChatsScreens(props) {
     }
     */
 
-    return (
+    {/* OLD TEST FLATLIST IN RETURN 
         <View>
-            {/* <Text>{formatJSON(firebaseGetCurrentContacts(userEmail))}</Text> */}
-            {/* <Text>{formatJSON((async () => {firebaseGetCurrentContacts(userEmail)})())}</Text> */}
-            {/* <Text>{formatJSON((async () => {await firebaseGetCurrentContacts(userEmail)})())}</Text> */}
-            {/*
             <FlatList>
-                data = {userContacts}
+                data = {userProfileDoc.messageContacts}
                 renderItem = {contact => 
                     <TouchableOpacity>
                         <View>
@@ -81,8 +79,12 @@ export default function ViewAllChatsScreens(props) {
                     </TouchableOpacity>
                 }
             </FlatList>
-            */}
-            <Text>{formatJSON(userProfileDoc)}</Text>
         </View>
-    );
+        */}
+
+    return (
+        <View>
+            <Text>Hi</Text>
+        </View>
+    )
 }
