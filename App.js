@@ -54,8 +54,8 @@ export default function App() {
   // const stateProps = { signedInUser, signInUser, signOutUser, auth, db }; 
   const [loggedInUser, setLoggedInUser] = React.useState(null); // 
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
-  // ADD THE ALLPROFILES STATE PROPERTY (FOR USE IN VIEWCHATSCREEN, EXPLORESCREEN)
-  const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc }; // AllUsers, AllMessagesRelatedToThisUser
+  const [allProfiles, setAllProfiles] = React.useState([]); 
+  const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles };
 
   return (
     <StateContext.Provider value = {stateProps}>

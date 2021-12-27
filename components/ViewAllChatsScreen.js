@@ -32,12 +32,18 @@ export default function ViewAllChatsScreens(props) {
     const db = stateProps.db; 
     const userEmail = auth.currentUser.email; 
     const userProfileDoc = stateProps.userProfileDoc; 
+    const allProfiles = stateProps.allProfiles; 
     const userContacts = userProfileDoc.messageContacts; 
 
     /* Will work once we pass in allProfiles as a state property */
     function getProfileFromEmail(email) {
-
+        let profile = allProfiles.filter(prof => prof.email == email);
+        if (profile.length > 0) {
+            return profile[0]; 
+        }
     }
+
+    //alert(getProfileFromEmail('az1@wellesley.edu')); 
 
 
 
@@ -98,10 +104,11 @@ export default function ViewAllChatsScreens(props) {
                         // onChangeText={onChangeSearch}
                         // value={searchQuery}
                     />
-                    {userContacts ? (userContacts.map( (user) => {
+                    {/* Loop through the current user's message contacts */}
+                    {userContacts ? (userContacts.map( (email) => {
                         // console.log("Current user", formatJSON(user));
                         return (
-                            <View keyExtractor={user}>
+                            <View keyExtractor={email}>
                                 <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
                                     <Avatar.Image 
                                         style={{alignSelf: 'center', marginVertical: 10}}
@@ -111,10 +118,10 @@ export default function ViewAllChatsScreens(props) {
                                         }} 
                                     />
                                     <Card.Content style={{ alignItems: 'center'}}>
-                                        <Title style={{marginBottom: 5}}>{user}</Title> {/*FIND A WAY TO EXTRACT THE NAME*/}
+                                        <Title style={{marginBottom: 5}}>{getProfileFromEmail(email).basics.name}</Title>
                                         {/* <Paragraph>Class of {user.personal.classYear}</Paragraph> */}
                                         {/* <Paragraph>{user.personal.major}</Paragraph> */}
-                                        <Paragraph>{user}</Paragraph>
+                                        <Paragraph>{email}</Paragraph>
                                     </Card.Content>
                                     <Card.Actions style={{ alignSelf: 'center'}}>
                                         <Button color='blue'>Message</Button> {/*WHY ISN'T THE WORD 'MESSAGE' SHOWING UP?*/}
@@ -124,7 +131,7 @@ export default function ViewAllChatsScreens(props) {
                         );
                     })): <View></View>}
     
-                    <Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>
+                {/*<Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>*/} 
                 </View>
                 {/* <View>
                     <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>

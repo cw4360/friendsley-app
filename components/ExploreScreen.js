@@ -10,6 +10,7 @@ import {
     collection, doc, addDoc, setDoc,
     query, where, getDoc, getDocs
 } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
@@ -19,8 +20,10 @@ export default function ExploreScreen(props) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth;
     const db = stateProps.db;
+    const allProfiles = stateProps.allProfiles; 
+    const setAllProfiles = stateProps.setAllProfiles; 
 
-    const [allProfiles, setAllProfiles] = React.useState([]); 
+    //const [allProfiles, setAllProfiles] = React.useState([]); 
     // State for search bar
     const [searchQuery, setSearchQuery] = React.useState('');
     const onChangeSearch = query => setSearchQuery(query);
@@ -31,6 +34,7 @@ export default function ExploreScreen(props) {
         firebaseGetAllProfiles();
     }, []);
 
+    // Grabs all profiles from Firebase, sets the "AllProfiles" state property 
     async function firebaseGetAllProfiles() {
         const querySnapShot = await getDocs(collection(db, "profiles")); 
         let profiles = []; 
@@ -42,6 +46,17 @@ export default function ExploreScreen(props) {
         setAllProfiles(profiles); 
         // console.log("All profiles:", profiles);
     }
+
+    // Filters out the currently logged-in user from allProfiles 
+    // Helps ensure that currently logged-in user does not see themselves on the Explore Screen 
+    function filterOutSelfFromAllProfiles() {
+        if (allProfiles.length > 0) {
+            // DO NOT call setAllProfiles, since we want the allProfiles state property to reflect ALL users in database
+            return allProfiles.filter(profile => profile.email != auth.currentUser.email); 
+        }
+    }
+
+
     
     // Question for Lyn: How to integrate Profile Card in code? Error: props.basics.name is undefined
     // const ProfileCard = props => {
@@ -89,7 +104,7 @@ export default function ExploreScreen(props) {
                         <Text style={{color: 'black'}}>Test</Text>
                     </TouchableOpacity>  */}
                     {/*If allProfiles isn't empty, render each profile as a Card*/}
-                    {allProfiles.length ? (allProfiles.map( (user) => {
+                    {allProfiles.length ? (filterOutSelfFromAllProfiles().map( (user) => {
                         // console.log("Current user", formatJSON(user));
                         return (
                             <View keyExtractor={user.email}>
