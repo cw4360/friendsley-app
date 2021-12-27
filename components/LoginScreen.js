@@ -141,6 +141,9 @@ export default function LoginScreen(props) {
             // Note: could store userCredential here if wanted it later ...
             // console.log(`createUserWithEmailAndPassword: setCredential`);
             // setCredential(userCredential);
+
+            // If the current-logged in user has been verified, log them in and navigate to to the Explore page 
+            // props.navigation.navigate("Friendsley"); 
         
             })
           .catch((error) => {
@@ -158,8 +161,6 @@ export default function LoginScreen(props) {
           if (auth.currentUser.emailVerified) {
             console.log(`checkEmailVerification: setLoggedInUser for ${auth.currentUser.email}`);
             setLoggedInUser(auth.currentUser.email);
-            // If the current-logged in user has been verified, log them in and navigate to to the Explore page 
-            props.navigation.navigate("Explore"); 
             console.log('auth.currentUser:', formatJSON(auth.currentUser));
             console.log('loggedInUser:', formatJSON(loggedInUser));
             console.log("checkEmailVerification: setErrorMsg('')")
@@ -223,15 +224,15 @@ export default function LoginScreen(props) {
               </TouchableOpacity> 
           </View>
           <View>
-            <Button title="Go to Profile Screen" onPress={() => props.navigation.navigate('Profile')}/>
+            <Button title="Go to Profile Screen" onPress={() => props.navigation.navigate("Friendsley")}/>
             <Button title = "Go to View All Chats Screen" onPress = {() => props.navigation.navigate("View All Chats")}/>
           </View>
-          {/* <ScrollView style={styles.jsonContainer}>
+          <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>Logged In User: {formatJSON(loggedInUser)}</Text>
-          </ScrollView> */}
-          {/* <ScrollView style={styles.jsonContainer}>
+          </ScrollView>
+          <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
-          </ScrollView> */}
+          </ScrollView>
          
         </View>
         </ScrollView>

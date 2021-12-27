@@ -124,7 +124,13 @@ export default function ViewAllChatsScreens(props) {
                                         <Paragraph>{email}</Paragraph>
                                     </Card.Content>
                                     <Card.Actions style={{ alignSelf: 'center'}}>
-                                        <Button color='blue'>Message</Button> {/*WHY ISN'T THE WORD 'MESSAGE' SHOWING UP?*/}
+                                        <Button title="Message" color='blue' /> 
+                                        {/*WHY ISN'T THE WORD 'MESSAGE' SHOWING UP?
+                                        Catherine: I placed the word 'Message' into a title attribute! 
+                                        I hope this fixes the issue. The reason why Button doesn't work
+                                        like normal is because this particular Button is from React-Native-Paper's
+                                        API (import statement), not React Native's. There was a bug about 
+                                        MessageContacts being null so I wasn't able to check if this was fixed.*/}
                                     </Card.Actions>
                                 </Card>
                             </View>

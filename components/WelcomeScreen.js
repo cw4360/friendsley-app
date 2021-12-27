@@ -11,7 +11,7 @@ export default function WelcomeScreen(props) {
                 <Button title="Log In" onPress={() => props.navigation.navigate('Login')}/>
             </View>
             <View>                    
-                <Button title="Go to Explore Screen" onPress={() => props.navigation.navigate('Explore')}/>
+                <Button title="Go to Explore Screen" onPress={() => props.navigation.navigate("Friendsley")}/>
             </View>
         </View>
     );

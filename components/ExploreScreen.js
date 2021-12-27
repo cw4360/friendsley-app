@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, Image, Picker, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 
@@ -27,6 +28,17 @@ export default function ExploreScreen(props) {
     // State for search bar
     const [searchQuery, setSearchQuery] = React.useState('');
     const onChangeSearch = query => setSearchQuery(query);
+    // State for dropdown
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        {label: 'Name (Ascending)', value: 'nameUp'},
+        {label: 'Name (Descending)', value: 'nameDown'},
+        {label: 'Class Year (Ascending)', value: 'yearUp'},
+        {label: 'Class Year (Descending)', value: 'yearDown'},
+
+
+    ]);
 
     // Get user info when ExploreScreen mounts.
     useEffect(() => {
@@ -103,11 +115,25 @@ export default function ExploreScreen(props) {
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Test</Text>
                     </TouchableOpacity>  */}
+                    <DropDownPicker
+                        style={{borderColor: 'gray', fontFamily: 'sans-serif'}}
+                        dropDownContainerStyle={{
+                            borderColor: 'gray',
+                            backgroundColor: 'lightgray'
+                          }}
+                        placeholder="Sort by"
+                        open={open}
+                        value={value}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setItems}
+                    />
                     {/*If allProfiles isn't empty, render each profile as a Card*/}
                     {allProfiles.length ? (filterOutSelfFromAllProfiles().map( (user) => {
                         // console.log("Current user", formatJSON(user));
                         return (
-                            <View keyExtractor={user.email}>
+                            <View key={user.email}>
                                 <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
                                     <Avatar.Image 
                                         style={{alignSelf: 'center', marginVertical: 10}}

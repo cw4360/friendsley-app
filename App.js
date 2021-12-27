@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import {  Provider as PaperProvider, } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {  Provider as PaperProvider, } from 'react-native-paper';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProfileScreen from './components/ProfileScreen';
 import ExploreScreen from './components/ExploreScreen';
 import LoginScreen from './components/LoginScreen';
@@ -12,6 +13,7 @@ import WelcomeScreen from './components/WelcomeScreen';
 import SignupScreen from './components/SignupScreen';
 import MessageScreen from './components/MessageScreen';
 import ViewAllChatsScreen from './components/ViewAllChatsScreen'; 
+import SettingsScreen from './components/SettingsScreen';
 import StateContext from './components/StateContext'; 
 
 // Importing Firebase Authentication, Cloud Firestore, and Storage
@@ -43,6 +45,41 @@ const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp, 
   firebaseConfig.storageBucket) // for storaging images in Firebase storage
 
+const MessageStack = createNativeStackNavigator();
+
+function MessageStackScreen() {
+  return (
+    <MessageStack.Navigator>
+      <MessageStack.Screen name="View All Chats" component={ViewAllChatsScreen}/>
+      <MessageStack.Screen name="Message" component={MessageScreen}/>
+    </MessageStack.Navigator>
+  );
+}
+
+const ProfileStack = createNativeStackNavigator();
+
+function ProfileStackScreen() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen}/>
+      <ProfileStack.Screen name="Edit Profile" component={EditProfileScreen}/>
+    </ProfileStack.Navigator>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+function HomeTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Explore" component={ExploreScreen}/>
+      <Tab.Screen name="Messages" component={MessageStackScreen}/>
+      <Tab.Screen name="Profile" component={ProfileStackScreen}
+        options={{headerShown: false}}/>
+      <Tab.Screen name="Settings" component={SettingsScreen}/>
+    </Tab.Navigator>
+  );
+}
 
 const Stack = createNativeStackNavigator();
 
@@ -61,15 +98,14 @@ export default function App() {
     <StateContext.Provider value = {stateProps}>
       <PaperProvider>
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator 
+          screenOptions={{
+            headerShown: false
+          }}>
             <Stack.Screen name="Welcome" component={WelcomeScreen}/>
             <Stack.Screen name="Sign Up" component={SignupScreen}/>
             <Stack.Screen name="Login" component={LoginScreen}/>
-            <Stack.Screen name="Profile" component={ProfileScreen}/>
-            <Stack.Screen name="Edit Profile" component={EditProfileScreen}/>
-            <Stack.Screen name="Explore" component={ExploreScreen}/>
-            <Stack.Screen name="Message" component={MessageScreen}/>
-            <Stack.Screen name="View All Chats" component={ViewAllChatsScreen}/>
+            <Stack.Screen name="Friendsley" component={HomeTabs}/>
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider> 
