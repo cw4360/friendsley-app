@@ -100,12 +100,11 @@ export default function ExploreScreen(props) {
             <SafeAreaView>
                 <View style={{margin: 20}}>
                     <Searchbar
-                        style={{shadowOpacity: 0}}
+                        style={{shadowOpacity: 0, marginBottom: 10}}
                         placeholder="Search"
                         onChangeText={onChangeSearch}
                         value={searchQuery}
                     />
-                    <Text>Sort by: </Text>
                     {/* <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Get All Profiles</Text>
@@ -116,7 +115,9 @@ export default function ExploreScreen(props) {
                         <Text style={{color: 'black'}}>Test</Text>
                     </TouchableOpacity>  */}
                     <DropDownPicker
-                        style={{borderColor: 'gray', fontFamily: 'sans-serif'}}
+                        style={{
+                            borderColor: 'gray', 
+                            fontFamily: 'sans-serif'}}
                         dropDownContainerStyle={{
                             borderColor: 'gray',
                             backgroundColor: 'lightgray'

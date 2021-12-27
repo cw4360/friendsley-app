@@ -5,6 +5,7 @@ import {  Provider as PaperProvider, } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileScreen from './components/ProfileScreen';
 import ExploreScreen from './components/ExploreScreen';
 import LoginScreen from './components/LoginScreen';
@@ -71,9 +72,30 @@ const Tab = createBottomTabNavigator();
 
 function HomeTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'Explore') {
+        iconName = focused
+            ? 'compass'
+            : 'compass-outline'; // options: earth
+        } else if (route.name === 'Messages') {
+        iconName = focused ? 'md-chatbubble-ellipses' : 'md-chatbubble-ellipses-outline';
+        } else if (route.name === 'Profile') {
+        iconName = focused ? 'md-person-circle' : 'md-person-circle-outline';
+        } else if (route.name === 'Settings') {
+        iconName = focused ? 'settings' : 'settings-outline';
+        }
+
+        return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      tabBarActiveTintColor: '#4361EE',
+      tabBarInactiveTintColor: '#808080'
+    })}>
       <Tab.Screen name="Explore" component={ExploreScreen}/>
-      <Tab.Screen name="Messages" component={MessageStackScreen}/>
+      <Tab.Screen name="Messages" component={MessageStackScreen}
+        options={{headerShown: false}}/>
       <Tab.Screen name="Profile" component={ProfileStackScreen}
         options={{headerShown: false}}/>
       <Tab.Screen name="Settings" component={SettingsScreen}/>
@@ -103,8 +125,10 @@ export default function App() {
             headerShown: false
           }}>
             <Stack.Screen name="Welcome" component={WelcomeScreen}/>
-            <Stack.Screen name="Sign Up" component={SignupScreen}/>
-            <Stack.Screen name="Login" component={LoginScreen}/>
+            <Stack.Screen name="Sign Up" component={SignupScreen}
+              options={{headerShown: true}}/>
+            <Stack.Screen name="Login" component={LoginScreen}
+              options={{headerShown: true}}/>
             <Stack.Screen name="Friendsley" component={HomeTabs}/>
           </Stack.Navigator>
         </NavigationContainer>

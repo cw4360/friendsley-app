@@ -143,7 +143,7 @@ export default function LoginScreen(props) {
             // setCredential(userCredential);
 
             // If the current-logged in user has been verified, log them in and navigate to to the Explore page 
-            // props.navigation.navigate("Friendsley"); 
+            props.navigation.navigate("Friendsley"); 
         
             })
           .catch((error) => {
@@ -210,7 +210,7 @@ export default function LoginScreen(props) {
               </TouchableOpacity>  */}
               <TouchableOpacity style={styles.button}
                  onPress={() => signInUserEmailPassword()}>
-                <Text style={styles.buttonText}>Sign In</Text>
+                <Text style={styles.buttonText}>Login</Text>
               </TouchableOpacity> 
             </View>
             <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
@@ -224,15 +224,14 @@ export default function LoginScreen(props) {
               </TouchableOpacity> 
           </View>
           <View>
-            <Button title="Go to Profile Screen" onPress={() => props.navigation.navigate("Friendsley")}/>
             <Button title = "Go to View All Chats Screen" onPress = {() => props.navigation.navigate("View All Chats")}/>
           </View>
           <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>Logged In User: {formatJSON(loggedInUser)}</Text>
           </ScrollView>
-          <ScrollView style={styles.jsonContainer}>
+          {/* <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
-          </ScrollView>
+          </ScrollView> */}
          
         </View>
         </ScrollView>
@@ -246,6 +245,7 @@ export default function LoginScreen(props) {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff",
+    paddingTop: '30%'
     }, 
     loginLogoutPane: {
         flex: 3, 
