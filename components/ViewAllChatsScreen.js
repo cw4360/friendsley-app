@@ -32,8 +32,16 @@ export default function ViewAllChatsScreens(props) {
     const db = stateProps.db; 
     const userEmail = auth.currentUser.email; 
     const userProfileDoc = stateProps.userProfileDoc; 
-    const allProfiles = stateProps.allProfiles; 
-    const userContacts = userProfileDoc.messageContacts; 
+    const allProfiles = stateProps.allProfiles;  
+    let userContacts = userProfileDoc.messageContacts; // If you log in an navigate directly to the ViewAllChats screen, this line throws an error (probably thinks that the current profile is null) 
+    //console.log("CURRENT USER", formatJSON(userProfileDoc)); 
+
+    // Get user info when View All Chats Screen mounts - IDK if this even fixes anything lmao 
+    /*
+    useEffect(() => {
+        userContacts = stateProps.userProfileDoc.messageContacts;
+    }, []);
+    */
 
     /* Will work once we pass in allProfiles as a state property */
     function getProfileFromEmail(email) {

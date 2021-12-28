@@ -133,6 +133,7 @@ export default function LoginScreen(props) {
             // Set logged-in user's profile in stateProps
             // FirebaseGetUserProfile is a promise - doesn't return the actual data (need an await?)
             firebaseGetUserProfile(auth.currentUser.email);
+            console.log("CURRENT USER", userProfileDoc); // AT THIS POINT, USERPROFILEDOC IS STILL NULL - which is why the thing is returning null
     
             // Clear email/password inputs 
             setEmail('');
@@ -223,9 +224,11 @@ export default function LoginScreen(props) {
                 <Text style={styles.buttonText}>Log Out</Text>
               </TouchableOpacity> 
           </View>
+          {/*
           <View>
             <Button title = "Go to View All Chats Screen" onPress = {() => props.navigation.navigate("View All Chats")}/>
           </View>
+          */}
           <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>Logged In User: {formatJSON(loggedInUser)}</Text>
           </ScrollView>
