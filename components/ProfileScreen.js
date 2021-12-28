@@ -18,6 +18,7 @@ function formatJSON(jsonVal) {
 }
 
 export default function ProfileScreen(props) {
+    console.log("Params: ", props.route.params);
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth;
     const db = stateProps.db;
@@ -45,10 +46,64 @@ export default function ProfileScreen(props) {
     const [jobExp, setJobExp] = useState('');
     const [internshipExp, setInternshipExp] = useState('');
 
-    // Get user info when ProfileScreen mounts.
+    
+    // if (props.route.params) {
+    //     console.log("Updated profile with new changes");
+    //     unpackProfile(props.route.params.updatedProfile);
+    // }
+
     useEffect(() => {
-        firebaseGetUserProfile(userEmail);
-    }, []);
+        console.log("Add focus listener");
+        const unsubscribe = props.navigation.addListener('focus', () => {
+          // Screen was focused
+          // Do something
+          console.log("Calling focus listener");
+          console.log("Call focus listener, params: ", props.route.params);
+          if (props.route.params) {
+            console.log("Updated profile with new changes");
+            unpackProfile(props.route.params.updatedProfile);
+            }
+            else {
+                firebaseGetUserProfile(userEmail);
+            }
+        });
+    
+        return unsubscribe;
+      }, [props.navigation]);
+    
+
+    // // Get user info when ProfileScreen mounts.
+    // useEffect(() => {
+    //     console.log("Mounting profile screen");
+    //     if (props.route.params) {
+    //         console.log("Updated profile with new changes");
+    //         unpackProfile(props.route.params.updatedProfile);
+    //     } else {
+    //         firebaseGetUserProfile(userEmail);
+    //     }
+    // }, []);
+
+    function unpackProfile(userDoc){
+        setName(userDoc.basics.name);
+        setPronouns(userDoc.basics.pronouns);
+        setBio(userDoc.basics.bio);
+        setClassYear(userDoc.personal.classYear);
+        setMajor(userDoc.personal.major);
+        setMinor(userDoc.personal.minor);
+        setHometown(userDoc.personal.hometown);
+        setResidenceHall(userDoc.personal.residenceHall);
+        setHobbies(userDoc.personal.hobbies);
+        setClubs(userDoc.personal.clubs);
+        setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
+        setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
+        setCurrentClasses(userDoc.academics.currentClasses);
+        setPlannedClasses(userDoc.academics.plannedClasses);
+        setFavClasses(userDoc.academics.favClasses);
+        setStudyAbroad(userDoc.studyAbroad);
+        setInterestedIndustry(userDoc.career.interestedIndustry);
+        setJobExp(userDoc.career.jobExp);
+        setInternshipExp(userDoc.career.internshipExp);
+    }
 
     /**
    * Get current logged-in user's profile info from Firebase's Firestore
@@ -60,27 +115,8 @@ export default function ProfileScreen(props) {
 
         if (docSnap.exists()) {
             // console.log("Document data:", docSnap.data());
-            let userDoc = docSnap.data();
-            setName(userDoc.basics.name);
-            setPronouns(userDoc.basics.pronouns);
-            setBio(userDoc.basics.bio);
-            setClassYear(userDoc.personal.classYear);
-            setMajor(userDoc.personal.major);
-            setMinor(userDoc.personal.minor);
-            setHometown(userDoc.personal.hometown);
-            setResidenceHall(userDoc.personal.residenceHall);
-            setHobbies(userDoc.personal.hobbies);
-            setClubs(userDoc.personal.clubs);
-            setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
-            setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
-            setCurrentClasses(userDoc.academics.currentClasses);
-            setPlannedClasses(userDoc.academics.plannedClasses);
-            setFavClasses(userDoc.academics.favClasses);
-            setStudyAbroad(userDoc.studyAbroad);
-            setInterestedIndustry(userDoc.career.interestedIndustry);
-            setJobExp(userDoc.career.jobExp);
-            setInternshipExp(userDoc.career.internshipExp);
-
+            unpackProfile(docSnap.data());
+            
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
@@ -128,7 +164,7 @@ export default function ProfileScreen(props) {
                 <View style={globalStyles.userInfoSection}>
                     {/* Section Header */}
                     <View style={{flexDirection: 'row'}}>
-                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="heart-outline" color="#FF6347" size={25}/>
+                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="heart-outline" color="#ef476f" size={25}/>
                         <Title style={globalStyles.title}>Personal</Title>
                     </View>
                     {/* Section Details */}
@@ -175,7 +211,7 @@ export default function ProfileScreen(props) {
                 <View style={globalStyles.userInfoSection}>
                     {/* Academic Section Header */}
                     <View style={{flexDirection: 'row'}}>
-                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="school-outline" color="#FF6347" size={25}/>
+                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="school-outline" color="#023e8a" size={25}/>
                         <Title style={globalStyles.title}>Academics</Title>
                     </View>
                     {/* Academic Section Details */}
@@ -202,7 +238,7 @@ export default function ProfileScreen(props) {
                 <View style={globalStyles.userInfoSection}>
                     {/* Section Header */}
                     <View style={{flexDirection: 'row'}}>
-                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="chevron-down-circle-outline" color="#FF6347" size={25}/>
+                        <Icon style={{alignSelf: 'center', marginRight: 10}} name="chevron-down-circle-outline" color="#7209b7" size={25}/>
                         <Title style={globalStyles.title}>Career</Title>
                     </View>
                     {/* Section Details */}

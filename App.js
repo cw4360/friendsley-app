@@ -96,8 +96,8 @@ function HomeTabs() {
       <Tab.Screen name="Explore" component={ExploreScreen}/>
       <Tab.Screen name="Messages" component={MessageStackScreen}
         options={{headerShown: false}}/>
-      <Tab.Screen name="Profile" component={ProfileStackScreen}
-        options={{headerShown: false}}/>
+      <Tab.Screen name="Profile Stack" component={ProfileStackScreen}
+        options={{ title: 'Profile', headerShown: false}}/>
       <Tab.Screen name="Settings" component={SettingsScreen}/>
     </Tab.Navigator>
   );

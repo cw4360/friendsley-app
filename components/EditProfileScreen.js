@@ -94,35 +94,37 @@ export default function EditProfileScreen(props) {
         // Set profile data in Firebase
         const profileRef = doc(db, 'profiles', userEmail);
         // alert('Submitted');
-        await setDoc(profileRef, { 
-            basics: { 
-                bio: bio,
-                name: name,
-                pronouns: pronouns.toLowerCase(), 
-            },
-            personal: {
-                classYear: classYear, 
-                major: major, 
-                minor: minor, 
-                hometown: hometown, 
-                residenceHall: residenceHall,
-                clubs: clubs,
-                hobbies: hobbies,
-                favPlaceOnCampus: favPlaceOnCampus,
-                favWellesleyMemory: favWellesleyMemory,
-            },
-            academics: {
-                currentClasses: currentClasses,
-                plannedClasses: plannedClasses,
-                favClasses: favClasses,
-                studyAbroad: studyAbroad,
-            },
-            career: {
-                interestedIndustry: interestedIndustry,
-                jobExp: jobExp,
-                internshipExp: internshipExp,
-            } 
-        }, { merge: true });
+        const newProfile = {
+        basics: { 
+            bio: bio,
+            name: name,
+            pronouns: pronouns.toLowerCase(), 
+        },
+        personal: {
+            classYear: classYear, 
+            major: major, 
+            minor: minor, 
+            hometown: hometown, 
+            residenceHall: residenceHall,
+            clubs: clubs,
+            hobbies: hobbies,
+            favPlaceOnCampus: favPlaceOnCampus,
+            favWellesleyMemory: favWellesleyMemory,
+        },
+        academics: {
+            currentClasses: currentClasses,
+            plannedClasses: plannedClasses,
+            favClasses: favClasses,
+            studyAbroad: studyAbroad,
+        },
+        career: {
+            interestedIndustry: interestedIndustry,
+            jobExp: jobExp,
+            internshipExp: internshipExp,
+        }
+        };
+
+        await setDoc(profileRef, newProfile, { merge: true });
 
         // Get new profile in Firebase and update userProfileDoc in stateProps
         const docRef = doc(db, "profiles", userEmail);
@@ -132,7 +134,7 @@ export default function EditProfileScreen(props) {
         console.log("Updated Document data:", userDoc);
         setUserProfileDoc(userDoc);
         console.log(userProfileDoc);
-        props.navigation.navigate('Profile');
+        props.navigation.navigate('Profile', {updatedProfile: newProfile} );
     }
 
     return (

@@ -27,7 +27,10 @@ export default function ExploreScreen(props) {
     //const [allProfiles, setAllProfiles] = React.useState([]); 
     // State for search bar
     const [searchQuery, setSearchQuery] = React.useState('');
-    const onChangeSearch = query => setSearchQuery(query);
+    function onChangeSearch(query) {
+        setSearchQuery(query);
+    }
+
     // State for dropdown
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
@@ -36,7 +39,6 @@ export default function ExploreScreen(props) {
         {label: 'Name (Descending)', value: 'nameDown'},
         {label: 'Class Year (Ascending)', value: 'yearUp'},
         {label: 'Class Year (Descending)', value: 'yearDown'},
-
 
     ]);
 
@@ -56,7 +58,7 @@ export default function ExploreScreen(props) {
             });
         }
         setAllProfiles(profiles); 
-        // console.log("All profiles:", profiles);
+        console.log("All profiles:", profiles);
     }
 
     // Filters out the currently logged-in user from allProfiles 
@@ -64,11 +66,39 @@ export default function ExploreScreen(props) {
     function filterOutSelfFromAllProfiles() {
         if (allProfiles.length > 0) {
             // DO NOT call setAllProfiles, since we want the allProfiles state property to reflect ALL users in database
-            return allProfiles.filter(profile => profile.email != auth.currentUser.email); 
+            return allProfiles.filter(profile => profile.email != auth.currentUser.email && 
+                profileMatchesQuery(profile)); 
         }
     }
 
-
+    function profileMatchesQuery(profile) {
+        // everything includes the empty string
+        const lQuery = searchQuery.toLowerCase();
+        const bas = profile.basics;
+        const pers = profile.personal;
+        const acad = profile.academics;
+        const car = profile.career;
+        return bas.name.toLowerCase().includes(lQuery) 
+        || bas.pronouns.toLowerCase().includes(lQuery)
+        || bas.bio.toLowerCase().includes(lQuery)
+        || profile.email.toLowerCase().includes(lQuery)
+        || pers.classYear.toLowerCase().includes(lQuery)
+        || pers.major.toLowerCase().includes(lQuery) 
+        || pers.minor.toLowerCase().includes(lQuery) 
+        || pers.hometown.toLowerCase().includes(lQuery) 
+        || pers.residenceHall.toLowerCase().includes(lQuery) 
+        || pers.hobbies.toLowerCase().includes(lQuery) 
+        || pers.favPlaceOnCampus.toLowerCase().includes(lQuery) 
+        || pers.favWellesleyMemory.toLowerCase().includes(lQuery) 
+        || pers.clubs.toLowerCase().includes(lQuery) 
+        || acad.currentClasses.toLowerCase().includes(lQuery) 
+        || acad.plannedClasses.toLowerCase().includes(lQuery)
+        || acad.favClasses.toLowerCase().includes(lQuery) 
+        || acad.studyAbroad.toLowerCase().includes(lQuery) 
+        || car.interestedIndustry.toLowerCase().includes(lQuery) 
+        || car.internshipExp.toLowerCase().includes(lQuery) 
+        || car.jobExp.toLowerCase().includes(lQuery);
+    }
     
     // Question for Lyn: How to integrate Profile Card in code? Error: props.basics.name is undefined
     // const ProfileCard = props => {
@@ -105,12 +135,12 @@ export default function ExploreScreen(props) {
                         onChangeText={onChangeSearch}
                         value={searchQuery}
                     />
-                    {/* <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
+                    <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Get All Profiles</Text>
                     </TouchableOpacity>                
                          
-                    <TouchableOpacity onPress={() => alert(formatJSON(allProfiles))} 
+                    {/* <TouchableOpacity onPress={() => alert(formatJSON(allProfiles))} 
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Test</Text>
                     </TouchableOpacity>  */}
@@ -135,14 +165,18 @@ export default function ExploreScreen(props) {
                         // console.log("Current user", formatJSON(user));
                         return (
                             <View key={user.email}>
-                                <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
+                                <Card style={{
+                                    alignSelf: 'center', 
+                                    width: 275, 
+                                    paddingVertical: 20, 
+                                    marginVertical: 10,
+                                    borderRadius: 45}}>
                                     <Avatar.Image 
                                         style={{alignSelf: 'center', marginVertical: 10}}
                                         size={150}
                                         source={{
                                             uri: 'https://picsum.photos/700'
-                                        }} 
-                                    />
+                                        }}/>
                                     <Card.Content style={{ alignItems: 'center'}}>
                                         <Title style={{marginBottom: 5}}>{user.basics.name}</Title>
                                         <Paragraph>Class of {user.personal.classYear}</Paragraph>
@@ -157,8 +191,6 @@ export default function ExploreScreen(props) {
                             </View>
                         );
                     })): <View></View>}
-
-                    <Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>
                 </View>
                 {/* <View>
                     <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
@@ -168,6 +200,5 @@ export default function ExploreScreen(props) {
                 </View> */}
             </SafeAreaView>
         </ScrollView>
-        
     );
 }

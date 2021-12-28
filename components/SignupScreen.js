@@ -157,10 +157,10 @@ export default function SignupScreen(props) {
             setErrorMsg('No name entered');
             return;
         }
-        if (!email.includes('@wellesley.edu')) {
-            setErrorMsg('Not a valid Wellesley email address');
-            return;
-        }
+        // if (!email.includes('@wellesley.edu')) {
+        //     setErrorMsg('Not a valid Wellesley email address');
+        //     return;
+        // }
         if (password.length < 6) {
             setErrorMsg('Password too short');
             return;

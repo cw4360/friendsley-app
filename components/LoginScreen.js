@@ -44,8 +44,8 @@ export default function LoginScreen(props) {
     const userProfileDoc = stateProps.userProfileDoc; 
     const setUserProfileDoc = stateProps.setUserProfileDoc; 
 
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = React.useState("cw4@wellesley.edu");
+    const [password, setPassword] = React.useState("123456");
     const [errorMsg, setErrorMsg] = React.useState(''); 
 
 
@@ -191,14 +191,14 @@ export default function LoginScreen(props) {
           <View style={loggedInUser === null ? styles.loginLogoutPane : styles.hidden}>
             <View style={styles.labeledInput}>
               <Text style={styles.inputLabel}>Email:</Text>
-              <TextInput placeholder="Enter an email address" 
+              <TextInput placeholder="Enter your email address" 
                 style={styles.textInput} 
                 value={email} 
                 onChangeText={ textVal => setEmail(textVal)} />
             </View>
             <View style={styles.labeledInput}>
               <Text style={styles.inputLabel}>Password:</Text>
-              <TextInput placeholder="Enter a password" 
+              <TextInput placeholder="Enter your password" 
                 style={styles.textInput} 
                 value={password} 
                 onChangeText={ textVal => setPassword(textVal)} />

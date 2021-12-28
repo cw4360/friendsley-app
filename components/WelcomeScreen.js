@@ -5,7 +5,7 @@ import { globalStyles } from "../styles/globalStyles";
 
 export default function WelcomeScreen(props) {
     return (
-        <SafeAreaView style={{marginTop: '50%'}}>
+        <SafeAreaView style={{marginTop: 250}}>
             <View style={globalStyles.userInfoSection}>
                 <Title style={{alignSelf: 'center', margin: 20 }}>Welcome to Friendsley!</Title>
                 <View style={{flexDirection: 'row', justifyContent: 'space-evenly', margin: 20}}>                    
