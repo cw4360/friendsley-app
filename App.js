@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import {  Provider as PaperProvider, } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -47,7 +46,6 @@ const storage = getStorage(firebaseApp,
   firebaseConfig.storageBucket) // for storaging images in Firebase storage
 
 const MessageStack = createNativeStackNavigator();
-
 function MessageStackScreen() {
   return (
     <MessageStack.Navigator>
@@ -58,7 +56,6 @@ function MessageStackScreen() {
 }
 
 const ProfileStack = createNativeStackNavigator();
-
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator>
@@ -69,7 +66,6 @@ function ProfileStackScreen() {
 }
 
 const Tab = createBottomTabNavigator();
-
 function HomeTabs() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
@@ -77,9 +73,7 @@ function HomeTabs() {
         let iconName;
 
         if (route.name === 'Explore') {
-        iconName = focused
-            ? 'compass'
-            : 'compass-outline'; // options: earth
+        iconName = focused ? 'compass' : 'compass-outline';
         } else if (route.name === 'Messages') {
         iconName = focused ? 'md-chatbubble-ellipses' : 'md-chatbubble-ellipses-outline';
         } else if (route.name === 'Profiles') {
@@ -104,14 +98,13 @@ function HomeTabs() {
 }
 
 const Stack = createNativeStackNavigator();
-
 export default function App() {
   // const [signedInUser, setSignedInUser] = useState(null); 
   // const signInUser = username => (setSignedInUser(username));
   // const signOutUser = () => (setSignedInUser(null)); // Only the settings screen needs access to this, because the logout button will be on that screen
   // // Properties to pass to the rest of the screens
   // const stateProps = { signedInUser, signInUser, signOutUser, auth, db }; 
-  const [loggedInUser, setLoggedInUser] = React.useState(null); // 
+  const [loggedInUser, setLoggedInUser] = React.useState(null); 
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
   const [allProfiles, setAllProfiles] = React.useState([]); 
   const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles};

@@ -6,10 +6,10 @@ import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 
 import { 
-    // access to Firestore storage features:
     // for storage access
-    collection, doc, addDoc, setDoc,
-    query, where, getDoc, getDocs
+    collection, getDocs
+    //, doc, addDoc, setDoc,
+    //query, where, getDoc
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -54,25 +54,6 @@ export default function ExploreScreen(props) {
         //setUserContacts(stateProps.userProfileDoc.messageContacts); - this doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
     }, []);
 
-    // // Modify the order of allProfiles when a sort type is selected
-    // useEffect(() => {
-    //     console.log("Sorting");
-    //     const sortArray = type => {
-    //         const types = {
-    //             name: 'name',
-    //             // nameDown: 'nameDown',
-    //             classYear: 'year',
-    //             // yearDown: 'yearDown',
-    //         };
-    //         const sortProperty = types[type];
-    //         const sorted = [...allProfiles].sort( (a,b) =>
-    //         b.personal[sortProperty] - a.personal[sortProperty]);
-    //         setAllProfiles(sorted);
-    //     };
-    //     sortArray(sortType);
-    //     console.log("Sorted profiles:", formatJSON(allProfiles));
-    // }, [sortType]);
-
     // Adds a person to the user's contacts 
     function addPersonToContacts(email) {
         if (!userContacts.includes(email)) {
@@ -90,7 +71,7 @@ export default function ExploreScreen(props) {
             });
         }
         setAllProfiles(profiles); 
-        console.log("All profiles:", profiles);
+        // console.log("All profiles:", profiles);
     }
 
     // Filters out the currently logged-in user from allProfiles 
@@ -153,31 +134,6 @@ export default function ExploreScreen(props) {
             return profiles; 
         }
     }
-    
-    // Question for Lyn: How to integrate Profile Card in code? Error: props.basics.name is undefined
-    // const ProfileCard = props => {
-    //     return (
-    //         <Card style={{alignSelf: 'center', width: 275, paddingVertical: 10}}>
-    //             <Avatar.Image 
-    //                 style={{alignSelf: 'center', marginVertical: 10}}
-    //                 size={150}
-    //                 source={{
-    //                     uri: 'https://picsum.photos/700'
-    //                 }} 
-    //             />
-    //             <Card.Content style={{ alignItems: 'center'}}>
-    //                 <Title style={{marginBottom: 5}}>{props.basics.name}</Title>
-    //                 <Paragraph>{props.personal.classYear}</Paragraph>
-    //                 <Paragraph>{props.personal.major}</Paragraph>
-    //                 <Paragraph>{props.email}</Paragraph>
-    //             </Card.Content>
-    //             <Card.Actions style={{ alignSelf: 'center'}}>
-    //                 <Button color='blue'>Message</Button>
-    //                 <Button color='blue'>Friend</Button>
-    //             </Card.Actions>
-    //         </Card>
-    //     );
-    // }
 
     return (
         <ScrollView>
