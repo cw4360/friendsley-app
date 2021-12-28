@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Button, ScrollView, Text, TextInput, 
     TouchableOpacity, View } from 'react-native';
 import Constants from 'expo-constants';
+import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 
 import { 
@@ -12,18 +13,14 @@ import {
     signOut
   } from "firebase/auth";
 import { 
-    // access to Firestore storage features:
     // for storage access
-    collection, doc, addDoc, setDoc,
-    query, where, getDoc, getDocs
+    doc, getDoc
+    // , collection, addDoc, setDoc,
+    // query, where, getDocs
 } from "firebase/firestore";
 
 function formatJSON(jsonVal) {
-// Lyn sez: replacing \n by <br/> not necesseary if use this CSS:
-//   white-space: break-spaces; (or pre-wrap)
-// let replacedNewlinesByBRs = prettyPrintedVal.replace(new RegExp('\n', 'g'), '<br/>')
-//console.log(JSON.stringify(jsonVal, null, 2)); 
-return JSON.stringify(jsonVal, null, 2);
+  return JSON.stringify(jsonVal, null, 2);
 }
 
 function emailOf(user) {
@@ -68,52 +65,6 @@ export default function LoginScreen(props) {
       }
 
   }
-
-    // function signUpUserEmailPassword() {
-    //     if (auth.currentUser) {
-    //         signOut(auth); // sign out auth's current user (who is not loggedInUser, 
-    //                        // or else we wouldn't be here
-    //     }
-    //     if (!email.includes('@wellesley.edu')) {
-    //         setErrorMsg('Not a valid Wellesley email address');
-    //         return;
-    //     }
-    //     if (password.length < 6) {
-    //         setErrorMsg('Password too short');
-    //         return;
-    //     }   
-    //     // Invoke Firebase authentication API for Email/Password sign up 
-    //     createUserWithEmailAndPassword(auth, email, password)
-    //     .then((userCredential) => {
-    //         console.log(`signUpUserEmailPassword: sign up for email ${email} succeeded (but email still needs verification).`);
-
-    //         // Clear email/password inputs
-    //         const savedEmail = email; // Save for email verification
-    //         setEmail('');
-    //         setPassword('');
-
-    //         // Note: could store userCredential here if wanted it later ...
-    //         // console.log(`createUserWithEmailAndPassword: setCredential`);
-    //         // setCredential(userCredential);
-
-    //         // Send verication email
-    //         console.log('signUpUserEmailPassword: about to send verification email');
-    //         sendEmailVerification(auth.currentUser)
-    //         .then(() => {
-    //             console.log('signUpUserEmailPassword: sent verification email');
-    //             setErrorMsg(`A verification email has been sent to ${savedEmail}. You will not be able to sign in to this account until you click on the verification link in that email.`); 
-    //             // Email verification sent!
-    //             // ...
-    //         });
-    //     })
-    //     .catch((error) => {
-    //         console.log(`signUpUserEmailPassword: sign up failed for email ${email}`);
-    //         const errorMessage = error.message;
-    //         // const errorCode = error.code; // Could use this, too.
-    //         console.log(`createUserWithEmailAndPassword: ${errorMessage}`);
-    //         setErrorMsg(`createUserWithEmailAndPassword: ${errorMessage}`);
-    //     });
-    // }
 
     function signInUserEmailPassword() {
         console.log('called signInUserEmailPassword');
@@ -204,14 +155,14 @@ export default function LoginScreen(props) {
                 value={password} 
                 onChangeText={ textVal => setPassword(textVal)} />
             </View>
-            <View style={styles.buttonHolder}>
+            <View>
               {/* <TouchableOpacity style={styles.button}
                  onPress={() => signUpUserEmailPassword()}>
                 <Text style={styles.buttonText}>Sign Up</Text>
               </TouchableOpacity>  */}
-              <TouchableOpacity style={styles.button}
+              <TouchableOpacity style={globalStyles.editProfileButton}
                  onPress={() => signInUserEmailPassword()}>
-                <Text style={styles.buttonText}>Login</Text>
+                <Text>Login</Text>
               </TouchableOpacity> 
             </View>
             <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
