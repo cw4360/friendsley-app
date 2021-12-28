@@ -56,9 +56,11 @@ export default function LoginScreen(props) {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
+        // console.log("Document data:", docSnap.data());
         let userDoc = docSnap.data();
-        setUserProfileDoc(userDoc); 
+        return userDoc;
+        // setUserProfileDoc(userDoc); 
+        // console.log("Set userProfileDoc to:", formatJSON(userProfileDoc));
       } else {
         // doc.data() will be undefined in this case
         console.log("No such profile document!");
@@ -83,9 +85,13 @@ export default function LoginScreen(props) {
 
             // Set logged-in user's profile in stateProps
             // FirebaseGetUserProfile is a promise - doesn't return the actual data (need an await?)
-            firebaseGetUserProfile(auth.currentUser.email);
-            console.log("CURRENT USER", userProfileDoc); // AT THIS POINT, USERPROFILEDOC IS STILL NULL - which is why the thing is returning null
-    
+            firebaseGetUserProfile(auth.currentUser.email).then( (value) => {
+              setUserProfileDoc(value);
+              console.log("After then:", value); // Prints correct statement
+              // However, why is userProfileDoc still considered null even after the promise is resolved??
+              console.log("After then:", formatJSON(userProfileDoc)); 
+            });
+            
             // Clear email/password inputs 
             setEmail('');
             setPassword('');

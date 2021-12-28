@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileScreen from './components/ProfileScreen';
+import ProfileScreenContext from './components/ProfileScreenContext';
 import ExploreScreen from './components/ExploreScreen';
 import LoginScreen from './components/LoginScreen';
 import EditProfileScreen from './components/EditProfileScreen';
@@ -59,7 +60,7 @@ const ProfileStack = createNativeStackNavigator();
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="Profile" component={ProfileScreen}/>
+      <ProfileStack.Screen name="Profile" component={ProfileScreenContext}/>
       <ProfileStack.Screen name="Edit Profile" component={EditProfileScreen}/>
     </ProfileStack.Navigator>
   );
