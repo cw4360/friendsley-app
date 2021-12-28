@@ -95,7 +95,8 @@ export default function ViewAllChatsScreens(props) {
                                     like normal is because this particular Button is from React-Native-Paper's
                                     API (import statement), not React Native's. There was a bug about 
                                     MessageContacts being null so I wasn't able to check if this was fixed.
-                                    Alina: Yee yee got it. Thank you :3 */}
+                                    Alina: Yee yee got it. Thank you :3 
+                                    Catherine: Yay!! Np! */}
                                 </Card.Actions>
                             </Card>
                         </View>

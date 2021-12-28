@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, Text, Image, Picker, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, Image, Picker, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { globalStyles } from "../styles/globalStyles";
@@ -39,12 +39,13 @@ export default function ExploreScreen(props) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
-        {label: 'Name (Ascending)', value: 'nameUp'},
-        {label: 'Name (Descending)', value: 'nameDown'},
-        {label: 'Class Year (Ascending)', value: 'yearUp'},
-        {label: 'Class Year (Descending)', value: 'yearDown'},
-
+        {label: 'Name (A to Z)', value: 'Name (A to Z)'},
+        {label: 'Name (Z to A)', value: 'Name (Z to A)'},
+        {label: 'Class Year (Oldest to Youngest)', value: 'Class Year (Oldest to Youngest)'},
+        {label: 'Class Year (Youngest to Oldest)', value: 'Class Year (Youngest to Oldest)'},
     ]);
+    const [selectedSort, setSelectedSort] = useState('Name (A to Z)');
+
 
     // Get user info when ExploreScreen mounts.
     useEffect(() => {
@@ -52,6 +53,25 @@ export default function ExploreScreen(props) {
         firebaseGetAllProfiles();
         //setUserContacts(stateProps.userProfileDoc.messageContacts); - this doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
     }, []);
+
+    // // Modify the order of allProfiles when a sort type is selected
+    // useEffect(() => {
+    //     console.log("Sorting");
+    //     const sortArray = type => {
+    //         const types = {
+    //             name: 'name',
+    //             // nameDown: 'nameDown',
+    //             classYear: 'year',
+    //             // yearDown: 'yearDown',
+    //         };
+    //         const sortProperty = types[type];
+    //         const sorted = [...allProfiles].sort( (a,b) =>
+    //         b.personal[sortProperty] - a.personal[sortProperty]);
+    //         setAllProfiles(sorted);
+    //     };
+    //     sortArray(sortType);
+    //     console.log("Sorted profiles:", formatJSON(allProfiles));
+    // }, [sortType]);
 
     // Adds a person to the user's contacts 
     function addPersonToContacts(email) {
@@ -75,7 +95,7 @@ export default function ExploreScreen(props) {
 
     // Filters out the currently logged-in user from allProfiles 
     // Helps ensure that currently logged-in user does not see themselves on the Explore Screen 
-    function filterOutSelfFromAllProfiles() {
+    function filterAllProfiles() {
         if (allProfiles.length > 0) {
             // DO NOT call setAllProfiles, since we want the allProfiles state property to reflect ALL users in database
             return allProfiles.filter(profile => profile.email != auth.currentUser.email && 
@@ -110,6 +130,28 @@ export default function ExploreScreen(props) {
         || car.interestedIndustry.toLowerCase().includes(lQuery) 
         || car.internshipExp.toLowerCase().includes(lQuery) 
         || car.jobExp.toLowerCase().includes(lQuery);
+    }
+
+    function sortProfiles(profiles) {
+        // Try/catch clause just in case user didn't fill out a field necessary to sort by 
+        try {
+            if (selectedSort == 'Name (A to Z)') {
+                return profiles.sort((a, b) => a.basics.name < b.basics.name ? -1 : 1); 
+            }
+            else if (selectedSort == "Name (Z to A)") {
+                return profiles.sort((a, b) => a.basics.name < b.basics.name ? 1 : -1);
+            }
+            else if (selectedSort == 'Class Year (Oldest to Youngest)') {
+                return profiles.sort((a, b) => a.personal.classYear < b.personal.classYear ? -1 : 1);
+            }
+            else if (selectedSort == 'Class Year (Youngest to Oldest)') {
+                return profiles.sort((a, b) => a.personal.classYear < b.personal.classYear ? 1 : -1);
+            }
+        } 
+        catch(e) {
+            console.log(e); 
+            return profiles; 
+        }
     }
     
     // Question for Lyn: How to integrate Profile Card in code? Error: props.basics.name is undefined
@@ -147,15 +189,10 @@ export default function ExploreScreen(props) {
                         onChangeText={onChangeSearch}
                         value={searchQuery}
                     />
-                    <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
+                    {/* <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Get All Profiles</Text>
-                    </TouchableOpacity>                
-                         
-                    {/* <TouchableOpacity onPress={() => alert(formatJSON(allProfiles))} 
-                        style={globalStyles.editProfileButton}>
-                        <Text style={{color: 'black'}}>Test</Text>
-                    </TouchableOpacity>  */}
+                    </TouchableOpacity>                 */}
                     <DropDownPicker
                         style={{
                             borderColor: 'gray', 
@@ -171,9 +208,14 @@ export default function ExploreScreen(props) {
                         setOpen={setOpen}
                         setValue={setValue}
                         setItems={setItems}
+                        listMode="SCROLLVIEW"
+                        onChangeValue={() => {
+                            console.log("Setting sort type to :", value);
+                            setSelectedSort(value);
+                        }}
                     />
                     {/*If allProfiles isn't empty, render each profile as a Card*/}
-                    {allProfiles.length ? (filterOutSelfFromAllProfiles().map( (user) => {
+                    {allProfiles.length ? (sortProfiles(filterAllProfiles()).map( (user) => {
                         // console.log("Current user", formatJSON(user));
                         return (
                             <View key={user.email}>
@@ -182,7 +224,7 @@ export default function ExploreScreen(props) {
                                     width: 275, 
                                     paddingVertical: 20, 
                                     marginVertical: 10,
-                                    borderRadius: 45}}>
+                                    borderRadius: 20}}>
                                     <Avatar.Image 
                                         style={{alignSelf: 'center', marginVertical: 10}}
                                         size={150}

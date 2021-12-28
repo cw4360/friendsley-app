@@ -82,7 +82,7 @@ function HomeTabs() {
             : 'compass-outline'; // options: earth
         } else if (route.name === 'Messages') {
         iconName = focused ? 'md-chatbubble-ellipses' : 'md-chatbubble-ellipses-outline';
-        } else if (route.name === 'Profile') {
+        } else if (route.name === 'Profiles') {
         iconName = focused ? 'md-person-circle' : 'md-person-circle-outline';
         } else if (route.name === 'Settings') {
         iconName = focused ? 'settings' : 'settings-outline';
@@ -96,7 +96,7 @@ function HomeTabs() {
       <Tab.Screen name="Explore" component={ExploreScreen}/>
       <Tab.Screen name="Messages" component={MessageStackScreen}
         options={{headerShown: false}}/>
-      <Tab.Screen name="Profile Stack" component={ProfileStackScreen}
+      <Tab.Screen name="Profiles" component={ProfileStackScreen}
         options={{ title: 'Profile', headerShown: false}}/>
       <Tab.Screen name="Settings" component={SettingsScreen}/>
     </Tab.Navigator>
