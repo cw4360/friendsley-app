@@ -114,7 +114,7 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = React.useState(null); // 
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
   const [allProfiles, setAllProfiles] = React.useState([]); 
-  const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles };
+  const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles};
 
   return (
     <StateContext.Provider value = {stateProps}>
