@@ -23,6 +23,10 @@ export default function ExploreScreen(props) {
     const db = stateProps.db;
     const allProfiles = stateProps.allProfiles; 
     const setAllProfiles = stateProps.setAllProfiles; 
+    const [userProfileDoc, setUserProfileDoc] = useState({}); 
+    const [userContacts, setUserContacts] = useState([]); // I also have this hook in the View All Chats screen - is that bad 
+    // To fix the problem in useEffect relating to setUserContacts, does there also need to be a "getProfile" type of function to directly get the current user's profile
+    // I thought this problem would've been handled by the login screen (since it should populate the userProfileDoc state property but I guess not, since it's turning up null..?)
 
     //const [allProfiles, setAllProfiles] = React.useState([]); 
     // State for search bar
@@ -46,7 +50,15 @@ export default function ExploreScreen(props) {
     useEffect(() => {
         // setAllProfiles([]); 
         firebaseGetAllProfiles();
+        //setUserContacts(stateProps.userProfileDoc.messageContacts); - this doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
     }, []);
+
+    // Adds a person to the user's contacts 
+    function addPersonToContacts(email) {
+        if (!userContacts.includes(email)) {
+            setUserContacts([...userContacts, email]); 
+        }
+    }
 
     // Grabs all profiles from Firebase, sets the "AllProfiles" state property 
     async function firebaseGetAllProfiles() {
@@ -184,7 +196,7 @@ export default function ExploreScreen(props) {
                                         <Paragraph>{user.email}</Paragraph>
                                     </Card.Content>
                                     <Card.Actions style={{ alignSelf: 'center'}}>
-                                        <Button color='blue'>Message</Button>
+                                        <Button color='blue' onPress = {() => addPersonToContacts(user.email)}>Message</Button>
                                         <Button color='blue'>Friend</Button>
                                     </Card.Actions>
                                 </Card>

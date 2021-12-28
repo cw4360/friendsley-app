@@ -4,10 +4,10 @@ TODO:
 - In messageContacts, should we store the entire person's document as the messageContact, or should we just store the person's email and then extract the document from their email?
 */
 
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, LogBox } from 'react-native';
 import Constants from 'expo-constants';
-import { StatusBar } from 'expo-status-bar';
+import { setStatusBarNetworkActivityIndicatorVisible, StatusBar } from 'expo-status-bar';
 //import {Picker} from '@react-native-picker/picker';
 import { Avatar, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
 import StateContext from './StateContext'; 
@@ -32,9 +32,16 @@ export default function ViewAllChatsScreens(props) {
     const db = stateProps.db; 
     const userEmail = auth.currentUser.email; 
     const userProfileDoc = stateProps.userProfileDoc; 
-    const allProfiles = stateProps.allProfiles; 
-    const userContacts = userProfileDoc.messageContacts; 
+    const allProfiles = stateProps.allProfiles;  
+    // Used to just be const userContacts = stateProps.userProfileDoc.messageContacts, but if you log in an navigate directly to the ViewAllChats screen, this line throws an error (probably thinks that the current profile is null) 
+    const [userContacts, setUserContacts] = useState([]);
+    //console.log("CURRENT USER", formatJSON(userProfileDoc)); 
 
+    // Get user's contacts when View All Chats screen mounts
+    useEffect(() => {
+        setUserContacts(stateProps.userProfileDoc.messageContacts); // When I do setUserContacts(userProfileDoc.messageContacts) it says that userProfileDoc is null  
+    }, []);
+    
     /* Will work once we pass in allProfiles as a state property */
     function getProfileFromEmail(email) {
         let profile = allProfiles.filter(prof => prof.email == email);
@@ -42,111 +49,69 @@ export default function ViewAllChatsScreens(props) {
             return profile[0]; 
         }
     }
-
-    //alert(getProfileFromEmail('az1@wellesley.edu')); 
-
-
-
+    
     /*
-    let userContacts = []; 
-
-    useEffect(() => {
-        // Why doesn't this work? 
-        userContacts = (async () => {
-            await firebaseGetCurrentContacts(userEmail); 
-        })();
-        alert("USERCONTACTS", formatJSON(userContacts)); 
-        console.log(userContacts); 
-    }, []);
-
-    // Grab currently-logged in user's profile (specifically their messageContacts)
-    async function firebaseGetCurrentContacts(email) {
-        const docRef = doc(db, "profiles", email);
-        const docSnap = await getDoc(docRef);
-        //alert("BEFORE THE DOCSNAP.EXISTS() CHECK"); 
-        if (docSnap.exists()) {
-            //alert("Document data:", docSnap.data());
-            let contacts = docSnap.data().messageContacts;  
-            console.log("CONTACTS", contacts); 
-            //alert(contacts); // console logs the correct thing...
-            //alert("GOT HERE!", formatJSON(userDoc)); 
-            return contacts; 
-        } else {
-            // doc.data() will be undefined in this case
-            alert("No such document!");
-            return []; 
+    function addPersonToContacts(email) {
+        if (!userContacts.includes(email)) {
+            setUserContacts([...userContacts, email]); 
         }
     }
     */
 
-    {/* OLD TEST FLATLIST IN RETURN 
-        <View>
-            <FlatList>
-                data = {userProfileDoc.messageContacts}
-                renderItem = {contact => 
-                    <TouchableOpacity>
-                        <View>
-                            <Text>{contact}</Text>
+    return (
+        <ScrollView>
+        <SafeAreaView>
+            <View style={{margin: 20}}>
+                <Searchbar
+                    style={{shadowOpacity: 0}}
+                    placeholder="Search"
+                    // onChangeText={onChangeSearch}
+                    // value={searchQuery}
+                />
+                {/* Loop through the current user's message contacts */}
+                {userContacts ? (userContacts.map( (email) => {
+                    // console.log("Current user", formatJSON(user));
+                    return (
+                        <View keyExtractor={email}>
+                            <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
+                                <Avatar.Image 
+                                    style={{alignSelf: 'center', marginVertical: 10}}
+                                    size={150}
+                                    source={{
+                                        uri: 'https://picsum.photos/700'
+                                    }} 
+                                />
+                                <Card.Content style={{ alignItems: 'center'}}>
+                                    <Title style={{marginBottom: 5}}>{getProfileFromEmail(email).basics.name}</Title>
+                                    {/* <Paragraph>Class of {user.personal.classYear}</Paragraph> */}
+                                    {/* <Paragraph>{user.personal.major}</Paragraph> */}
+                                    <Paragraph>{email}</Paragraph>
+                                </Card.Content>
+                                <Card.Actions style={{ alignSelf: 'center'}}>
+                                    <Button title="Message" color='blue'/> 
+                                    {/*WHY ISN'T THE WORD 'MESSAGE' SHOWING UP?
+                                    Catherine: I placed the word 'Message' into a title attribute! 
+                                    I hope this fixes the issue. The reason why Button doesn't work
+                                    like normal is because this particular Button is from React-Native-Paper's
+                                    API (import statement), not React Native's. There was a bug about 
+                                    MessageContacts being null so I wasn't able to check if this was fixed.
+                                    Alina: Yee yee got it. Thank you :3 */}
+                                </Card.Actions>
+                            </Card>
                         </View>
-                    </TouchableOpacity>
-                }
-            </FlatList>
-        </View>
-        */}
+                    );
+                })): <View></View>}
 
-        return (
-            <ScrollView>
-            <SafeAreaView>
-                <View style={{margin: 20}}>
-                    <Searchbar
-                        style={{shadowOpacity: 0}}
-                        placeholder="Search"
-                        // onChangeText={onChangeSearch}
-                        // value={searchQuery}
-                    />
-                    {/* Loop through the current user's message contacts */}
-                    {userContacts ? (userContacts.map( (email) => {
-                        // console.log("Current user", formatJSON(user));
-                        return (
-                            <View keyExtractor={email}>
-                                <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
-                                    <Avatar.Image 
-                                        style={{alignSelf: 'center', marginVertical: 10}}
-                                        size={150}
-                                        source={{
-                                            uri: 'https://picsum.photos/700'
-                                        }} 
-                                    />
-                                    <Card.Content style={{ alignItems: 'center'}}>
-                                        <Title style={{marginBottom: 5}}>{getProfileFromEmail(email).basics.name}</Title>
-                                        {/* <Paragraph>Class of {user.personal.classYear}</Paragraph> */}
-                                        {/* <Paragraph>{user.personal.major}</Paragraph> */}
-                                        <Paragraph>{email}</Paragraph>
-                                    </Card.Content>
-                                    <Card.Actions style={{ alignSelf: 'center'}}>
-                                        <Button title="Message" color='blue' /> 
-                                        {/*WHY ISN'T THE WORD 'MESSAGE' SHOWING UP?
-                                        Catherine: I placed the word 'Message' into a title attribute! 
-                                        I hope this fixes the issue. The reason why Button doesn't work
-                                        like normal is because this particular Button is from React-Native-Paper's
-                                        API (import statement), not React Native's. There was a bug about 
-                                        MessageContacts being null so I wasn't able to check if this was fixed.*/}
-                                    </Card.Actions>
-                                </Card>
-                            </View>
-                        );
-                    })): <View></View>}
-    
-                {/*<Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>*/} 
-                </View>
-                {/* <View>
-                    <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
-                </View>
-                <View>
-                    <Button title = "Go to View All Chats Screen" onPress={() => props.navigation.navigate('View All Chats')}/>
-                </View> */}
-            </SafeAreaView>
-        </ScrollView>
-        );
+            {/*<Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>*/} 
+            </View>
+            {/* <View>
+                <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
+            </View>
+            <View>
+                <Button title = "Go to View All Chats Screen" onPress={() => props.navigation.navigate('View All Chats')}/>
+            </View> */}
+        </SafeAreaView>
+    </ScrollView>
+    );
     
 }
