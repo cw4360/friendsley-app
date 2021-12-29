@@ -14,7 +14,7 @@ import { initializeApp } from "firebase/app";
 import StateContext from './StateContext'; 
 
 export default function MessageScreen(props) {
-    const stateProps = useContext(StateContext);
+    const stateProps = useContext(StateContext); 
     // Grab the messages from the stateProps that pertain to the current user
     // Implement "checks" of the database to grab new messages that relate to the current user 
     // Render the messages in a scrollable flatlist, color-code by sender and recipient 

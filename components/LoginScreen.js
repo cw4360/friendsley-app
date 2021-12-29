@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Button, ScrollView, Text, TextInput, 
     TouchableOpacity, View } from 'react-native';
@@ -45,7 +45,17 @@ export default function LoginScreen(props) {
     const [password, setPassword] = React.useState("123456");
     const [errorMsg, setErrorMsg] = React.useState(''); 
 
-
+    // Usually, React only does an update to the state if it causes something to change (i.e. the render to change)
+    // UseEffect says: if userProfileDoc ever changes, you better execute this effect before you go to the Explore page
+    /*
+    useEffect(() => {
+      console.log("userProfileDoc", userProfileDoc);
+      console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
+      if (userProfileDoc) { 
+        props.navigation.navigate("Friendsley"); 
+      }
+    }, [userProfileDoc]); // When userProfileDoc changes, this effect is triggered 
+    */
     // Download all the data of the current user once they are successfully logged in (right before call to navigate to Explore screen) - local database will be one of the StateProps (ex stateProps.setLoggedInUser('VALUE'))
     // However, download messages from Firestore every 5-10 minutes (are there messages sooner than this timestamp about me)
     
@@ -91,7 +101,10 @@ export default function LoginScreen(props) {
               // However, why is userProfileDoc still considered null even after the promise is resolved??
               console.log("After then:", formatJSON(userProfileDoc)); 
             })
-            .catch(e => console.log(e));
+            //.catch(e => console.log(e));
+            //});
+
+            //firebaseGetUserProfile(auth.currentUser); 
             
             // Clear email/password inputs 
             setEmail('');
@@ -105,12 +118,12 @@ export default function LoginScreen(props) {
             props.navigation.navigate("Friendsley"); 
         
             })
-          .catch((error) => {
-            console.log(`signUpUserEmailPassword: sign in failed for email ${email}`);
-            const errorMessage = error.message;
-            // const errorCode = error.code; // Could use this, too.
-            console.log(`signInUserEmailPassword: ${errorMessage}`);
-            setErrorMsg(`signInUserEmailPassword: ${errorMessage}`);
+            .catch((error) => {
+              console.log(`signUpUserEmailPassword: sign in failed for email ${email}`);
+              const errorMessage = error.message;
+              // const errorCode = error.code; // Could use this, too.
+              console.log(`signInUserEmailPassword: ${errorMessage}`);
+              setErrorMsg(`signInUserEmailPassword: ${errorMessage}`);
           });
     }
 

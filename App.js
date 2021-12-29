@@ -108,6 +108,7 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = React.useState(null); 
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
   const [allProfiles, setAllProfiles] = React.useState([]); 
+  const [messages, setMessages] = React.useState([]); // HOW EXACTLY TO STRUCTURE THIS DATA STRUCTURE IN FIREBASE? 
   const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles};
 
   return (

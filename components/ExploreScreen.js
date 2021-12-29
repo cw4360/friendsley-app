@@ -46,12 +46,24 @@ export default function ExploreScreen(props) {
     ]);
     const [selectedSort, setSelectedSort] = useState('Name (A to Z)');
 
+    useEffect(() => {
+        console.log("userProfileDoc", userProfileDoc);
+        console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
+        if (userProfileDoc) { 
+          //props.navigation.navigate("Friendsley"); 
+          console.log("USER PROFILE DOC IN EXPLORE", formatJSON(userProfileDoc)); 
+          setUserContacts(userProfileDoc.messageContacts);
+        }
+      }, [userProfileDoc]); // When userProfileDoc changes, this effect is triggered 
 
-    // Get user info when ExploreScreen mounts.
+
+    // Get user info when ExploreScreen mounts (when the ExploreScreen loads for the first time)
     useEffect(() => {
         // setAllProfiles([]); 
         firebaseGetAllProfiles();
         //setUserContacts(stateProps.userProfileDoc.messageContacts); - this doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
+        //console.log("USER PROFILE DOC IN EXPLORE", formatJSON(userProfileDoc)); 
+        //setUserContacts(userProfileDoc.messageContacts); // This doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
     }, []);
 
     // Adds a person to the user's contacts 

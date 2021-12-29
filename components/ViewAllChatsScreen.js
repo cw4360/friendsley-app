@@ -68,6 +68,9 @@ export default function ViewAllChatsScreens(props) {
                     // onChangeText={onChangeSearch}
                     // value={searchQuery}
                 />
+                <View>
+                    <Button title="Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
+                </View>
                 {/* Loop through the current user's message contacts */}
                 {userContacts ? (userContacts.map( (email) => {
                     // console.log("Current user", formatJSON(user));
