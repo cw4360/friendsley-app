@@ -46,6 +46,7 @@ export default function EditProfileScreen(props) {
     const [interestedIndustry, setInterestedIndustry] = useState(userProfileDoc.career.interestedIndustry);
     const [jobExp, setJobExp] = useState(userProfileDoc.career.jobExp);
     const [internshipExp, setInternshipExp] = useState(userProfileDoc.career.internshipExp);
+    
 
     // // Get curUser when EditProfileScreen mounts.
     // useEffect(() => {

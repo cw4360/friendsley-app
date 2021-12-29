@@ -23,10 +23,10 @@ export default function ExploreScreen(props) {
     const db = stateProps.db;
     const allProfiles = stateProps.allProfiles; 
     const setAllProfiles = stateProps.setAllProfiles; 
-    const [userProfileDoc, setUserProfileDoc] = useState({}); 
-    const [userContacts, setUserContacts] = useState([]); // I also have this hook in the View All Chats screen - is that bad 
-    // To fix the problem in useEffect relating to setUserContacts, does there also need to be a "getProfile" type of function to directly get the current user's profile
-    // I thought this problem would've been handled by the login screen (since it should populate the userProfileDoc state property but I guess not, since it's turning up null..?)
+    //const [userProfileDoc, setUserProfileDoc] = useState({}); 
+    const userProfileDoc = stateProps.userProfileDoc; 
+    const setUserProfileDoc = stateProps.setUserProfileDoc; 
+    const [userContacts, setUserContacts] = useState([]);
 
     //const [allProfiles, setAllProfiles] = React.useState([]); 
     // State for search bar
@@ -46,6 +46,7 @@ export default function ExploreScreen(props) {
     ]);
     const [selectedSort, setSelectedSort] = useState('Name (A to Z)');
 
+    /*
     useEffect(() => {
         console.log("userProfileDoc", userProfileDoc);
         console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
@@ -55,12 +56,16 @@ export default function ExploreScreen(props) {
           setUserContacts(userProfileDoc.messageContacts);
         }
       }, [userProfileDoc]); // When userProfileDoc changes, this effect is triggered 
+      */
 
 
     // Get user info when ExploreScreen mounts (when the ExploreScreen loads for the first time)
     useEffect(() => {
         // setAllProfiles([]); 
+        console.log("userProfileDoc", userProfileDoc);
+        console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
         firebaseGetAllProfiles();
+        setUserContacts(userProfileDoc.messageContacts);
         //setUserContacts(stateProps.userProfileDoc.messageContacts); - this doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
         //console.log("USER PROFILE DOC IN EXPLORE", formatJSON(userProfileDoc)); 
         //setUserContacts(userProfileDoc.messageContacts); // This doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
@@ -69,6 +74,8 @@ export default function ExploreScreen(props) {
     // Adds a person to the user's contacts 
     function addPersonToContacts(email) {
         if (!userContacts.includes(email)) {
+            alert("Adding " + email + " to contacts list"); 
+            //const profileRef = doc(db, 'profiles', email); 
             setUserContacts([...userContacts, email]); 
         }
     }

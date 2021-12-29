@@ -47,15 +47,13 @@ export default function LoginScreen(props) {
 
     // Usually, React only does an update to the state if it causes something to change (i.e. the render to change)
     // UseEffect says: if userProfileDoc ever changes, you better execute this effect before you go to the Explore page
-    /*
     useEffect(() => {
-      console.log("userProfileDoc", userProfileDoc);
-      console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
+      //console.log("userProfileDoc", userProfileDoc);
+      //console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
       if (userProfileDoc) { 
         props.navigation.navigate("Friendsley"); 
       }
     }, [userProfileDoc]); // When userProfileDoc changes, this effect is triggered 
-    */
     // Download all the data of the current user once they are successfully logged in (right before call to navigate to Explore screen) - local database will be one of the StateProps (ex stateProps.setLoggedInUser('VALUE'))
     // However, download messages from Firestore every 5-10 minutes (are there messages sooner than this timestamp about me)
     
@@ -115,7 +113,7 @@ export default function LoginScreen(props) {
             // setCredential(userCredential);
 
             // If the current-logged in user has been verified, log them in and navigate to to the Explore page 
-            props.navigation.navigate("Friendsley"); 
+            //props.navigation.navigate("Friendsley"); 
         
             })
             .catch((error) => {
@@ -189,12 +187,14 @@ export default function LoginScreen(props) {
               <Text style={styles.errorMessage}>{errorMsg}</Text>
             </View>
           </View>
+          {/*
           <View style={loggedInUser === null ? styles.hidden : styles.loginLogoutPane}>
               <TouchableOpacity style={styles.button}
                  onPress={() => logOut()}>
                 <Text style={styles.buttonText}>Log Out</Text>
               </TouchableOpacity> 
           </View>
+          */} 
           {/*
           <View>
             <Button title = "Go to View All Chats Screen" onPress = {() => props.navigation.navigate("View All Chats")}/>
