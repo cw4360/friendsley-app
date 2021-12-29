@@ -39,7 +39,7 @@ export default function ViewAllChatsScreens(props) {
 
     // Get user's contacts when View All Chats screen mounts
     useEffect(() => {
-        setUserContacts(stateProps.userProfileDoc.messageContacts); // When I do setUserContacts(userProfileDoc.messageContacts) it says that userProfileDoc is null  
+        //setUserContacts(stateProps.userProfileDoc.messageContacts); // When I do setUserContacts(userProfileDoc.messageContacts) it says that userProfileDoc is null  
     }, []);
     
     /* Will work once we pass in allProfiles as a state property */
