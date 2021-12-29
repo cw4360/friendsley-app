@@ -4,6 +4,7 @@ import { Avatar, Button, Card, Title, Paragraph, Searchbar } from 'react-native-
 import DropDownPicker from 'react-native-dropdown-picker';
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
+//import { NavigationActions } from 'react-navigation';
 
 import { 
     // for storage access
@@ -27,7 +28,7 @@ export default function ExploreScreen(props) {
     const userProfileDoc = stateProps.userProfileDoc; 
     const setUserProfileDoc = stateProps.setUserProfileDoc; 
     const userEmail = userProfileDoc.email; 
-    const [userContacts, setUserContacts] = useState([]);
+    const [userContacts, setUserContacts] = useState(userProfileDoc.messageContacts);
     //const userContacts = userProfileDoc.messageContacts; 
 
     //const [allProfiles, setAllProfiles] = React.useState([]); 
@@ -67,33 +68,38 @@ export default function ExploreScreen(props) {
         console.log("userProfileDoc", userProfileDoc);
         console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
         firebaseGetAllProfiles();
-        //setUserContacts(userProfileDoc.messageContacts);
-        //setUserContacts(stateProps.userProfileDoc.messageContacts); - this doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
-        //console.log("USER PROFILE DOC IN EXPLORE", formatJSON(userProfileDoc)); 
-        //setUserContacts(userProfileDoc.messageContacts); // This doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
     }, []);
 
     // Adds a person to the user's messageContacts list in Firebase 
     async function addPersonToContacts(email) {
+        console.log("CURRENT USER CONTACTS", userContacts); // Why is this sometimes empty? 
         if (!userContacts.includes(email)) {
             const profileRef = doc(db, 'profiles', userEmail);
-            // alert('Submitted');
             const newProfile = {
                 messageContacts: [...userContacts, email], 
             }; 
             // Set the new document in Firebase
             await setDoc(profileRef, newProfile, { merge: true });
-            //alert("Adding " + email + " to contacts list"); 
 
             // Get new profile from Firebase, update userProfileDoc in stateProps
             const docRef = doc(db, "profiles", userEmail); 
             const docSnap = await getDoc(docRef); 
             let userDoc = docSnap.data(); 
-            console.log("Updated Document data:", userDoc);
+            //console.log("Updated Document data:", userDoc);
             setUserProfileDoc(userDoc);
-            console.log(userProfileDoc);
+            //console.log(userProfileDoc);
             setUserContacts([...userContacts, email]); 
         }
+        // HOW TO NAVIGATE TO A SUBTAB?! 
+        /* Navigation not defined even I imported? 
+        props.navigation.navigate(
+            'Friendsley', 
+            {}, 
+            NavigationActions.navigate({
+                routeName: 'Message'
+            })
+        ); 
+        */
     }
 
     // Grabs all profiles from Firebase, sets the "AllProfiles" state property 
