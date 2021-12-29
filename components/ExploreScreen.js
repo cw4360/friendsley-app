@@ -7,9 +7,9 @@ import StateContext from './StateContext';
 
 import { 
     // for storage access
-    collection, getDocs
-    //, doc, addDoc, setDoc,
-    //query, where, getDoc
+    collection, getDocs,
+    doc, addDoc, setDoc,
+    query, where, getDoc
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -26,7 +26,9 @@ export default function ExploreScreen(props) {
     //const [userProfileDoc, setUserProfileDoc] = useState({}); 
     const userProfileDoc = stateProps.userProfileDoc; 
     const setUserProfileDoc = stateProps.setUserProfileDoc; 
+    const userEmail = userProfileDoc.email; 
     const [userContacts, setUserContacts] = useState([]);
+    //const userContacts = userProfileDoc.messageContacts; 
 
     //const [allProfiles, setAllProfiles] = React.useState([]); 
     // State for search bar
@@ -65,17 +67,31 @@ export default function ExploreScreen(props) {
         console.log("userProfileDoc", userProfileDoc);
         console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
         firebaseGetAllProfiles();
-        setUserContacts(userProfileDoc.messageContacts);
+        //setUserContacts(userProfileDoc.messageContacts);
         //setUserContacts(stateProps.userProfileDoc.messageContacts); - this doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
         //console.log("USER PROFILE DOC IN EXPLORE", formatJSON(userProfileDoc)); 
         //setUserContacts(userProfileDoc.messageContacts); // This doesn't quite work, probably cuz it thinks that the userProfileDoc is null? 
     }, []);
 
-    // Adds a person to the user's contacts 
-    function addPersonToContacts(email) {
+    // Adds a person to the user's messageContacts list in Firebase 
+    async function addPersonToContacts(email) {
         if (!userContacts.includes(email)) {
-            alert("Adding " + email + " to contacts list"); 
-            //const profileRef = doc(db, 'profiles', email); 
+            const profileRef = doc(db, 'profiles', userEmail);
+            // alert('Submitted');
+            const newProfile = {
+                messageContacts: [...userContacts, email], 
+            }; 
+            // Set the new document in Firebase
+            await setDoc(profileRef, newProfile, { merge: true });
+            //alert("Adding " + email + " to contacts list"); 
+
+            // Get new profile from Firebase, update userProfileDoc in stateProps
+            const docRef = doc(db, "profiles", userEmail); 
+            const docSnap = await getDoc(docRef); 
+            let userDoc = docSnap.data(); 
+            console.log("Updated Document data:", userDoc);
+            setUserProfileDoc(userDoc);
+            console.log(userProfileDoc);
             setUserContacts([...userContacts, email]); 
         }
     }
