@@ -20,6 +20,7 @@ function formatJSON(jsonVal) {
 
 export default function EditProfileScreen(props) {
     const stateProps = useContext(StateContext);
+    const auth = stateProps.auth;
     const db = stateProps.db;
 
     const userProfileDoc = stateProps.userProfileDoc;
@@ -27,69 +28,74 @@ export default function EditProfileScreen(props) {
 
     // State for user profiles' data
     let userEmail = userProfileDoc.email;
-    const [name, setName] = useState(userProfileDoc.basics.name);
-    const [pronouns, setPronouns] = useState(userProfileDoc.basics.pronouns);
-    const [bio, setBio] = useState(userProfileDoc.basics.bio);
-    const [classYear, setClassYear] = useState(userProfileDoc.personal.classYear);
-    const [major, setMajor] = useState(userProfileDoc.personal.major);
-    const [minor, setMinor] = useState(userProfileDoc.personal.minor);
-    const [hometown, setHometown] = useState(userProfileDoc.personal.hometown);
-    const [residenceHall, setResidenceHall] = useState(userProfileDoc.personal.residenceHall);
-    const [hobbies, setHobbies] = useState(userProfileDoc.personal.hobbies);
-    const [clubs, setClubs] = useState(userProfileDoc.personal.clubs);
-    const [favPlaceOnCampus, setFavPlaceOnCampus] = useState(userProfileDoc.personal.favPlaceOnCampus);
-    const [favWellesleyMemory, setFavWellesleyMemory] = useState(userProfileDoc.personal.favWellesleyMemory);
-    const [currentClasses, setCurrentClasses] = useState(userProfileDoc.academics.currentClasses);
-    const [plannedClasses, setPlannedClasses] = useState(userProfileDoc.academics.plannedClasses);
-    const [favClasses, setFavClasses] = useState(userProfileDoc.academics.favClasses);
-    const [studyAbroad, setStudyAbroad] = useState(userProfileDoc.academics.studyAbroad);
-    const [interestedIndustry, setInterestedIndustry] = useState(userProfileDoc.career.interestedIndustry);
-    const [jobExp, setJobExp] = useState(userProfileDoc.career.jobExp);
-    const [internshipExp, setInternshipExp] = useState(userProfileDoc.career.internshipExp);
+    const [name, setName] = useState('');
+    const [pronouns, setPronouns] = useState('');
+    const [bio, setBio] = useState('');
+    const [classYear, setClassYear] = useState('');
+    const [major, setMajor] = useState('');
+    const [minor, setMinor] = useState('');
+    const [hometown, setHometown] = useState('');
+    const [residenceHall, setResidenceHall] = useState('');
+    const [hobbies, setHobbies] = useState('');
+    const [clubs, setClubs] = useState('');
+    const [favPlaceOnCampus, setFavPlaceOnCampus] = useState('');
+    const [favWellesleyMemory, setFavWellesleyMemory] = useState('');
+    const [currentClasses, setCurrentClasses] = useState('');
+    const [plannedClasses, setPlannedClasses] = useState('');
+    const [favClasses, setFavClasses] = useState('');
+    const [studyAbroad, setStudyAbroad] = useState('');
+    const [interestedIndustry, setInterestedIndustry] = useState('');
+    const [jobExp, setJobExp] = useState('');
+    const [internshipExp, setInternshipExp] = useState('');
 
-    // // Get curUser when EditProfileScreen mounts.
-    // useEffect(() => {
-    //     firebaseGetUserProfile(userEmail);
-    // }, []);
+    // Get curUser when EditProfileScreen mounts.
+    useEffect(() => {
+        firebaseGetUserProfile(userEmail);
+    }, []);
+
+    useEffect(() => {
+        props.navigation.navigate('Profile');
+        // props.navigation.navigate('Profile', {updatedProfile: newProfile});
+    }, [userProfileDoc]);
 
     /**
      * Get current logged-in user's profile info from Firebase's Firestore
      */ 
-    // async function firebaseGetUserProfile(email) {
-    //     const docRef = doc(db, "profiles", email);
-    //     const docSnap = await getDoc(docRef);
+    async function firebaseGetUserProfile(email) {
+        const docRef = doc(db, "profiles", email);
+        const docSnap = await getDoc(docRef);
 
-    //     if (docSnap.exists()) {
-    //         // console.log("Document data:", docSnap.data());
-    //         let userDoc = docSnap.data();
+        if (docSnap.exists()) {
+            // console.log("Document data:", docSnap.data());
+            let userDoc = docSnap.data();
             
-    //         setName(userDoc.basics.name);
-    //         setPronouns(userDoc.basics.pronouns);
-    //         setBio(userDoc.basics.bio);
-    //         setClassYear(userDoc.personal.classYear);
-    //         setMajor(userDoc.personal.major);
-    //         setMinor(userDoc.personal.minor);
-    //         setHometown(userDoc.personal.hometown);
-    //         setResidenceHall(userDoc.personal.residenceHall);
-    //         setHobbies(userDoc.personal.hobbies);
-    //         setClubs(userDoc.personal.clubs);
-    //         setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
-    //         setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
-    //         setCurrentClasses(userDoc.academics.currentClasses);
-    //         setPlannedClasses(userDoc.academics.plannedClasses);
-    //         setFavClasses(userDoc.academics.favClasses);
-    //         setStudyAbroad(userDoc.academics.studyAbroad);
-    //         setInterestedIndustry(userDoc.career.interestedIndustry);
-    //         setJobExp(userDoc.career.jobExp);
-    //         setInternshipExp(userDoc.career.internshipExp);
-    //     } else {
-    //         // doc.data() will be undefined in this case
-    //         console.log("No such document!");
-    //         // alert('No such user!');
-    //     }
-    // }
+            setName(userDoc.basics.name);
+            setPronouns(userDoc.basics.pronouns);
+            setBio(userDoc.basics.bio);
+            setClassYear(userDoc.personal.classYear);
+            setMajor(userDoc.personal.major);
+            setMinor(userDoc.personal.minor);
+            setHometown(userDoc.personal.hometown);
+            setResidenceHall(userDoc.personal.residenceHall);
+            setHobbies(userDoc.personal.hobbies);
+            setClubs(userDoc.personal.clubs);
+            setFavPlaceOnCampus(userDoc.personal.favPlaceOnCampus);
+            setFavWellesleyMemory(userDoc.personal.favWellesleyMemory);
+            setCurrentClasses(userDoc.academics.currentClasses);
+            setPlannedClasses(userDoc.academics.plannedClasses);
+            setFavClasses(userDoc.academics.favClasses);
+            setStudyAbroad(userDoc.academics.studyAbroad);
+            setInterestedIndustry(userDoc.career.interestedIndustry);
+            setJobExp(userDoc.career.jobExp);
+            setInternshipExp(userDoc.career.internshipExp);
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+            // alert('No such user!');
+        }
+    }
 
-    async function submitProfile() {
+    async function firebaseSetUserProfile(email) {
         // Set profile data in Firebase
         const profileRef = doc(db, 'profiles', userEmail);
         // alert('Submitted');
@@ -124,16 +130,23 @@ export default function EditProfileScreen(props) {
         };
 
         await setDoc(profileRef, newProfile, { merge: true });
+    }
 
+    async function firebaseGetUpdatedUserProfile(email) {
         // Get new profile in Firebase and update userProfileDoc in stateProps
-        const docRef = doc(db, "profiles", userEmail);
+        const docRef = doc(db, "profiles", email);
         const docSnap = await getDoc(docRef);
 
-        let userDoc = docSnap.data();
-        console.log("Updated Document data:", userDoc);
-        setUserProfileDoc(userDoc);
-        console.log(userProfileDoc);
-        props.navigation.navigate('Profile', {updatedProfile: newProfile} );
+        return docSnap.data();
+    }
+
+    async function submitProfile() {
+        firebaseSetUserProfile(userEmail).then( ()=> {
+            const userDoc = firebaseGetUpdatedUserProfile(userEmail);
+
+            // Create a callback function that executes after the state has been set
+            setUserProfileDoc(userDoc);
+        }).catch(e => console.log(e));
     }
 
     return (

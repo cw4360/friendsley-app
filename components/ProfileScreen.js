@@ -22,29 +22,30 @@ export default function ProfileScreen(props) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth;
     const db = stateProps.db;
+    const userProfileDoc = stateProps.userProfileDoc;
 
     // State for user profiles' data
-    let userEmail = auth.currentUser.email;
+    let userEmail = userProfileDoc.email;
 
-    const [name, setName] = useState('');
-    const [pronouns, setPronouns] = useState('');
-    const [bio, setBio] = useState('');
-    const [classYear, setClassYear] = useState('');
-    const [major, setMajor] = useState('');
-    const [minor, setMinor] = useState('');
-    const [hometown, setHometown] = useState('');
-    const [residenceHall, setResidenceHall] = useState('');
-    const [hobbies, setHobbies] = useState('');
-    const [clubs, setClubs] = useState('');
-    const [favPlaceOnCampus, setFavPlaceOnCampus] = useState('');
-    const [favWellesleyMemory, setFavWellesleyMemory] = useState('');
-    const [currentClasses, setCurrentClasses] = useState('');
-    const [plannedClasses, setPlannedClasses] = useState('');
-    const [favClasses, setFavClasses] = useState('');
-    const [studyAbroad, setStudyAbroad] = useState('');
-    const [interestedIndustry, setInterestedIndustry] = useState('');
-    const [jobExp, setJobExp] = useState('');
-    const [internshipExp, setInternshipExp] = useState('');
+    const [name, setName] = useState(userProfileDoc.basics.name);
+    const [pronouns, setPronouns] = useState(userProfileDoc.basics.pronouns);
+    const [bio, setBio] = useState(userProfileDoc.basics.bio);
+    const [classYear, setClassYear] = useState(userProfileDoc.personal.classYear);
+    const [major, setMajor] = useState(userProfileDoc.personal.major);
+    const [minor, setMinor] = useState(userProfileDoc.personal.minor);
+    const [hometown, setHometown] = useState(userProfileDoc.personal.hometown);
+    const [residenceHall, setResidenceHall] = useState(userProfileDoc.personal.residenceHall);
+    const [hobbies, setHobbies] = useState(userProfileDoc.personal.hobbies);
+    const [clubs, setClubs] = useState(userProfileDoc.personal.clubs);
+    const [favPlaceOnCampus, setFavPlaceOnCampus] = useState(userProfileDoc.personal.favPlaceOnCampus);
+    const [favWellesleyMemory, setFavWellesleyMemory] = useState(userProfileDoc.personal.favWellesleyMemory);
+    const [currentClasses, setCurrentClasses] = useState(userProfileDoc.academics.currentClasses);
+    const [plannedClasses, setPlannedClasses] = useState(userProfileDoc.academics.plannedClasses);
+    const [favClasses, setFavClasses] = useState(userProfileDoc.academics.favClasses);
+    const [studyAbroad, setStudyAbroad] = useState(userProfileDoc.academics.studyAbroad);
+    const [interestedIndustry, setInterestedIndustry] = useState(userProfileDoc.career.interestedIndustry);
+    const [jobExp, setJobExp] = useState(userProfileDoc.career.jobExp);
+    const [internshipExp, setInternshipExp] = useState(userProfileDoc.career.internshipExp);
 
     
     // if (props.route.params) {
@@ -140,9 +141,11 @@ export default function ProfileScreen(props) {
                             <Title style={[globalStyles.title, {
                                 marginTop: 15
                             }]}>{name}</Title>
-                            <Caption style={[globalStyles.caption, {fontStyle: 'italic'}]}>{pronouns}</Caption>
+                            <View style={pronouns ? {fontStyle: 'italic'} : globalStyles.hidden}>
+                                <Caption style={[globalStyles.caption, {fontStyle: 'italic'}]}>{pronouns}</Caption>
+                            </View>
                             <Caption style={globalStyles.caption}>{userEmail}</Caption>
-                            <View style={{marginTop: 4, marginBottom: 10}}>
+                            <View style={bio ? {marginTop: 4, marginBottom: 10} : globalStyles.hidden}>
                                 <Text style={globalStyles.caption}>"{bio}"</Text>
                             </View>
                         </View>
@@ -177,31 +180,31 @@ export default function ProfileScreen(props) {
                             <Text style={globalStyles.textType}>Major:</Text>
                             <Text style={globalStyles.profileText}>{major}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={minor ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Minor:</Text>
                             <Text style={globalStyles.profileText}>{minor}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={hometown ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Hometown:</Text>
                             <Text style={globalStyles.profileText}>{hometown}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={residenceHall ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Residence Hall:</Text>
                             <Text style={globalStyles.profileText}>{residenceHall}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={hobbies ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Hobbies:</Text>
                             <Text style={globalStyles.profileText}>{hobbies}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={clubs ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Clubs:</Text>
                             <Text style={globalStyles.profileText}>{clubs}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={favPlaceOnCampus ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Favorite Place on Campus:</Text>
                             <Text style={globalStyles.profileText}>{favPlaceOnCampus}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={favWellesleyMemory ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Favorite Wellesley Memory:</Text>
                             <Text style={globalStyles.profileText}>{favWellesleyMemory}</Text>
                         </View>
@@ -216,19 +219,19 @@ export default function ProfileScreen(props) {
                     </View>
                     {/* Academic Section Details */}
                     <View style={{marginTop: 10}}>
-                        <View style={globalStyles.infoField}>
+                        <View style={currentClasses ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Current Classes:</Text>
                             <Text style={globalStyles.profileText}>{currentClasses}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={plannedClasses ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Classes I Plan To Take:</Text>
                             <Text style={globalStyles.profileText}>{plannedClasses}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={favClasses ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Favorite Classes:</Text>
                             <Text style={globalStyles.profileText}>{favClasses}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={studyAbroad ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Study Abroad Experience:</Text>
                             <Text style={globalStyles.profileText}>{studyAbroad}</Text>
                         </View>
@@ -243,15 +246,15 @@ export default function ProfileScreen(props) {
                     </View>
                     {/* Section Details */}
                     <View style={{marginTop: 10}}>
-                        <View style={globalStyles.infoField}>
+                        <View style={interestedIndustry ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Interested Industry:</Text>
                             <Text style={globalStyles.profileText}>{interestedIndustry}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={jobExp ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Job Experience:</Text>
                             <Text style={globalStyles.profileText}>{jobExp}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={internshipExp ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Internship Experience:</Text>
                             <Text style={globalStyles.profileText}>{internshipExp}</Text>
                         </View>

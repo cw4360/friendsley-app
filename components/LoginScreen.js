@@ -90,7 +90,8 @@ export default function LoginScreen(props) {
               console.log("After then:", value); // Prints correct statement
               // However, why is userProfileDoc still considered null even after the promise is resolved??
               console.log("After then:", formatJSON(userProfileDoc)); 
-            });
+            })
+            .catch(e => console.log(e));
             
             // Clear email/password inputs 
             setEmail('');

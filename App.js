@@ -60,7 +60,7 @@ const ProfileStack = createNativeStackNavigator();
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="Profile" component={ProfileScreenContext}/>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen}/>
       <ProfileStack.Screen name="Edit Profile" component={EditProfileScreen}/>
     </ProfileStack.Navigator>
   );
