@@ -120,5 +120,5 @@ export default function ViewAllChatsScreens(props) {
         </SafeAreaView>
     </ScrollView>
     );
-    
 }
+
