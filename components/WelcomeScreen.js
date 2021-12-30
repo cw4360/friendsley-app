@@ -38,7 +38,7 @@ export default function WelcomeScreen(props) {
         );
     }  else {
         return (
-            <SafeAreaView style={{marginTop: 200}}>
+            <SafeAreaView style={{marginTop: 160}}>
                 <View style={globalStyles.userInfoSection}>
                     <Title style={{
                         alignSelf: 'center', 
@@ -47,6 +47,10 @@ export default function WelcomeScreen(props) {
                         fontSize: 40,
                         }}>Friendsley</Title>
                     <View style={{alignItems: 'center'}}>  
+                        <Image 
+                            style={{ width: 186, height: 157, marginLeft: 10, marginBottom: 20}}
+                            source={require('../assets/ios/friendsley-logo3x.png')}
+                        />
                         <TouchableOpacity 
                             onPress={() => props.navigation.navigate('Login')}
                             style={globalStyles.loginButton}

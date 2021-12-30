@@ -125,7 +125,7 @@ export default function ProfileScreen(props) {
     }
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor: '#FFF0BB'}}>
             {/* <SafeAreaView style={isFinishedLoading ? globalStyles.container : globalStyles.hidden}> */}
             <SafeAreaView style={globalStyles.container}>
                 <View style={globalStyles.userInfoSection}>
@@ -146,13 +146,13 @@ export default function ProfileScreen(props) {
                             </View>
                             <Caption style={globalStyles.caption}>{userEmail}</Caption>
                             <View style={bio ? {marginTop: 4, marginBottom: 10} : globalStyles.hidden}>
-                                <Text style={globalStyles.caption}>"{bio}"</Text>
+                                <Text style={globalStyles.caption}>{bio}</Text>
                             </View>
                         </View>
                     </View>
                     <TouchableOpacity onPress={() => props.navigation.navigate('Edit Profile')} 
                         style={globalStyles.editProfileButton}>
-                        <Text style={{color: 'black'}}>Edit Profile</Text>
+                        <Text style={globalStyles.buttonText}>Edit Profile</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -259,10 +259,6 @@ export default function ProfileScreen(props) {
                             <Text style={globalStyles.profileText}>{internshipExp}</Text>
                         </View>
                     </View>
-                </View>
-
-                <View>                    
-                    <Button title="Go to Explore Screen" onPress={() => props.navigation.navigate('Explore')}/>
                 </View>
             </SafeAreaView>
         </ScrollView>

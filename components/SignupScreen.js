@@ -1,7 +1,8 @@
 import React, {useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Button, ScrollView, Text, TextInput, 
-    TouchableOpacity, View } from 'react-native';import Constants from 'expo-constants';
+    TouchableOpacity, View } from 'react-native';
+import Constants from 'expo-constants';
 import { globalStyles } from '../styles/globalStyles';
 import StateContext from './StateContext';
 
@@ -203,41 +204,58 @@ export default function SignupScreen(props) {
     }
 
     return (
-        <View style={styles.screen}>
-            <View style={globalStyles.userInfoSection}>
-                <View style={styles.labeledInput}>
-                <Text style={styles.inputLabel}>Name:</Text>
-                <TextInput placeholder="Enter your name" 
-                    style={styles.textInput} 
-                    value={name} 
-                    onChangeText={ textVal => setName(textVal)} />
+        <ScrollView style={{flex: 1, paddingTop: 80, paddingBottom: 20}}>
+            <View style={{
+                backgroundColor: '#FFD34F', 
+                opacity: .7, 
+                borderRadius: 20,
+                paddingTop: 30,
+                width: '85%',
+                alignSelf: 'center',
+                marginBottom: 10,
+                shadowColor: 'grey',
+                shadowOffset: {width: 0,height: 4},
+                shadowOpacity: .8,
+                }}>
+                <Text style={globalStyles.signInUpBoxTitle}>Create An Account</Text>
+                <View style={globalStyles.userInfoSection}>
+                    <View style={styles.labeledInput}>
+                    <Text style={globalStyles.signInUpText}>Name:</Text>
+                    <TextInput placeholder="Enter your name" 
+                        style={globalStyles.signInUpTextInput} 
+                        value={name} 
+                        onChangeText={ textVal => setName(textVal)} />
+                    </View>
+                    <View style={styles.labeledInput}>
+                    <Text style={globalStyles.signInUpText}>Email:</Text>
+                    <TextInput placeholder="Enter your email address" 
+                        style={globalStyles.signInUpTextInput} 
+                        value={email} 
+                        onChangeText={ textVal => setEmail(textVal)} />
+                    </View>
+                    <View style={styles.labeledInput}>
+                    <Text style={globalStyles.signInUpText}>Password:</Text>
+                    <TextInput placeholder="Enter a password" 
+                        style={globalStyles.signInUpTextInput} 
+                        value={password} 
+                        onChangeText={ textVal => setPassword(textVal)} />
+                    </View>
                 </View>
-                <View style={styles.labeledInput}>
-                <Text style={styles.inputLabel}>Email:</Text>
-                <TextInput placeholder="Enter an email address" 
-                    style={styles.textInput} 
-                    value={email} 
-                    onChangeText={ textVal => setEmail(textVal)} />
-                </View>
-                <View style={styles.labeledInput}>
-                <Text style={styles.inputLabel}>Password:</Text>
-                <TextInput placeholder="Enter a password" 
-                    style={styles.textInput} 
-                    value={password} 
-                    onChangeText={ textVal => setPassword(textVal)} />
-                </View>
-                <TouchableOpacity onPress={() => signUpUserEmailPassword()} 
-                    style={globalStyles.editProfileButton}>
-                    <Text style={{color: 'black'}}>Sign Up</Text>
-                </TouchableOpacity>
-                <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
-                    <Text style={styles.errorMessage}>{errorMsg}</Text>
-                </View>
-                {/* <ScrollView style={styles.jsonContainer}>
-                    <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
-                </ScrollView> */}
             </View>
-        </View>
+            <View style={globalStyles.userInfoSection}>
+                <TouchableOpacity onPress={() => signUpUserEmailPassword()} 
+                    style={[globalStyles.signupButton, {shadowColor: 'grey',
+                    shadowOffset: {width: 0,height: 1}, shadowOpacity: .5,}]}>
+                    <Text style={globalStyles.welcomeText}>SIGN UP</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
+                <Text style={styles.errorMessage}>{errorMsg}</Text>
+            </View>
+            {/* <ScrollView style={styles.jsonContainer}>
+                <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
+            </ScrollView> */}
+        </ScrollView>
     );
 }
 
@@ -248,6 +266,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     // backgroundColor: "#fff",
+    paddingLeft: 30,
+    paddingRight: 30,
     }, 
     loginLogoutPane: {
         flex: 3, 
@@ -301,6 +321,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderStyle: 'dashed', // Lyn sez: doesn't seem to work 
         borderColor: 'red',
+        alignSelf: 'center'
     },
     errorMessage: {
         color: 'red',

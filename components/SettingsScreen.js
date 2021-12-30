@@ -41,11 +41,11 @@ export default function SettingsScreen(props) {
     }
     
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#FFF0BB'}}>
             <View style={globalStyles.userInfoSection}>
                 <TouchableOpacity style={globalStyles.editProfileButton}
                     onPress={() => logOut()}>
-                    <Text>Log Out</Text>
+                    <Text style={globalStyles.buttonText}>Log Out</Text>
                 </TouchableOpacity> 
                 {/* <Text>{signedInProps.signedInUser}</Text> */}
             </View>

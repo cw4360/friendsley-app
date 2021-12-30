@@ -62,7 +62,7 @@ export default function ViewAllChatsScreens(props) {
     */
 
     return (
-        <ScrollView>
+    <ScrollView style={{backgroundColor: '#FFF0BB'}}>
         <SafeAreaView>
             <View style={{margin: 20}}>
                 <Searchbar

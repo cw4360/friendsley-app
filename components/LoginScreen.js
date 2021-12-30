@@ -155,59 +155,55 @@ export default function LoginScreen(props) {
     }
 
     return (
-        <ScrollView>
-        <View style={styles.screen}>
+        <ScrollView style={{flex: 1, paddingTop: 100, paddingBottom: 20}}>
           <StatusBar style="auto" />
-          <View style={loggedInUser === null ? styles.loginLogoutPane : styles.hidden}>
-            <View style={styles.labeledInput}>
-              <Text style={styles.inputLabel}>Email:</Text>
-              <TextInput placeholder="Enter your email address" 
-                style={styles.textInput} 
-                value={email} 
-                onChangeText={ textVal => setEmail(textVal)} />
-            </View>
-            <View style={styles.labeledInput}>
-              <Text style={styles.inputLabel}>Password:</Text>
-              <TextInput placeholder="Enter your password" 
-                style={styles.textInput} 
-                value={password} 
-                onChangeText={ textVal => setPassword(textVal)} />
-            </View>
-            <View>
-              {/* <TouchableOpacity style={styles.button}
-                 onPress={() => signUpUserEmailPassword()}>
-                <Text style={styles.buttonText}>Sign Up</Text>
-              </TouchableOpacity>  */}
-              <TouchableOpacity style={globalStyles.editProfileButton}
-                 onPress={() => signInUserEmailPassword()}>
-                <Text>Login</Text>
-              </TouchableOpacity> 
-            </View>
-            <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
-              <Text style={styles.errorMessage}>{errorMsg}</Text>
+          <View style={{
+            backgroundColor: '#5971B5', 
+            opacity: .8, 
+            borderRadius: 20,
+            paddingTop: 30,
+            width: '85%',
+            alignSelf: 'center',
+            marginBottom: 10,
+            shadowColor: 'grey',
+            shadowOffset: {width: 0,height: 5},
+            shadowOpacity: .8,
+          }}>
+            <Text style={globalStyles.signInUpBoxTitle}>Sign Into Friendsley</Text>
+            <View style={globalStyles.userInfoSection}>
+              <View style={styles.labeledInput}>
+                <Text style={globalStyles.signInUpText}>Email:</Text>
+                <TextInput placeholder="Enter your email address" 
+                  style={globalStyles.signInUpTextInput} 
+                  value={email} 
+                  onChangeText={ textVal => setEmail(textVal)} />
+              </View>
+              <View style={styles.labeledInput}>
+                <Text style={globalStyles.signInUpText}>Password:</Text>
+                <TextInput placeholder="Enter your password" 
+                  style={globalStyles.signInUpTextInput} 
+                  value={password} 
+                  onChangeText={ textVal => setPassword(textVal)} />
+              </View>
             </View>
           </View>
-          {/*
-          <View style={loggedInUser === null ? styles.hidden : styles.loginLogoutPane}>
-              <TouchableOpacity style={styles.button}
-                 onPress={() => logOut()}>
-                <Text style={styles.buttonText}>Log Out</Text>
-              </TouchableOpacity> 
+          <View style={globalStyles.userInfoSection}>
+            <TouchableOpacity style={[globalStyles.loginButton, {shadowColor: 'grey',
+                    shadowOffset: {width: 0,height: 3}, shadowOpacity: .5}]}
+              onPress={() => signInUserEmailPassword()}>
+              <Text style={globalStyles.welcomeText}>LOGIN</Text>
+            </TouchableOpacity> 
           </View>
-          */} 
-          {/*
-          <View>
-            <Button title = "Go to View All Chats Screen" onPress = {() => props.navigation.navigate("View All Chats")}/>
+          <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
+            <Text style={styles.errorMessage}>{errorMsg}</Text>
           </View>
-          */}
-          <ScrollView style={styles.jsonContainer}>
+          {/* <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>Logged In User: {formatJSON(loggedInUser)}</Text>
-          </ScrollView>
+          </ScrollView> */}
           {/* <ScrollView style={styles.jsonContainer}>
             <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
           </ScrollView> */}
          
-        </View>
         </ScrollView>
       );
     }
@@ -228,7 +224,7 @@ export default function LoginScreen(props) {
     }, 
     labeledInput: {
         width: "100%",
-        alignItems: 'center',
+        // alignItems: 'center',
         justifyContent: 'center',
     }, 
     inputLabel: {
@@ -272,6 +268,7 @@ export default function LoginScreen(props) {
         borderWidth: 1,
         borderStyle: 'dashed', // Lyn sez: doesn't seem to work 
         borderColor: 'red',
+        alignSelf: 'center'
     },
     errorMessage: {
         color: 'red',
@@ -285,10 +282,11 @@ export default function LoginScreen(props) {
     },
     jsonContainer: {
         flex: 1,
-        width: '98%',
+        width: '80%',
         borderWidth: 1,
         borderStyle: 'dashed', // Lyn sez: doesn't seem to work 
         borderColor: 'blue',
+        alignSelf: 'center'
     },
     json: {
         padding: 10, 

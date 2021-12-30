@@ -42,10 +42,26 @@ export default function ExploreScreen(props) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
-        {label: 'Name (A to Z)', value: 'Name (A to Z)'},
-        {label: 'Name (Z to A)', value: 'Name (Z to A)'},
-        {label: 'Class Year (Oldest to Youngest)', value: 'Class Year (Oldest to Youngest)'},
-        {label: 'Class Year (Youngest to Oldest)', value: 'Class Year (Youngest to Oldest)'},
+        {label: 'Name (A to Z)', value: 'Name (A to Z)', 
+        labelStyle: {
+            color: "#fff",
+            paddingHorizontal: 10
+          }},
+        {label: 'Name (Z to A)', value: 'Name (Z to A)',
+        labelStyle: {
+            color: "#fff",
+            paddingHorizontal: 10
+          }},
+        {label: 'Class Year (Oldest to Youngest)', value: 'Class Year (Oldest to Youngest)',
+        labelStyle: {
+            color: "#fff",
+            paddingHorizontal: 10
+          }},
+        {label: 'Class Year (Youngest to Oldest)', value: 'Class Year (Youngest to Oldest)',
+        labelStyle: {
+            color: "#fff",
+            paddingHorizontal: 10
+          }},
     ]);
     const [selectedSort, setSelectedSort] = useState('Name (A to Z)');
 
@@ -99,6 +115,11 @@ export default function ExploreScreen(props) {
                 routeName: 'Message'
             })
         ); 
+        Catherine: You can always navigate to a sub-tab, but 
+        not to a higher level tab. I think you only need to 
+        replace 'Friendsley' with 'Message', but I could be wrong.
+        This is how I navigated to Edit Profile screen:
+        () => props.navigation.navigate('Message')
         */
     }
 
@@ -177,28 +198,34 @@ export default function ExploreScreen(props) {
     }
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor: '#FFF0BB'}}>
             <SafeAreaView>
                 <View style={{margin: 20}}>
-                    <Searchbar
-                        style={{shadowOpacity: 0, marginBottom: 10}}
-                        placeholder="Search"
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
-                    />
                     {/* <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Get All Profiles</Text>
                     </TouchableOpacity>                 */}
+                    <Searchbar
+                        style={globalStyles.searchbar}
+                        placeholder="Search"
+                        onChangeText={onChangeSearch}
+                        value={searchQuery}
+                        selectionColor={'#5971B5'}
+                    />
                     <DropDownPicker
-                        style={{
-                            borderColor: 'gray', 
-                            fontFamily: 'sans-serif'}}
+                        style={globalStyles.sortDropDown}
                         dropDownContainerStyle={{
-                            borderColor: 'gray',
-                            backgroundColor: 'lightgray'
+                            borderColor: '#5971B5',
+                            backgroundColor: '#5971B5',
+                            color: 'white',
                           }}
-                        placeholder="Sort by"
+                        placeholder="Sort By"
+                        placeholderStyle={{
+                            color: 'white',
+                            fontFamily: 'DMSans_500Medium',
+                            fontSize: 18,
+                            marginLeft: 45
+                        }}
                         open={open}
                         value={value}
                         items={items}
@@ -220,6 +247,7 @@ export default function ExploreScreen(props) {
                                     alignSelf: 'center', 
                                     width: 275, 
                                     paddingVertical: 20, 
+                                    paddingHorizontal: 5,
                                     marginVertical: 10,
                                     borderRadius: 20}}>
                                     <Avatar.Image 
@@ -229,14 +257,28 @@ export default function ExploreScreen(props) {
                                             uri: 'https://picsum.photos/700'
                                         }}/>
                                     <Card.Content style={{ alignItems: 'center'}}>
-                                        <Title style={{marginBottom: 5}}>{user.basics.name}</Title>
-                                        <Paragraph>Class of {user.personal.classYear}</Paragraph>
-                                        <Paragraph>{user.personal.major}</Paragraph>
-                                        <Paragraph>{user.email}</Paragraph>
+                                        <Title style={globalStyles.cardName}>{user.basics.name}</Title>
+                                        <Paragraph style={globalStyles.cardText}>Class of {user.personal.classYear}</Paragraph>
+                                        <Paragraph style={globalStyles.cardText}>{user.personal.major}</Paragraph>
+                                        <Paragraph style={globalStyles.cardText}>{user.email}</Paragraph>
                                     </Card.Content>
-                                    <Card.Actions style={{ alignSelf: 'center'}}>
-                                        <Button color='blue' onPress = {() => addPersonToContacts(user.email)}>Message</Button>
-                                        <Button color='blue'>Friend</Button>
+                                    <Card.Actions style={{ 
+                                        flex: 1,
+                                        alignSelf: 'center', 
+                                        marginTop: 10}}>
+                                        <TouchableOpacity onPress = {() => addPersonToContacts(user.email)}>
+                                            <Text style={{
+                                                fontFamily: 'RobotoMono_500Medium', 
+                                                color: '#5971B5', 
+                                                fontSize: 20}}>MESSAGE</Text>
+                                        </TouchableOpacity>
+                                        {/* Have the star change dynamically between filled and unfilled when pressed */}
+                                        <TouchableOpacity>
+                                            <Image 
+                                                style={{ width: 25, height: 25, marginLeft: 30 }}
+                                                source={require('../assets/star.png')}
+                                            />
+                                        </TouchableOpacity>
                                     </Card.Actions>
                                 </Card>
                             </View>

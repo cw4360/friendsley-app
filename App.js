@@ -4,6 +4,7 @@ import {  Provider as PaperProvider, } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileScreen from './components/ProfileScreen';
 import ProfileScreenContext from './components/ProfileScreenContext';
@@ -16,6 +17,22 @@ import MessageScreen from './components/MessageScreen';
 import ViewAllChatsScreen from './components/ViewAllChatsScreen'; 
 import SettingsScreen from './components/SettingsScreen';
 import StateContext from './components/StateContext'; 
+
+// Importing fonts
+import {
+  useFonts,
+  DMSans_400Regular,
+  DMSans_400Regular_Italic,
+  DMSans_500Medium,
+  DMSans_500Medium_Italic,
+  DMSans_700Bold,
+  DMSans_700Bold_Italic,
+} from '@expo-google-fonts/dm-sans';
+import {
+  RobotoMono_400Regular,
+  RobotoMono_500Medium,
+  RobotoMono_400Regular_Italic,
+} from '@expo-google-fonts/roboto-mono'
 
 // Importing Firebase Authentication, Cloud Firestore, and Storage
 import { initializeApp } from "firebase/app"
@@ -49,8 +66,17 @@ const storage = getStorage(firebaseApp,
 const MessageStack = createNativeStackNavigator();
 function MessageStackScreen() {
   return (
-    <MessageStack.Navigator>
-      <MessageStack.Screen name="View All Chats" component={ViewAllChatsScreen}/>
+    <MessageStack.Navigator screenOptions={{
+      headerTitleAlign: 'center',
+      headerStyle: {
+        backgroundColor: "#FFF0BB",
+      },
+      headerTitleStyle: {
+        fontFamily: "RobotoMono_500Medium"
+      },
+    }}>
+      <MessageStack.Screen name="View All Chats" component={ViewAllChatsScreen}
+        options={{ title: 'All Chats'}}/>
       <MessageStack.Screen name="Message" component={MessageScreen}/>
     </MessageStack.Navigator>
   );
@@ -59,7 +85,15 @@ function MessageStackScreen() {
 const ProfileStack = createNativeStackNavigator();
 function ProfileStackScreen() {
   return (
-    <ProfileStack.Navigator>
+    <ProfileStack.Navigator screenOptions={{
+      headerTitleAlign: 'center',
+      headerStyle: {
+        backgroundColor: "#FFF0BB",
+      },
+      headerTitleStyle: {
+        fontFamily: "RobotoMono_500Medium"
+      },
+    }}>
       <ProfileStack.Screen name="Profile" component={ProfileScreen}/>
       <ProfileStack.Screen name="Edit Profile" component={EditProfileScreen}/>
     </ProfileStack.Navigator>
@@ -85,8 +119,16 @@ function HomeTabs() {
 
         return <Ionicons name={iconName} size={size} color={color} />;
         },
-      tabBarActiveTintColor: '#4361EE',
-      tabBarInactiveTintColor: '#808080'
+        
+      tabBarActiveTintColor: '#5971B5',
+      tabBarInactiveTintColor: '#808080',
+      headerTitleAlign: 'center',
+      headerStyle: {
+        backgroundColor: "#FFF0BB",
+      },
+      headerTitleStyle: {
+        fontFamily: "RobotoMono_500Medium"
+      },
     })}>
       <Tab.Screen name="Explore" component={ExploreScreen}/>
       <Tab.Screen name="Messages" component={MessageStackScreen}
@@ -97,6 +139,12 @@ function HomeTabs() {
     </Tab.Navigator>
   );
 }
+
+LogBox.ignoreLogs([
+  // 'Setting a timer',
+  'AsyncStorage',                                	 
+]);
+
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -111,33 +159,55 @@ export default function App() {
   const [messages, setMessages] = React.useState([]); // HOW EXACTLY TO STRUCTURE THIS DATA STRUCTURE IN FIREBASE? 
   const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles};
 
-  return (
-    <StateContext.Provider value = {stateProps}>
-      <PaperProvider>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          <Stack.Navigator 
-          screenOptions={{
-            headerShown: false,
-            contentStyle:{
-              backgroundColor:'#FFF0BB'
-            },
-            headerStyle: {
-              backgroundColor: "#FFF0BB",
-            },
-          }}>
-            <Stack.Screen name="Welcome" component={WelcomeScreen}
-              options={{
-                cardStyle: { backgroundColor: 'blue' }}}/>
-            <Stack.Screen name="Sign Up" component={SignupScreen}
-              options={{headerShown: true, headerTintColor: 'none'}}/>
-            <Stack.Screen name="Login" component={LoginScreen}
-              options={{headerShown: true}}/>
-            <Stack.Screen name="Friendsley" component={HomeTabs}/>
-          </Stack.Navigator>
-        </NavigationContainer>
-      </PaperProvider> 
-    </StateContext.Provider>
-  );
+  let [fontsLoaded] = useFonts({
+    DMSans_400Regular,
+    DMSans_400Regular_Italic,
+    DMSans_500Medium,
+    DMSans_500Medium_Italic,
+    DMSans_700Bold,
+    DMSans_700Bold_Italic,
+    RobotoMono_400Regular,
+    RobotoMono_500Medium,
+    RobotoMono_400Regular_Italic,
+  });
+
+  if (!fontsLoaded) {
+    return (
+        <View></View>
+    );
+  }  else { 
+    return (
+      <StateContext.Provider value = {stateProps}>
+        <PaperProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <Stack.Navigator 
+            screenOptions={{
+              headerShown: false,
+              headerTitleAlign: 'center',
+              contentStyle:{
+                backgroundColor: '#FFF0BB'
+              },
+              headerStyle: {
+                backgroundColor: "#FFF0BB",
+              },
+              headerTitleStyle: {
+                fontFamily: "RobotoMono_500Medium"
+              }
+            }}>
+              <Stack.Screen name="Welcome" component={WelcomeScreen}
+                options={{
+                  cardStyle: { backgroundColor: 'blue' }}}/>
+              <Stack.Screen name="Sign Up" component={SignupScreen}
+                options={{headerShown: true, headerTintColor: 'none'}}/>
+              <Stack.Screen name="Login" component={LoginScreen}
+                options={{headerShown: true}}/>
+              <Stack.Screen name="Friendsley" component={HomeTabs}/>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PaperProvider> 
+      </StateContext.Provider>
+    );
+  }
 }
 
