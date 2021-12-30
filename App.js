@@ -4,7 +4,7 @@ import {  Provider as PaperProvider, } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View } from 'react-native';
+import { View, LogBox } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileScreen from './components/ProfileScreen';
 import ProfileScreenContext from './components/ProfileScreenContext';
@@ -140,12 +140,11 @@ function HomeTabs() {
   );
 }
 
-/* IDK why this isn't working LMAO 
+
 LogBox.ignoreLogs([
   // 'Setting a timer',
   'AsyncStorage',                                	 
 ]);
-*/
 
 
 const Stack = createNativeStackNavigator();

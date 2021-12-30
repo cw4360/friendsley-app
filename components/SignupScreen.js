@@ -63,20 +63,19 @@ export default function SignupScreen(props) {
   
   
     async function firebasePostNewProfile() {
-        if (errorMsg !== '') {
-            return;
-        }
-        let bool = await(isProfileInFirebase(email)); 
-        console.log("Is profile in database?", bool); 
-        // If the profile with the specified email is not in Firebase
-        if (!bool) {
+        // if (errorMsg !== '') {
+        //     return;
+        // }
+        // let bool = await(isProfileInFirebase(email)); 
+        // console.log("Is profile in database?", bool); 
+        // // If the profile with the specified email is not in Firebase
+        // if (!bool) {
             // Create a new empty profile 
             // alert("Adding new profile!", formatJSON(email)); 
             // setDoc is a promise
-            //const profileRef = doc(db, 'profiles', email);
-            // In documentation "Add data to Cloud Firestore" there seems to be an "await" in front of the setDoc
-            setDoc(doc(db, 'profiles', email), {
-                email: email, 
+            const profileRef = doc(db, 'profiles', email);
+            setDoc(profileRef, {
+                email: email.toLowerCase(), 
                 basics: {
                     name: name, 
                     pronouns: '', 
@@ -107,99 +106,99 @@ export default function SignupScreen(props) {
                 messageContacts: [], 
               }
             );
-        }
+        // }
         console.log("Set new profile!", formatJSON(email)); 
     }
 
-    function firebaseAddNewProfile() {
-        if (errorMsg === '') {
-            const profileRef = doc(db, 'profiles', email);
-            setDoc(profileRef, {
-                email: email, 
-                basics: {
-                    name: name, 
-                    pronouns: '', 
-                    bio: '',        
-                }, 
-                personal: {
-                    classYear: '', 
-                    major: '', 
-                    minor: '', 
-                    hometown: '', 
-                    residenceHall: '',
-                    clubs: '',
-                    hobbies: '',
-                    favPlaceOnCampus: '',
-                    favWellesleyMemory: '',
-                }, 
-                academics: {
-                    currentClasses: '', 
-                    plannedClasses: '', 
-                    favClasses: '', 
-                    studyAbroad: '', 
-                }, 
-                career: {
-                    interestedIndustry: '', 
-                    jobExp: '', 
-                    internshipExp: '', 
-                }
-              }
-            );
-        } else {
-            alert('Error occurred');
-        }
-    }
+    // function firebaseAddNewProfile() {
+    //     if (errorMsg === '') {
+    //         const profileRef = doc(db, 'profiles', email);
+    //         setDoc(profileRef, {
+    //             email: email, 
+    //             basics: {
+    //                 name: name, 
+    //                 pronouns: '', 
+    //                 bio: '',        
+    //             }, 
+    //             personal: {
+    //                 classYear: '', 
+    //                 major: '', 
+    //                 minor: '', 
+    //                 hometown: '', 
+    //                 residenceHall: '',
+    //                 clubs: '',
+    //                 hobbies: '',
+    //                 favPlaceOnCampus: '',
+    //                 favWellesleyMemory: '',
+    //             }, 
+    //             academics: {
+    //                 currentClasses: '', 
+    //                 plannedClasses: '', 
+    //                 favClasses: '', 
+    //                 studyAbroad: '', 
+    //             }, 
+    //             career: {
+    //                 interestedIndustry: '', 
+    //                 jobExp: '', 
+    //                 internshipExp: '', 
+    //             }
+    //           }
+    //         );
+    //     } else {
+    //         alert('Error occurred');
+    //     }
+    // }
 
     function signUpUserEmailPassword() {
-        if (auth.currentUser) {
-            signOut(auth); // sign out auth's current user (who is not loggedInUser, 
-                           // or else we wouldn't be here
-        }
-        if (name.length < 1) {
-            setErrorMsg('No name entered');
-            return;
-        }
-        // if (!email.includes('@wellesley.edu')) {
-        //     setErrorMsg('Not a valid Wellesley email address');
+        // if (auth.currentUser) {
+        //     signOut(auth); // sign out auth's current user (who is not loggedInUser, 
+        //                    // or else we wouldn't be here
+        // }
+        // if (name.length < 1) {
+        //     setErrorMsg('No name entered');
         //     return;
         // }
-        if (password.length < 6) {
-            setErrorMsg('Password too short');
-            return;
-        }   
-        // Invoke Firebase authentication API for Email/Password sign up 
-        createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            console.log(`signUpUserEmailPassword: sign up for email ${email} succeeded (but email still needs verification).`);
+        // // if (!email.includes('@wellesley.edu')) {
+        // //     setErrorMsg('Not a valid Wellesley email address');
+        // //     return;
+        // // }
+        // if (password.length < 6) {
+        //     setErrorMsg('Password too short');
+        //     return;
+        // }   
+        // // Invoke Firebase authentication API for Email/Password sign up 
+        // createUserWithEmailAndPassword(auth, email, password)
+        // .then((userCredential) => {
+        //     console.log(`signUpUserEmailPassword: sign up for email ${email} succeeded (but email still needs verification).`);
 
-            // Clear name/email/password inputs
-            const savedEmail = email; // Save for email verification
-            setName('');
-            setEmail('');
-            setPassword('');
+        //     // Clear name/email/password inputs
+        //     const savedEmail = email; // Save for email verification
+        //     setName('');
+        //     setEmail('');
+        //     setPassword('');
 
-            // Note: could store userCredential here if wanted it later ...
-            // console.log(`createUserWithEmailAndPassword: setCredential`);
-            // setCredential(userCredential);
+        //     // Note: could store userCredential here if wanted it later ...
+        //     // console.log(`createUserWithEmailAndPassword: setCredential`);
+        //     // setCredential(userCredential);
 
-            // Send verication email
-            console.log('signUpUserEmailPassword: about to send verification email');
-            sendEmailVerification(auth.currentUser)
-            .then(() => {
-                console.log('signUpUserEmailPassword: sent verification email');
-                setErrorMsg(`A verification email has been sent to ${savedEmail}. You will not be able to sign in to this account until you click on the verification link in that email.`); 
-                // Email verification sent!
-                // ...
-            });
-        })
-        .catch((error) => {
-            console.log(`signUpUserEmailPassword: sign up failed for email ${email}`);
-            const errorMessage = error.message;
-            // const errorCode = error.code; // Could use this, too.
-            console.log(`createUserWithEmailAndPassword: ${errorMessage}`);
-            setErrorMsg(`createUserWithEmailAndPassword: ${errorMessage}`);
-        });
-        alert("Got here!"); 
+        //     // Send verication email
+        //     console.log('signUpUserEmailPassword: about to send verification email');
+        //     sendEmailVerification(auth.currentUser)
+        //     .then(() => {
+        //         console.log('signUpUserEmailPassword: sent verification email');
+        //         setErrorMsg(`A verification email has been sent to ${savedEmail}. You will not be able to sign in to this account until you click on the verification link in that email.`); 
+        //         // Email verification sent!
+        //         // ...
+        //     });
+        // })
+        // .catch((error) => {
+        //     console.log(`signUpUserEmailPassword: sign up failed for email ${email}`);
+        //     const errorMessage = error.message;
+        //     // const errorCode = error.code; // Could use this, too.
+        //     console.log(`createUserWithEmailAndPassword: ${errorMessage}`);
+        //     setErrorMsg(`createUserWithEmailAndPassword: ${errorMessage}`);
+        // });
+        // alert("Got here!"); 
         firebasePostNewProfile(); 
         // firebaseAddNewProfile();
     }

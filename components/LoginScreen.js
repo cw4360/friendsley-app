@@ -52,6 +52,8 @@ export default function LoginScreen(props) {
       //console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
       if (userProfileDoc) { 
         props.navigation.navigate("Friendsley"); 
+        // props.navigation.navigate("Sign Up"); 
+
       }
     }, [userProfileDoc]); // When userProfileDoc changes, this effect is triggered 
     // Download all the data of the current user once they are successfully logged in (right before call to navigate to Explore screen) - local database will be one of the StateProps (ex stateProps.setLoggedInUser('VALUE'))
