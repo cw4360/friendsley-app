@@ -140,10 +140,12 @@ function HomeTabs() {
   );
 }
 
+/* IDK why this isn't working LMAO 
 LogBox.ignoreLogs([
   // 'Setting a timer',
   'AsyncStorage',                                	 
 ]);
+*/
 
 
 const Stack = createNativeStackNavigator();
