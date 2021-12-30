@@ -1,22 +1,70 @@
 import React from 'react';
 import { SafeAreaView, View, Text, Button, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Title, Caption, TouchableRipple } from 'react-native-paper';
+import AppLoading from 'expo';
+import {
+    useFonts,
+    DMSans_400Regular,
+    DMSans_400Regular_Italic,
+    DMSans_500Medium,
+    DMSans_500Medium_Italic,
+    DMSans_700Bold,
+    DMSans_700Bold_Italic,
+  } from '@expo-google-fonts/dm-sans';
+import {
+    RobotoMono_400Regular,
+    RobotoMono_500Medium,
+    RobotoMono_400Regular_Italic,
+} from '@expo-google-fonts/roboto-mono'
 import { globalStyles } from "../styles/globalStyles";
 
 export default function WelcomeScreen(props) {
-    return (
-        <SafeAreaView style={{marginTop: 250}}>
-            <View style={globalStyles.userInfoSection}>
-                <Title style={{alignSelf: 'center', margin: 20 }}>Welcome to Friendsley!</Title>
-                <View style={{flexDirection: 'row', justifyContent: 'space-evenly', margin: 20}}>                    
-                    <Button title="Sign Up" onPress={() => props.navigation.navigate('Sign Up')}/>
-                    <Button title="Log In" onPress={() => props.navigation.navigate('Login')}/>
+    let [fontsLoaded] = useFonts({
+        DMSans_400Regular,
+        DMSans_400Regular_Italic,
+        DMSans_500Medium,
+        DMSans_500Medium_Italic,
+        DMSans_700Bold,
+        DMSans_700Bold_Italic,
+        RobotoMono_400Regular,
+        RobotoMono_500Medium,
+        RobotoMono_400Regular_Italic,
+      });
+    
+    if (!fontsLoaded) {
+        return (
+            // <AppLoading />
+            <View></View>
+        );
+    }  else {
+        return (
+            <SafeAreaView style={{marginTop: 200}}>
+                <View style={globalStyles.userInfoSection}>
+                    <Title style={{
+                        alignSelf: 'center', 
+                        padding: 20, color: '#5971B5', 
+                        fontFamily: 'DMSans_700Bold',
+                        fontSize: 40,
+                        }}>Friendsley</Title>
+                    <View style={{alignItems: 'center'}}>  
+                        <TouchableOpacity 
+                            onPress={() => props.navigation.navigate('Login')}
+                            style={globalStyles.loginButton}
+                        >
+                            <Text style={globalStyles.welcomeText}>LOGIN</Text>
+                        </TouchableOpacity>                  
+                        <TouchableOpacity 
+                            onPress={() => props.navigation.navigate('Sign Up')}
+                            style={globalStyles.signupButton}
+                        >
+                            <Text style={globalStyles.welcomeText}>SIGN UP</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {/* <View>                    
+                        <Button title="Go to Explore Screen" onPress={() => props.navigation.navigate("Friendsley")}/>
+                    </View> */}
                 </View>
-                {/* <View>                    
-                    <Button title="Go to Explore Screen" onPress={() => props.navigation.navigate("Friendsley")}/>
-                </View> */}
-            </View>
-        </SafeAreaView>
-        
-    );
+            </SafeAreaView>
+        );
+    }
 }

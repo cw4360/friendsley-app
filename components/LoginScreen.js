@@ -218,7 +218,7 @@ export default function LoginScreen(props) {
     paddingTop: Constants.statusBarHeight,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     paddingTop: '30%'
     }, 
     loginLogoutPane: {

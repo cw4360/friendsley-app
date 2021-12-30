@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     }, 
     loginLogoutPane: {
         flex: 3, 

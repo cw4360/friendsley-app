@@ -115,13 +115,22 @@ export default function App() {
     <StateContext.Provider value = {stateProps}>
       <PaperProvider>
         <NavigationContainer>
+          <StatusBar style="auto" />
           <Stack.Navigator 
           screenOptions={{
-            headerShown: false
+            headerShown: false,
+            contentStyle:{
+              backgroundColor:'#FFF0BB'
+            },
+            headerStyle: {
+              backgroundColor: "#FFF0BB",
+            },
           }}>
-            <Stack.Screen name="Welcome" component={WelcomeScreen}/>
+            <Stack.Screen name="Welcome" component={WelcomeScreen}
+              options={{
+                cardStyle: { backgroundColor: 'blue' }}}/>
             <Stack.Screen name="Sign Up" component={SignupScreen}
-              options={{headerShown: true}}/>
+              options={{headerShown: true, headerTintColor: 'none'}}/>
             <Stack.Screen name="Login" component={LoginScreen}
               options={{headerShown: true}}/>
             <Stack.Screen name="Friendsley" component={HomeTabs}/>
