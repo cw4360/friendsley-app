@@ -71,9 +71,11 @@ export default function ViewAllChatsScreens(props) {
                     // onChangeText={onChangeSearch}
                     // value={searchQuery}
                 />
+                {/*
                 <View>
                     <Button title="Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
                 </View>
+                */}
                 {/* Loop through the current user's message contacts */}
                 {userContacts ? (userContacts.map( (email) => {
                     // console.log("Current user", formatJSON(user));
@@ -94,15 +96,7 @@ export default function ViewAllChatsScreens(props) {
                                     <Paragraph>{email}</Paragraph>
                                 </Card.Content>
                                 <Card.Actions style={{ alignSelf: 'center'}}>
-                                    <Button title="Message" color='blue'/> 
-                                    {/*WHY ISN'T THE WORD 'MESSAGE' SHOWING UP?
-                                    Catherine: I placed the word 'Message' into a title attribute! 
-                                    I hope this fixes the issue. The reason why Button doesn't work
-                                    like normal is because this particular Button is from React-Native-Paper's
-                                    API (import statement), not React Native's. There was a bug about 
-                                    MessageContacts being null so I wasn't able to check if this was fixed.
-                                    Alina: Yee yee got it. Thank you :3 
-                                    Catherine: Yay!! Np! */}
+                                    <Button title="Message" color='blue' onPress = {() => props.navigation.navigate('Message')}/> 
                                 </Card.Actions>
                             </Card>
                         </View>

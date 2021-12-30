@@ -73,8 +73,9 @@ export default function SignupScreen(props) {
             // Create a new empty profile 
             // alert("Adding new profile!", formatJSON(email)); 
             // setDoc is a promise
-            const profileRef = doc(db, 'profiles', email);
-            setDoc(profileRef, {
+            //const profileRef = doc(db, 'profiles', email);
+            // In documentation "Add data to Cloud Firestore" there seems to be an "await" in front of the setDoc
+            setDoc(doc(db, 'profiles', email), {
                 email: email, 
                 basics: {
                     name: name, 

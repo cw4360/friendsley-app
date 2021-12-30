@@ -216,17 +216,17 @@ export default function MessageScreen() {
   const stateProps = useContext(StateContext); 
   const auth = stateProps.auth; 
   const db = stateProps.db; 
-  const [email, setEmail] = React.useState(''); // Provide default email for testing
-  const [password, setPassword] = React.useState(''); // Provide default passwored for testing
-  const [errorMsg, setErrorMsg] = React.useState('');
-  const [loggedInUser, setLoggedInUser] = React.useState(null);
+  //const [email, setEmail] = React.useState(''); // Provide default email for testing
+  //const [password, setPassword] = React.useState(''); // Provide default passwored for testing
+  //const [errorMsg, setErrorMsg] = React.useState('');
+  //const [loggedInUser, setLoggedInUser] = React.useState(null);
 
   // State for chat channels and messages
   const [channels, setChannels] = React.useState(defaultChannels);
   const [selectedChannel, setSelectedChannel] = React.useState('Food');
   const [selectedMessages, setSelectedMessages] = React.useState([]);
   const [textInputValue, setTextInputValue] = useState('');
-  const [isComposingMessage, setIsComposingMessage] = useState(false);
+  //const [isComposingMessage, setIsComposingMessage] = useState(false);
   // Faking message database (just a list of messages) for local testing
   const [localMessageDB, setLocalMessageDB] = useState(testMessages.map( addTimestamp ));
   const [usingFirestore, setUsingFirestore] = useState(true); // If false, only using local data. 

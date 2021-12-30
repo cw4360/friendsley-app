@@ -28,7 +28,8 @@ export default function ExploreScreen(props) {
     const userProfileDoc = stateProps.userProfileDoc; 
     const setUserProfileDoc = stateProps.setUserProfileDoc; 
     const userEmail = userProfileDoc.email; 
-    const [userContacts, setUserContacts] = useState(userProfileDoc.messageContacts);
+    const [userContacts, setUserContacts] = useState(userProfileDoc.messageContacts); 
+    //const [recipientProfileDoc, setRecipientProfileDoc] = useState(null); 
     //const userContacts = userProfileDoc.messageContacts; 
 
     //const [allProfiles, setAllProfiles] = React.useState([]); 
@@ -86,18 +87,34 @@ export default function ExploreScreen(props) {
         firebaseGetAllProfiles();
     }, []);
 
+    async function grabRecipientProfileDoc(email) {
+        const profileRef = doc(db, 'profiles', email); 
+        const profileSnap = await getDoc(profileRef); 
+        if (profileSnap.exists()) {
+            //alert("Recipient's profile", formatJSON(profileSnap.data())); 
+            //setRecipientProfileDoc(profileSnap.data()); 
+            return profileSnap.data(); 
+        }
+    }
+
     // Adds a person to the user's messageContacts list in Firebase 
     async function addPersonToContacts(email) {
-        console.log("CURRENT USER CONTACTS", userContacts); // Why is this sometimes empty? 
         if (!userContacts.includes(email)) {
+            // Add recipient's email to the list of the current user's/sender's message contacts
             const profileRef = doc(db, 'profiles', userEmail);
             const newProfile = {
                 messageContacts: [...userContacts, email], 
             }; 
-            // Set the new document in Firebase
-            await setDoc(profileRef, newProfile, { merge: true });
+            // Add current user's/sender's email to the list of the recipient's message contacts 
+            const recipientProfileRef = await(grabRecipientProfileDoc(email)); 
+            const newRecipientProfile = {
+                messageContacts: [...recipientProfileRef.messageContacts, userEmail], 
+            }
+            // Set the new documents in Firebase
+            await setDoc(profileRef, newProfile, { merge: true }); // sender
+            await setDoc(recipientProfileRef, newRecipientProfile, { merge: true }); // recipient 
 
-            // Get new profile from Firebase, update userProfileDoc in stateProps
+            // Get new sender/current user profile from Firebase, update userProfileDoc in stateProps
             const docRef = doc(db, "profiles", userEmail); 
             const docSnap = await getDoc(docRef); 
             let userDoc = docSnap.data(); 
