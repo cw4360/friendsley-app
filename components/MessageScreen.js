@@ -321,6 +321,17 @@ export default function MessageScreen() {
     }
   }
   */
+  async function grabMessagesFromFirebase() {
+    const timestamp = await(findTimestampOfFirstChat()); 
+    const messageRef = doc(db, 'messages', timestamp); 
+    const messageSnap = await getDoc(messageRef); 
+    const messageObjects = messageSnap.data().messageObjects; 
+    console.log(formatJSON(messageObjects)); 
+    return messageObjects; 
+
+    //const q = query(collection(db, 'messages'), where('timestamp', '==', chan));
+  }
+  //alert(grabMessagesFromFirebase())
 
   /*
   function docToMessage(msgDoc) {
@@ -402,10 +413,10 @@ export default function MessageScreen() {
     // Grab the time that the first chat/message occurred between person 1 and person 2
     const firstChatTimeStamp = await(findTimestampOfFirstChat()); 
     // Get the corresponding object from the messages database (chat history between person 1 and person 2)
-    console.log(firstChatTimeStamp); 
+    //console.log(firstChatTimeStamp); 
     const messageRef = doc(db, "messages", firstChatTimeStamp); 
     const messageSnap = await getDoc(messageRef);
-    console.log(formatJSON(messageSnap.data())); 
+    //console.log(formatJSON(messageSnap.data())); 
     const messageObjects = messageSnap.data().messageObjects;
 
     let newMessage = {
@@ -654,7 +665,7 @@ export default function MessageScreen() {
   const MessageItem = props => { 
     return (
       <View style={styles.messageItem}>
-        <Text style={styles.messageDateTime}>{formatDateTime(props.message.date)}</Text>
+        {/* <Text style={styles.messageDateTime}>{formatDateTime(props.message.date)}</Text> */}
         <Text style={styles.messageAuthor}>{props.message.author}</Text>
         <Text style={styles.messageContent}>{props.message.content}</Text>
       </View> 
@@ -689,6 +700,8 @@ export default function MessageScreen() {
     );
   }
 
+  //console.log(async () => grabMessagesFromFirebase()); 
+
   function chatPane() {
     return (
       <ScrollView style={{width: "100%"}}>
@@ -719,17 +732,16 @@ export default function MessageScreen() {
           </Picker>
           */}
           {/*WHERE THE CHAT HISTORY IS LISTED*/}
-          {/*
           <Text style={styles.header}>Messages</Text> 
-          {(selectedMessages.length === 0) ? 
-          <Text>No messages to display</Text> :
+          {/* {(grabMessagesFromFirebase().length === 0) ? 
+          <Text>No messages to display</Text> : */}
+          {/*WHY ISN'T THIS RENDERING?!*/}
           <FlatList style={styles.messageList}
-              data={selectedMessages} 
+              data={(async () => {await grabMessagesFromFirebase()})()} 
               renderItem={ datum => <MessageItem message={datum.item}></MessageItem>} 
               keyExtractor={item => item.timestamp} 
               />
-          }
-          */}
+          {/* } */}
           {/*BOX TO COMPOSE MESSAGE*/}
           <View style={styles.buttonHolder}>
             {/*
