@@ -363,6 +363,7 @@ export default function MessageScreen() {
   }
   */
 
+
   function postMessage() {
     //alert("Warning: Messages do not update on page automatically; you have to navigate away from the person being messaged and then reselect them in order to see the message. Also, people that we message are not real people yet (they're simply test channels)."); 
     console.log(`postMessage; usingFirestore=${usingFirestore}`);
@@ -370,8 +371,10 @@ export default function MessageScreen() {
     // Create a new message dictionary 
     const newMessage = {
       'author': auth.currentUser.email, 
+      'recipient': recipient, 
       'date': now, 
       'timestamp': now.getTime(), // millsecond timestamp
+
       //'channel': selectedChannel, 
       'content': textInputValue, 
     }

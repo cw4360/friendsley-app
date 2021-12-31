@@ -101,18 +101,22 @@ export default function ExploreScreen({ navigation }) {
     // Adds a person to the user's messageContacts list in Firebase 
     async function addPersonToContacts(email) {
         if (!searchMessageContactsForEmail(userProfileDoc.messageContacts, email)) {
+            const now = new Date().getTime().toString(); // Create timestamp (first occurred contact between current user and recipient)
+            // Update "Profile" database with correct information 
             // Add recipient's email to the list of the current user's/sender's message contacts
             const profileRef = doc(db, 'profiles', userEmail);
             const newProfile = {
-                messageContacts: [...userContacts, {'email': email, 'timestamp': null}], 
+                messageContacts: [...userContacts, {'email': email, 'timestamp': now}], 
             };  
+            
             // Add current user's/sender's email to the list of the recipient's message contacts 
             const recipientProfileRef = doc(db, "profiles", email); 
             const recipientProfileSnap = await getDoc(recipientProfileRef);
             const recipientProfileContacts = recipientProfileSnap.data().messageContacts; 
+            //console.log(formatJSON(recipientProfileSnap.data())); 
             const newRecipientProfile = {
-                messageContacts: [...recipientProfileContacts, {'email': userEmail, 'timestamp': null}], 
-            }
+                messageContacts: [...recipientProfileContacts, {'email': userEmail, 'timestamp': now}], 
+            }; 
             // Set the new documents in Firebase
             await setDoc(profileRef, newProfile, { merge: true }); // sender
             await setDoc(recipientProfileRef, newRecipientProfile, { merge: true }); // recipient 
@@ -122,7 +126,15 @@ export default function ExploreScreen({ navigation }) {
             const docSnap = await getDoc(docRef); 
             let userDoc = docSnap.data(); 
             setUserProfileDoc(userDoc);
-            setUserContacts([...userContacts, {'email': email, 'timestamp': null}]); 
+            setUserContacts([...userContacts, {'email': email, 'timestamp': now}]); 
+
+            // Create new entry in "Messages" database
+            await setDoc(doc(db, "messages", now), 
+                {
+                    'messageObjects': [],  
+                },     
+            );
+
         }
         // HOW TO NAVIGATE TO A SUBTAB?! 
         /* Navigation not defined even I imported? 
@@ -139,6 +151,7 @@ export default function ExploreScreen({ navigation }) {
         */
     }
 
+    // Adds recipients to user's list of contacts (and vice versa), updates recipient state property
     function messageUser(recipientEmail) {
         addPersonToContacts(recipientEmail); 
         setRecipient(recipientEmail);
