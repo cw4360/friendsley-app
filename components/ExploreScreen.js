@@ -117,7 +117,6 @@ export default function ExploreScreen({ navigation }) {
             const newRecipientProfile = {
                 messageContacts: [...recipientProfileContacts, {'email': userEmail, 'timestamp': now}], 
             }; 
-            console.log("WHAT", newRecipientProfile.messageContacts)
             // Set the new documents in Firebase
             await setDoc(profileRef, newProfile, { merge: true }); // sender
             await setDoc(recipientProfileRef, newRecipientProfile, { merge: true }); // recipient 

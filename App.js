@@ -180,7 +180,7 @@ export default function App() {
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
   const [allProfiles, setAllProfiles] = React.useState([]); 
   const [recipient, setRecipient] = React.useState(''); // For keeping track of who the current user is messaging
-  //const [messages, setMessages] = React.useState([]); // HOW EXACTLY TO STRUCTURE THIS DATA STRUCTURE IN FIREBASE? 
+  //const [messages, setMessages] = React.useState([]); 
   const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles, recipient, setRecipient};
 
   // Loading fonts DM Sans and Roboto Mono

@@ -227,14 +227,15 @@ export default function MessageScreen() {
   // const [selectedMessages, setSelectedMessages] = React.useState([]);
   const recipient = stateProps.recipient; 
   const setRecipient = stateProps.setRecipient; 
+  const [messages, setMessages] = useState([]); 
   const [textInputValue, setTextInputValue] = useState('');
   //const [isComposingMessage, setIsComposingMessage] = useState(false);
   // Faking message database (just a list of messages) for local testing
   const [localMessageDB, setLocalMessageDB] = useState(testMessages.map( addTimestamp ));
   const [usingFirestore, setUsingFirestore] = useState(true); // If false, only using local data. 
 
-  
-  //console.log("RECIPIENT", recipient); 
+  // SADNESS! THIS RETURNS SOMETHING EMPTY EVEN THOUGH WE AWAITED IT...I DON'T KNOW WHAT'S GOING ON
+  alert(formatJSON((async () => {await grabMessagesFromFirebase()})())); 
 
   function addTimestamp(message) {
     // Add millisecond timestamp field to message 
@@ -276,12 +277,10 @@ export default function MessageScreen() {
       // This has worked already, so commenting it out
       // console.log(`on mount: populateFirestoreDB(testMessages)`);
       // populateFirestoreDB(testMessages); 
-      return () => {
         // Anything in here is fired on component unmount.
-        console.log('Component did unmount');
+        setMessages(grabMessagesFromFirebase()); 
         //console.log(`on unmount: emailOf(auth.currentUser)=${emailOf(auth.currentUser)}`);
         //console.log(`on unmount: emailOf(loggedInUser)=${emailOf(loggedInUser)}`);
-      }
     }, []);
 
   /***************************************************************************
@@ -701,7 +700,7 @@ export default function MessageScreen() {
   }
 
   //console.log(async () => grabMessagesFromFirebase()); 
-
+  console.log("MESSAGES", messages); // This is empty...
   function chatPane() {
     return (
       <ScrollView style={{width: "100%"}}>
@@ -737,7 +736,8 @@ export default function MessageScreen() {
           <Text>No messages to display</Text> : */}
           {/*WHY ISN'T THIS RENDERING?!*/}
           <FlatList style={styles.messageList}
-              data={(async () => {await grabMessagesFromFirebase()})()} 
+              // data={(async () => {await grabMessagesFromFirebase()})()} 
+              data = {messages}
               renderItem={ datum => <MessageItem message={datum.item}></MessageItem>} 
               keyExtractor={item => item.timestamp} 
               />
