@@ -5,7 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 //import { NavigationActions } from 'react-navigation';
-
+import { MessageStackScreen } from "../App";
 import { 
     // for storage access
     collection, getDocs,
@@ -13,6 +13,7 @@ import {
     query, where, getDoc
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { NavigationHelpersContext } from "@react-navigation/native";
 
 function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
@@ -28,8 +29,9 @@ export default function ExploreScreen({ navigation }) {
     const userProfileDoc = stateProps.userProfileDoc; 
     const setUserProfileDoc = stateProps.setUserProfileDoc; 
     const userEmail = userProfileDoc.email; 
-    const [userContacts, setUserContacts] = useState(userProfileDoc.messageContacts); 
-    //const [recipientProfileDoc, setRecipientProfileDoc] = useState(null); 
+    const recipient = stateProps.recipient; 
+    const setRecipient = stateProps.setRecipient; 
+    const [userContacts, setUserContacts] = useState(userProfileDoc.messageContacts);  
     //const userContacts = userProfileDoc.messageContacts; 
 
     //const [allProfiles, setAllProfiles] = React.useState([]); 
@@ -135,6 +137,13 @@ export default function ExploreScreen({ navigation }) {
         not to a higher level tab. I think you should try doing:
         () => navigation.navigate('Message')
         */
+    }
+
+    function messageUser(recipientEmail) {
+        addPersonToContacts(recipientEmail); 
+        setRecipient(recipientEmail);
+        // Navigating to another sub-tab in another navigator? 
+        navigation.navigate('MessageStackScreen', { screen: 'Message'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
     }
 
     // Grabs all profiles from Firebase, sets the "AllProfiles" state property 
@@ -286,7 +295,7 @@ export default function ExploreScreen({ navigation }) {
                                         flex: 1,
                                         alignSelf: 'center', 
                                         marginTop: 10}}>
-                                        <TouchableOpacity onPress = {() => addPersonToContacts(user.email)}>
+                                        <TouchableOpacity onPress = {() => messageUser(user.email)}>
                                             <Text style={{
                                                 fontFamily: 'RobotoMono_500Medium', 
                                                 color: '#5971B5', 

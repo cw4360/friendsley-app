@@ -222,15 +222,19 @@ export default function MessageScreen() {
   //const [loggedInUser, setLoggedInUser] = React.useState(null);
 
   // State for chat channels and messages
-  const [channels, setChannels] = React.useState(defaultChannels);
-  const [selectedChannel, setSelectedChannel] = React.useState('Food');
-  const [selectedMessages, setSelectedMessages] = React.useState([]);
+  // const [channels, setChannels] = React.useState(defaultChannels);
+  // const [selectedChannel, setSelectedChannel] = React.useState('Food');
+  // const [selectedMessages, setSelectedMessages] = React.useState([]);
+  const recipient = stateProps.recipient; 
+  const setRecipient = stateProps.setRecipient; 
   const [textInputValue, setTextInputValue] = useState('');
   //const [isComposingMessage, setIsComposingMessage] = useState(false);
   // Faking message database (just a list of messages) for local testing
   const [localMessageDB, setLocalMessageDB] = useState(testMessages.map( addTimestamp ));
   const [usingFirestore, setUsingFirestore] = useState(true); // If false, only using local data. 
 
+  
+  //console.log("RECIPIENT", recipient); 
 
   function addTimestamp(message) {
     // Add millisecond timestamp field to message 
@@ -318,6 +322,7 @@ export default function MessageScreen() {
   }
   */
 
+  /*
   function docToMessage(msgDoc) {
     // msgDoc has the form {id: timestampetring, 
     //                   data: {timestamp: ..., 
@@ -325,11 +330,11 @@ export default function MessageScreen() {
     //                          channel: ..., 
     //                          content: ...}
     // Need to add missing date field to data portion, reconstructed from timestamp
-    console.log('docToMessage');
     const data = msgDoc.data();
     console.log(msgDoc.id, " => ", data);
     return {...data, date: new Date(data.timestamp)}
   }
+  */
 
   /*
   async function firebaseGetMessagesForChannel(chan) {
@@ -359,7 +364,7 @@ export default function MessageScreen() {
   */
 
   function postMessage() {
-    alert("Warning: Messages do not update on page automatically; you have to navigate away from the person being messaged and then reselect them in order to see the message. Also, people that we message are not real people yet (they're simply test channels)."); 
+    //alert("Warning: Messages do not update on page automatically; you have to navigate away from the person being messaged and then reselect them in order to see the message. Also, people that we message are not real people yet (they're simply test channels)."); 
     console.log(`postMessage; usingFirestore=${usingFirestore}`);
     const now = new Date();
     // Create a new message dictionary 
@@ -554,7 +559,7 @@ export default function MessageScreen() {
     const debugObj = {
       //channels: channels, 
       //selectedChannel, selectedChannel, 
-      selectedMessages: selectedMessages, 
+      //selectedMessages: selectedMessages, 
     }
     alert(formatJSON(debugObj));
   }
@@ -683,7 +688,7 @@ export default function MessageScreen() {
           </TouchableOpacity>  */}
           {/*WHERE YOU CAN SELECT DIFFERENT PEOPLE TO CHAT WITH*/}
 
-          <Text style={styles.header}>Selected Person</Text>
+          {/* <Text style={styles.header}>Selected Person</Text> */}
           {/*}
           <Picker
             style={styles.pickerStyles}
@@ -694,6 +699,7 @@ export default function MessageScreen() {
           </Picker>
           */}
           {/*WHERE THE CHAT HISTORY IS LISTED*/}
+          {/*
           <Text style={styles.header}>Messages</Text> 
           {(selectedMessages.length === 0) ? 
           <Text>No messages to display</Text> :
@@ -703,6 +709,7 @@ export default function MessageScreen() {
               keyExtractor={item => item.timestamp} 
               />
           }
+          */}
           {/*BOX TO COMPOSE MESSAGE*/}
           <View style={styles.buttonHolder}>
             {/*

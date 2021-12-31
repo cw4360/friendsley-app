@@ -34,6 +34,8 @@ export default function ViewAllChatsScreens(props) {
     const userEmail = auth.currentUser.email; 
     const userProfileDoc = stateProps.userProfileDoc; 
     const allProfiles = stateProps.allProfiles;  
+    const recipient = stateProps.recipient; 
+    const setRecipient = stateProps.setRecipient; 
     // Used to just be const userContacts = stateProps.userProfileDoc.messageContacts, but if you log in an navigate directly to the ViewAllChats screen, this line throws an error (probably thinks that the current profile is null) 
     //const [userContacts, setUserContacts] = useState([]);
     //console.log("CURRENT USER", formatJSON(userProfileDoc)); 
@@ -54,13 +56,10 @@ export default function ViewAllChatsScreens(props) {
         }
     }
     
-    /*
-    function addPersonToContacts(email) {
-        if (!userContacts.includes(email)) {
-            setUserContacts([...userContacts, email]); 
-        }
+    function messageUser(email) {
+        setRecipient(email); 
+        props.navigation.navigate('Message'); 
     }
-    */
 
     return (
     <ScrollView style={{backgroundColor: '#FFF0BB'}}>
@@ -87,7 +86,7 @@ export default function ViewAllChatsScreens(props) {
                                     uri: 'https://picsum.photos/700'
                                 }} 
                             />
-                            <TouchableOpacity onPress={() => props.navigation.navigate('Message')}
+                            <TouchableOpacity onPress={() => messageUser(contact.email)}
                                 style={{ flex: .8, backgroundColor: 'white'}}>
                                 <List.Item 
                                     title={contact.email}
