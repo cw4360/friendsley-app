@@ -88,7 +88,7 @@ export default function ViewAllChatsScreens(props) {
                                 }} 
                             />
                             <TouchableOpacity onPress={() => props.navigation.navigate('Message')}
-                                style={{ flex: .8, backgroundColor: 'white', marginTop: 10}}>
+                                style={{ flex: .8, backgroundColor: 'white'}}>
                                 <List.Item 
                                     title={email}
                                     description="Most recent message"

@@ -48,8 +48,8 @@ export default function WelcomeScreen(props) {
                         }}>Friendsley</Title>
                     <View style={{alignItems: 'center'}}>  
                         <Image 
-                            style={{ width: 186, height: 157, marginLeft: 10, marginBottom: 20}}
-                            source={require('../assets/ios/friendsley-logo3x.png')}
+                            style={{ width: 207, height: 175, marginLeft: 10, marginBottom: 20}}
+                            source={require('../assets/ios/friendsley3x.png')}
                         />
                         <TouchableOpacity 
                             onPress={() => props.navigation.navigate('Login')}
