@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, Image, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Alert, Image, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { globalStyles } from "../styles/globalStyles";
@@ -12,6 +12,7 @@ import {
     query, where, getDoc, getDocs
 } from "firebase/firestore";
 import { getGlobal } from "@firebase/util";
+import FavoriteProfilesScreen from "./FavoriteProfilesScreen";
 
 function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
@@ -22,6 +23,9 @@ export default function ExploreProfileScreen({ route, navigation }) {
 
     const stateProps = useContext(StateContext);
     const db = stateProps.db;
+    const userProfileDoc = stateProps.userProfileDoc;
+    
+    const [userFavorites, setUserFavorites] = useState([]);
 
     // State for user profiles' data
     const [profilePicUri, setProfilePicUri] = useState('https://picsum.photos/700');
@@ -44,10 +48,14 @@ export default function ExploreProfileScreen({ route, navigation }) {
     const [interestedIndustry, setInterestedIndustry] = useState('');
     const [jobExp, setJobExp] = useState('');
     const [internshipExp, setInternshipExp] = useState('');  
+    
+    // State for favorite heart
+    const [isFavorite, setIsFavorite] = useState(false);
 
     // Get user info when ExploreProfileScreen mounts.
     useEffect(() => {
         firebaseGetUserProfile(userEmail);
+        firebaseGetUserFavorites();
     }, []);
 
     function unpackProfile(userDoc){
@@ -91,6 +99,75 @@ export default function ExploreProfileScreen({ route, navigation }) {
         }
     }
 
+    async function firebaseGetUserFavorites() {
+        const docRef = doc(db, "favorites", userProfileDoc.email);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            // console.log("Document data:", docSnap.data());
+            const favoritesDoc = docSnap.data();
+            setUserFavorites(favoritesDoc.favorite);  
+
+            const check = favoritesDoc.favorite.filter( person => person.email === userEmail).length;
+            console.log(check);
+            if (check > 0) {
+                setIsFavorite(true);
+            } else {
+                setIsFavorite(false);
+            }
+
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+            setDoc(doc(db, 'favorites', userProfileDoc.email), 
+                { favorite: [] }
+            );
+        }
+    }
+
+    function makeFavorite() {
+        console.log("made it");
+        setDoc(doc(db, 'favorites', userProfileDoc.email), 
+            { 
+                favorite: [...userFavorites, {
+                    name: name, 
+                    pronouns: pronouns,
+                    email: userEmail,
+                    bio: bio,
+                    profilePicUri: profilePicUri,
+                }]
+            }
+        );
+        setIsFavorite(true);
+        console.log("Added user to favorites");
+    }
+
+    function makeUnfavorite() {
+        const createTwoButtonAlert = () =>
+            Alert.alert(
+            "Unfavorite",
+            "Are you sure you want to unfavorite this profile?",
+            [
+                {
+                text: "Cancel",
+                onPress: () => {},
+                style: "cancel"
+                },
+                { text: "OK", onPress: () => {
+                    setDoc(doc(db, 'favorites', userProfileDoc.email), 
+                        { 
+                            favorite: userFavorites.filter( person => person.email !== userEmail)
+                        }
+                    );
+                    setIsFavorite(false);
+                    console.log("Removed user from favorites");
+                    navigation.navigate('Explore');
+                }}
+            ]
+            );
+        createTwoButtonAlert();
+    }
+
     return (
         <ScrollView style={{backgroundColor: '#FFF0BB'}}>
             <SafeAreaView style={globalStyles.container}>
@@ -107,8 +184,8 @@ export default function ExploreProfileScreen({ route, navigation }) {
                             <Title style={[globalStyles.title, {
                                 marginTop: 10
                             }]}>{name}</Title>
-                            <View style={pronouns ? {fontStyle: 'italic'} : globalStyles.hidden}>
-                                <Caption style={[globalStyles.caption, {fontStyle: 'italic'}]}>{pronouns}</Caption>
+                            <View style={pronouns ? {marginTop: -5} : globalStyles.hidden}>
+                                <Caption style={{fontFamily: 'DMSans_400Regular_Italic', fontSize: 16, letterSpacing: 1}}>{pronouns}</Caption>
                             </View>
                             <Caption style={globalStyles.caption}>{userEmail}</Caption>
                             <View style={bio ? {marginTop: 4} : globalStyles.hidden}>
@@ -121,12 +198,15 @@ export default function ExploreProfileScreen({ route, navigation }) {
                             style={[globalStyles.editProfileButton, {flex: 1}]}>
                             <Text style={globalStyles.buttonText}>Message</Text>
                         </TouchableOpacity> 
-                        <TouchableOpacity style={{ justifyContent: 'center', flex: .3}}>
-                            <Image 
-                                style={{ width: 28, height: 28, marginLeft: 30 }}
-                                source={require('../assets/star.png')}
-                            />
-                        </TouchableOpacity>
+                        {isFavorite? <TouchableOpacity onPress={() => makeUnfavorite()}
+                                style={{justifyContent: 'center', flex: .175, marginTop: 10, marginLeft: 15}}>
+                                <Icon  name="heart" color="#ef476f" size={30}/>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={() => makeFavorite()}
+                                style={{justifyContent: 'center', flex: .175, marginTop: 10, marginLeft: 15}}>
+                                <Icon  name="heart-outline" color="#ef476f" size={30}/>
+                            </TouchableOpacity>
+                        }
                     </View>
                     
                 </View>

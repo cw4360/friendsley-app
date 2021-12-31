@@ -171,6 +171,16 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: '#5971B5',
     marginTop: 25,
   },
+  favName: {
+    fontFamily: 'DMSans_500Medium', 
+    fontSize: 18,
+    letterSpacing: 1,
+  },
+  favText: {
+    fontFamily: 'DMSans_400Regular', 
+    fontSize: 14,
+    letterSpacing: 1,
+  },
   hidden: {
       display: 'none',
   },
