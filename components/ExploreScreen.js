@@ -156,7 +156,7 @@ export default function ExploreScreen({ navigation }) {
         addPersonToContacts(recipientEmail); 
         setRecipient(recipientEmail);
         // Navigating to another sub-tab in another navigator? 
-        navigation.navigate('MessageStackScreen', { screen: 'Message'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
+        navigation.navigate('Messages', { screen: 'Message'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
     }
 
     // Grabs all profiles from Firebase, sets the "AllProfiles" state property 
