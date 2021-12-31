@@ -106,7 +106,9 @@ export default function ExploreScreen({ navigation }) {
                 messageContacts: [...userContacts, email], 
             }; 
             // Add current user's/sender's email to the list of the recipient's message contacts 
-            const recipientProfileRef = await(grabRecipientProfileDoc(email)); 
+            const recipientProfileRef = await(grabRecipientProfileDoc(email));
+            alert(formatJSON(recipientProfileRef)); 
+            alert(recipientProfileRef.messageContacts);  
             const newRecipientProfile = {
                 messageContacts: [...recipientProfileRef.messageContacts, userEmail], 
             }
