@@ -215,7 +215,7 @@ export default function ExploreScreen({ navigation }) {
     return (
         <ScrollView style={{backgroundColor: '#FFF0BB'}}>
             <SafeAreaView>
-                <View style={{margin: 20}}>
+                <View style={{margin: 10}}>
                     {/* <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
                         style={globalStyles.editProfileButton}>
                         <Text style={{color: 'black'}}>Get All Profiles</Text>

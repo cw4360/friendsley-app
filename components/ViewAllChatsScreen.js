@@ -17,6 +17,7 @@ import {
     collection, doc, addDoc, setDoc,
     query, where, getDoc, getDocs
 } from "firebase/firestore";
+import { globalStyles } from '../styles/globalStyles';
 
 function formatJSON(jsonVal) {
     // Lyn sez: replacing \n by <br/> not necesseary if use this CSS:
@@ -64,51 +65,34 @@ export default function ViewAllChatsScreens(props) {
     return (
     <ScrollView style={{backgroundColor: '#FFF0BB'}}>
         <SafeAreaView>
-            <View style={{margin: 20}}>
+            <View>
                 <Searchbar
-                    style={{shadowOpacity: 0, marginBottom: 10}}
+                    style={[globalStyles.searchbar, {marginTop: 10, marginHorizontal: 10}]}
                     placeholder="Search"
                     // onChangeText={onChangeSearch}
                     // value={searchQuery}
                 />
-                {/*
-                <View>
-                    <Button title="Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
-                </View>
-                */}
                 {/* Loop through the current user's message contacts */}
                 {userContacts ? (userContacts.map( (email) => {
                     // console.log("Current user", formatJSON(user));
                     return (
-                        <View key={email} style={{ flexDirection: 'row', backgroundColor: 'white'}}>
+                        <View key={email} 
+                            style={{ flexDirection: 'row', backgroundColor: 'white', 
+                                paddingHorizontal: 20, paddingVertical: 10, 
+                                borderBottomWidth: 1}}>
                             <Avatar.Image 
                                 style={{alignSelf: 'center', marginVertical: 10}}
-                                size={30}
+                                size={50}
                                 source={{
                                     uri: 'https://picsum.photos/700'
                                 }} 
                             />
-                            <TouchableOpacity style={{ flex: 1, backgroundColor: 'white', marginTop: 10}}>
+                            <TouchableOpacity onPress={() => props.navigation.navigate('Message')}
+                                style={{ flex: .8, backgroundColor: 'white', marginTop: 10}}>
                                 <List.Item 
                                     title={email}
                                     description="Most recent message"
                                 />
-                                <Button title="Message" color='blue' onPress = {() => props.navigation.navigate('Message')}/> 
-                                {/* <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
-                                    <Avatar.Image 
-                                        style={{alignSelf: 'center', marginVertical: 10}}
-                                        size={30}
-                                        source={{
-                                            uri: 'https://picsum.photos/700'
-                                        }} 
-                                    />
-                                    <Card.Content style={{ alignItems: 'center'}}>
-                                        <Paragraph>{email}</Paragraph>
-                                    </Card.Content>
-                                    <Card.Actions style={{ alignSelf: 'center'}}>
-                                        <Button title="Message" color='blue' onPress = {() => props.navigation.navigate('Message')}/> 
-                                    </Card.Actions>
-                                </Card> */}
                             </TouchableOpacity>
                         </View>
                     );
