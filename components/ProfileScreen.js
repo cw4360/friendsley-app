@@ -144,8 +144,8 @@ export default function ProfileScreen(props) {
                             <Title style={[globalStyles.title, {
                                 marginTop: 10
                             }]}>{name}</Title>
-                            <View style={pronouns ? {fontStyle: 'italic'} : globalStyles.hidden}>
-                                <Caption style={[globalStyles.caption, {fontStyle: 'italic'}]}>{pronouns}</Caption>
+                            <View style={pronouns ? {marginTop: -5} : globalStyles.hidden}>
+                                <Caption style={{fontFamily: 'DMSans_400Regular_Italic', fontSize: 16, letterSpacing: 1}}>{pronouns}</Caption>
                             </View>
                             <Caption style={globalStyles.caption}>{userEmail}</Caption>
                             <View style={bio ? {marginTop: 4, marginBottom: 10} : globalStyles.hidden}>
@@ -156,6 +156,10 @@ export default function ProfileScreen(props) {
                     <TouchableOpacity onPress={() => props.navigation.navigate('Edit Profile')} 
                         style={globalStyles.editProfileButton}>
                         <Text style={globalStyles.buttonText}>Edit Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('Favorite Profiles')} 
+                        style={[globalStyles.editProfileButton, {backgroundColor: '#ef476f'}]}>
+                        <Text style={globalStyles.buttonText}>Favorite Profiles</Text>
                     </TouchableOpacity>
                 </View>
 

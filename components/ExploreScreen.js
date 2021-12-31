@@ -301,13 +301,6 @@ export default function ExploreScreen({ navigation }) {
                                                 color: '#5971B5', 
                                                 fontSize: 20}}>MESSAGE</Text>
                                         </TouchableOpacity>
-                                        {/* Have the star change dynamically between filled and unfilled when pressed */}
-                                        <TouchableOpacity>
-                                            <Image 
-                                                style={{ width: 25, height: 25, marginLeft: 30 }}
-                                                source={require('../assets/star.png')}
-                                            />
-                                        </TouchableOpacity>
                                     </Card.Actions>
                                 </Card>
                             </View>

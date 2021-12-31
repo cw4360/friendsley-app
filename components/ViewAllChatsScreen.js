@@ -10,6 +10,7 @@ import Constants from 'expo-constants';
 import { setStatusBarNetworkActivityIndicatorVisible, StatusBar } from 'expo-status-bar';
 //import {Picker} from '@react-native-picker/picker';
 import { Avatar, Card, List, Title, Paragraph, Searchbar } from 'react-native-paper';
+import { globalStyles } from '../styles/globalStyles';
 import StateContext from './StateContext'; 
 import { 
     // access to Firestore storage features:
@@ -17,7 +18,6 @@ import {
     collection, doc, addDoc, setDoc,
     query, where, getDoc, getDocs
 } from "firebase/firestore";
-import { globalStyles } from '../styles/globalStyles';
 
 function formatJSON(jsonVal) {
     // Lyn sez: replacing \n by <br/> not necesseary if use this CSS:
@@ -78,7 +78,7 @@ export default function ViewAllChatsScreens(props) {
                         <View key={contact.email} 
                             style={{ flexDirection: 'row', backgroundColor: 'white', 
                                 paddingHorizontal: 20, paddingVertical: 10, 
-                                borderBottomWidth: 1}}>
+                                borderBottomWidth: 1, borderBottomColor: 'lightgrey'}}>
                             <Avatar.Image 
                                 style={{alignSelf: 'center', marginVertical: 10}}
                                 size={50}
@@ -91,6 +91,7 @@ export default function ViewAllChatsScreens(props) {
                                 <List.Item 
                                     title={contact.email}
                                     description="Most recent message"
+                                    titleStyle={globalStyles.cardName}
                                 />
                             </TouchableOpacity>
                         </View>

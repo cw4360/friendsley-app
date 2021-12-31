@@ -11,6 +11,7 @@ import ExploreScreen from './components/ExploreScreen';
 import ExploreProfileScreen from './components/ExploreProfileScreen';
 import LoginScreen from './components/LoginScreen';
 import EditProfileScreen from './components/EditProfileScreen';
+import FavoriteProfilesScreen from './components/FavoriteProfilesScreen';
 import WelcomeScreen from './components/WelcomeScreen';
 import SignupScreen from './components/SignupScreen';
 import MessageScreen from './components/MessageScreen';
@@ -115,6 +116,7 @@ function ProfileStackScreen() {
     }}>
       <ProfileStack.Screen name="Profile" component={ProfileScreen}/>
       <ProfileStack.Screen name="Edit Profile" component={EditProfileScreen}/>
+      <ProfileStack.Screen name="Favorite Profiles" component={FavoriteProfilesScreen}/>
     </ProfileStack.Navigator>
   );
 }
