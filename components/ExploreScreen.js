@@ -87,16 +87,6 @@ export default function ExploreScreen({ navigation }) {
         firebaseGetAllProfiles();
     }, []);
 
-    async function grabRecipientProfileDoc(email) {
-        const profileRef = doc(db, 'profiles', email); 
-        const profileSnap = await getDoc(profileRef); 
-        if (profileSnap.exists()) {
-            //alert("Recipient's profile", formatJSON(profileSnap.data())); 
-            //setRecipientProfileDoc(profileSnap.data()); 
-            return profileSnap.data(); 
-        }
-    }
-
     // Adds a person to the user's messageContacts list in Firebase 
     async function addPersonToContacts(email) {
         if (!userContacts.includes(email)) {
@@ -104,13 +94,13 @@ export default function ExploreScreen({ navigation }) {
             const profileRef = doc(db, 'profiles', userEmail);
             const newProfile = {
                 messageContacts: [...userContacts, email], 
-            }; 
+            };  
             // Add current user's/sender's email to the list of the recipient's message contacts 
-            const recipientProfileRef = await(grabRecipientProfileDoc(email));
-            alert(formatJSON(recipientProfileRef)); 
-            alert(recipientProfileRef.messageContacts);  
+            const recipientProfileRef = doc(db, "profiles", email); 
+            const recipientProfileSnap = await getDoc(recipientProfileRef);
+            const recipientProfileContacts = recipientProfileSnap.data().messageContacts; 
             const newRecipientProfile = {
-                messageContacts: [...recipientProfileRef.messageContacts, userEmail], 
+                messageContacts: [...recipientProfileContacts, userEmail], 
             }
             // Set the new documents in Firebase
             await setDoc(profileRef, newProfile, { merge: true }); // sender
@@ -120,9 +110,7 @@ export default function ExploreScreen({ navigation }) {
             const docRef = doc(db, "profiles", userEmail); 
             const docSnap = await getDoc(docRef); 
             let userDoc = docSnap.data(); 
-            //console.log("Updated Document data:", userDoc);
             setUserProfileDoc(userDoc);
-            //console.log(userProfileDoc);
             setUserContacts([...userContacts, email]); 
         }
         // HOW TO NAVIGATE TO A SUBTAB?! 
