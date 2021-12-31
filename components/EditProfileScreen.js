@@ -2,16 +2,22 @@ import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView, View, ImageBackground, TextInput, Keyboard, 
     Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as ImagePicker from 'expo-image-picker';
+import ImageResizer from "react-native-image-resizer";
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 
 import { 
     // access to Firestore storage features:
     // for storage access
-    collection, doc, addDoc, setDoc,
-    query, where, getDoc, getDocs
+    doc, getDoc, setDoc
+    // , collection, addDoc,
+    // query, where, getDocs
 } from "firebase/firestore";
+import { // access to Firebase storage features (for files like images, video, etc.)
+    getStorage, 
+   ref, uploadBytes, uploadBytesResumable, getDownloadURL
+  } from "firebase/storage";
 import { getGlobal } from "@firebase/util";
 
 function formatJSON(jsonVal) {
@@ -21,12 +27,14 @@ function formatJSON(jsonVal) {
 export default function EditProfileScreen(props) {
     const stateProps = useContext(StateContext);
     const db = stateProps.db;
+    const storage = stateProps.storage;
 
     const userProfileDoc = stateProps.userProfileDoc;
     const setUserProfileDoc = stateProps.setUserProfileDoc;
 
     // State for user profiles' data
     let userEmail = userProfileDoc.email;
+    const [profilePicUri, setProfilePicUri] = useState(userProfileDoc.profilePicUri);
     const [name, setName] = useState(userProfileDoc.basics.name);
     const [pronouns, setPronouns] = useState(userProfileDoc.basics.pronouns);
     const [bio, setBio] = useState(userProfileDoc.basics.bio);
@@ -47,9 +55,61 @@ export default function EditProfileScreen(props) {
     const [jobExp, setJobExp] = useState(userProfileDoc.career.jobExp);
     const [internshipExp, setInternshipExp] = useState(userProfileDoc.career.internshipExp);
 
+    // State for image picker
+    const [pickedImagePath, setPickedImagePath] = useState('');
+
+    // This function is triggered when the "Select an image" button pressed
+    async function showImagePicker() {
+        // Ask the user for the permission to access the media library 
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("You have refused to allow this app to access your photos");
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync();
+        
+        // Explore the result
+        console.log(result);
+
+        if (!result.cancelled) {
+            setPickedImagePath(result.uri);
+            setProfilePicUri(result.uri);
+            console.log(result.uri);
+            // ImageResizer.createResizedImage(result.uri, 100, 100, 'JPEG', 
+            // 100, 0, undefined, false).then ( response => {
+            //     setPickedImagePath(response.uri);
+            //     setProfilePicUri(response.uri);
+            //     console.log(response.uri);
+            // })
+            // .catch(err => {
+            //     console.log(err);
+            // });
+        }
+    }
+    
+    async function openCamera() {
+        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("You have refused to allow this app to access your camera");
+            return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync();
+
+        // Explore the result
+        console.log(result);
+
+        if (!result.cancelled) {
+            setPickedImagePath(result.uri);
+            setProfilePicUri(result.uri);
+            console.log("Selected image path:", result.uri);
+        }
+    }
+
     async function submitProfile() {
-        // Set profile data in Firebase
-        const profileRef = doc(db, 'profiles', userEmail);
         // alert('Submitted');
         const newProfile = {
         basics: { 
@@ -81,17 +141,69 @@ export default function EditProfileScreen(props) {
         }
         };
 
-        await setDoc(profileRef, newProfile, { merge: true });
+        if (pickedImagePath) {
+            newProfile.profilePicUri = pickedImagePath;
+            console.log(formatJSON(newProfile.profilePicUri));
+            await firebaseSubmitProfileWithPicture(newProfile);
+            console.log('Submitted profile and photo');
+        } else {
+            firebaseSubmitProfile(newProfile);
+            console.log('Submitted profile without photo');
+        }
 
-        // Get new profile in Firebase and update userProfileDoc in stateProps
-        const docRef = doc(db, "profiles", userEmail);
-        const docSnap = await getDoc(docRef);
-
-        let userDoc = docSnap.data();
-        console.log("Updated Document data:", userDoc);
-        setUserProfileDoc(userDoc);
-        console.log(userProfileDoc);
         props.navigation.navigate('Profile', {updatedProfile: newProfile} );
+    }
+
+    async function firebaseSubmitProfile(newProfile) {
+        // Set profile data in Firebase
+        const profileRef = doc(db, 'profiles', userEmail);
+        await setDoc(profileRef, newProfile, { merge: true });
+    }
+
+    async function firebaseSubmitProfileWithPicture(newProfile) {
+        const now = new Date();
+        const timestamp = now.getTime(); // millsecond timestamp
+
+        // Store image in Firebase storage
+        const storageRef = ref(storage, 'profilePic/' + timestamp);
+
+        // Get the downloadURL from the image in Firebase storage
+        // Credit to Bianca Pio and Avery Kim:
+        const fetchResponse = await fetch(pickedImagePath);
+        const imageBlob = await fetchResponse.blob();
+
+        // Add the downloadURL as the picked image for the msg
+        const uploadTask = uploadBytesResumable(storageRef, imageBlob);
+        console.log("Uploading profile picture for:", formatJSON(userEmail));
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log("Upload is " + progress + "% done");
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log("Upload is paused");
+                        break;
+                    case 'running':
+                        console.log("Upload is running");
+                        break;
+                }
+            },
+            (error) => {
+                console.error(error);
+            },
+            // Post the msg-with-imageUri to Firestore
+            async function() {
+                console.log("Uploading profile picture for", formatJSON(userEmail), "succeeded");
+                // Once the upload is finished, get the downloadURL for the uploaed image
+                const downloadURL = await getDownloadURL(storageRef);
+
+                // Add the downloadURL as the imageUri for the profile
+                const profileWithDownloadURL = {...newProfile, profilePicUri: downloadURL};
+
+                // Store the profile in Firestore with the downloadURL as profilePicUri
+                firebaseSubmitProfile(profileWithDownloadURL);
+            }
+        ); // end arguments to uploadTask.on
     }
 
     return (
@@ -101,13 +213,31 @@ export default function EditProfileScreen(props) {
                 {/* <Button title="load user" onPress={() => firebaseGetUserProfile(userEmail)}/> */}
                 <View style={globalStyles.userInfoSection}>
                     <View style={{alignItems: 'center', marginBottom: 20}}>
-                        <Avatar.Image 
-                            style={{alignSelf: 'center'}}
+                        {pickedImagePath ? 
+                            <Avatar.Image 
+                                style={{alignSelf: 'center', marginBottom: 10}}
+                                size={100}
+                                source={{
+                                    uri: pickedImagePath
+                                }} /> : 
+                            <Avatar.Image 
+                            style={{alignSelf: 'center', marginBottom: 10}}
                             size={100}
                             source={{
-                                uri: "https://media-exp1.licdn.com/dms/image/C4E03AQHN5UZRpDR-iw/profile-displayphoto-shrink_800_800/0/1608143542511?e=1645056000&v=beta&t=o5TMq2eyqNkFSspHKXikcH6H86rySDCJcozAhNaXDsA"
-                            }} 
-                        />
+                                uri: profilePicUri
+                            }} />
+                        }
+                        <TouchableOpacity onPress={showImagePicker}>
+                            <Text style={{color: 'dodgerblue'}}>Choose from Library</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={openCamera}>
+                            <Text style={{color: 'dodgerblue'}}>Take Photo</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            setPickedImagePath('https://picsum.photos/700');
+                        }}>
+                            <Text style={{color: 'dodgerblue'}}>Remove Photo</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={{flexDirection: 'column', marginTop: 10}}>
                         <View style={globalStyles.profileField}>

@@ -66,7 +66,7 @@ export const globalStyles = StyleSheet.create({
   },
   signInUpText: {
     fontFamily: 'RobotoMono_500Medium',
-    fontSize: 16,
+    fontSize: 18,
     color: 'black',
     letterSpacing: 1,
     marginBottom: 5,
@@ -74,7 +74,7 @@ export const globalStyles = StyleSheet.create({
   signInUpTextInput: {
     // width: 300,
     fontFamily: 'RobotoMono_400Regular',
-    fontSize: 14,
+    fontSize: 16,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 20,

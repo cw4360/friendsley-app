@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, Text, Image, Picker, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { globalStyles } from "../styles/globalStyles";
@@ -18,7 +18,7 @@ function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
 }
 
-export default function ExploreScreen(props) {
+export default function ExploreScreen({ navigation }) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth;
     const db = stateProps.db;
@@ -133,10 +133,8 @@ export default function ExploreScreen(props) {
             })
         ); 
         Catherine: You can always navigate to a sub-tab, but 
-        not to a higher level tab. I think you only need to 
-        replace 'Friendsley' with 'Message', but I could be wrong.
-        This is how I navigated to Edit Profile screen:
-        () => props.navigation.navigate('Message')
+        not to a higher level tab. I think you should try doing:
+        () => navigation.navigate('Message')
         */
     }
 
@@ -259,19 +257,26 @@ export default function ExploreScreen(props) {
                     {allProfiles.length ? (sortProfiles(filterAllProfiles()).map( (user) => {
                         // console.log("Current user", formatJSON(user));
                         return (
-                            <View key={user.email}>
-                                <Card style={{
+                            <View key={user.email}
+                                style={{
+                                    shadowColor: 'grey',
+                                    shadowOffset: {width: 0, height: 5},
+                                    shadowOpacity: .3}}>
+                                <Card onPress={() => navigation.navigate('Explore Profile', {
+                                    userEmail: user.email })}
+                                    style={{
                                     alignSelf: 'center', 
                                     width: 275, 
                                     paddingVertical: 20, 
                                     paddingHorizontal: 5,
                                     marginVertical: 10,
-                                    borderRadius: 20}}>
+                                    borderRadius: 20
+                                    }}>
                                     <Avatar.Image 
                                         style={{alignSelf: 'center', marginVertical: 10}}
                                         size={150}
                                         source={{
-                                            uri: 'https://picsum.photos/700'
+                                            uri: user.profilePicUri
                                         }}/>
                                     <Card.Content style={{ alignItems: 'center'}}>
                                         <Title style={globalStyles.cardName}>{user.basics.name}</Title>

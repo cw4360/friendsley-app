@@ -38,7 +38,7 @@ export default function WelcomeScreen(props) {
         );
     }  else {
         return (
-            <SafeAreaView style={{marginTop: 160}}>
+            <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <View style={globalStyles.userInfoSection}>
                     <Title style={{
                         alignSelf: 'center', 

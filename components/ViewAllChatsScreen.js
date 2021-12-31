@@ -9,7 +9,7 @@ import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollV
 import Constants from 'expo-constants';
 import { setStatusBarNetworkActivityIndicatorVisible, StatusBar } from 'expo-status-bar';
 //import {Picker} from '@react-native-picker/picker';
-import { Avatar, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
+import { Avatar, Card, List, Title, Paragraph, Searchbar } from 'react-native-paper';
 import StateContext from './StateContext'; 
 import { 
     // access to Firestore storage features:
@@ -66,7 +66,7 @@ export default function ViewAllChatsScreens(props) {
         <SafeAreaView>
             <View style={{margin: 20}}>
                 <Searchbar
-                    style={{shadowOpacity: 0}}
+                    style={{shadowOpacity: 0, marginBottom: 10}}
                     placeholder="Search"
                     // onChangeText={onChangeSearch}
                     // value={searchQuery}
@@ -80,25 +80,36 @@ export default function ViewAllChatsScreens(props) {
                 {userContacts ? (userContacts.map( (email) => {
                     // console.log("Current user", formatJSON(user));
                     return (
-                        <View keyExtractor={email}>
-                            <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
-                                <Avatar.Image 
-                                    style={{alignSelf: 'center', marginVertical: 10}}
-                                    size={150}
-                                    source={{
-                                        uri: 'https://picsum.photos/700'
-                                    }} 
+                        <View key={email} style={{ flexDirection: 'row', backgroundColor: 'white'}}>
+                            <Avatar.Image 
+                                style={{alignSelf: 'center', marginVertical: 10}}
+                                size={30}
+                                source={{
+                                    uri: 'https://picsum.photos/700'
+                                }} 
+                            />
+                            <TouchableOpacity style={{ flex: 1, backgroundColor: 'white', marginTop: 10}}>
+                                <List.Item 
+                                    title={email}
+                                    description="Most recent message"
                                 />
-                                <Card.Content style={{ alignItems: 'center'}}>
-                                    <Title style={{marginBottom: 5}}>{getProfileFromEmail(email).basics.name}</Title>
-                                    {/* <Paragraph>Class of {user.personal.classYear}</Paragraph> */}
-                                    {/* <Paragraph>{user.personal.major}</Paragraph> */}
-                                    <Paragraph>{email}</Paragraph>
-                                </Card.Content>
-                                <Card.Actions style={{ alignSelf: 'center'}}>
-                                    <Button title="Message" color='blue' onPress = {() => props.navigation.navigate('Message')}/> 
-                                </Card.Actions>
-                            </Card>
+                                <Button title="Message" color='blue' onPress = {() => props.navigation.navigate('Message')}/> 
+                                {/* <Card style={{alignSelf: 'center', width: 275, paddingVertical: 20, marginVertical: 10}}>
+                                    <Avatar.Image 
+                                        style={{alignSelf: 'center', marginVertical: 10}}
+                                        size={30}
+                                        source={{
+                                            uri: 'https://picsum.photos/700'
+                                        }} 
+                                    />
+                                    <Card.Content style={{ alignItems: 'center'}}>
+                                        <Paragraph>{email}</Paragraph>
+                                    </Card.Content>
+                                    <Card.Actions style={{ alignSelf: 'center'}}>
+                                        <Button title="Message" color='blue' onPress = {() => props.navigation.navigate('Message')}/> 
+                                    </Card.Actions>
+                                </Card> */}
+                            </TouchableOpacity>
                         </View>
                     );
                 })): <View></View>}

@@ -17,73 +17,38 @@ function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
 }
 
-export default function ProfileScreen(props) {
-    console.log("Params: ", props.route.params);
+export default function ExploreProfileScreen({ route, navigation }) {
+    const { userEmail } = route.params;
+
     const stateProps = useContext(StateContext);
-    const auth = stateProps.auth;
     const db = stateProps.db;
-    const userProfileDoc = stateProps.userProfileDoc;
-    const setUserProfileDoc = stateProps.setUserProfileDoc;
 
     // State for user profiles' data
-    let userEmail = userProfileDoc.email;
-    const [profilePicUri, setProfilePicUri] = useState(userProfileDoc.profilePicUri);
-    const [name, setName] = useState(userProfileDoc.basics.name);
-    const [pronouns, setPronouns] = useState(userProfileDoc.basics.pronouns);
-    const [bio, setBio] = useState(userProfileDoc.basics.bio);
-    const [classYear, setClassYear] = useState(userProfileDoc.personal.classYear);
-    const [major, setMajor] = useState(userProfileDoc.personal.major);
-    const [minor, setMinor] = useState(userProfileDoc.personal.minor);
-    const [hometown, setHometown] = useState(userProfileDoc.personal.hometown);
-    const [residenceHall, setResidenceHall] = useState(userProfileDoc.personal.residenceHall);
-    const [hobbies, setHobbies] = useState(userProfileDoc.personal.hobbies);
-    const [clubs, setClubs] = useState(userProfileDoc.personal.clubs);
-    const [favPlaceOnCampus, setFavPlaceOnCampus] = useState(userProfileDoc.personal.favPlaceOnCampus);
-    const [favWellesleyMemory, setFavWellesleyMemory] = useState(userProfileDoc.personal.favWellesleyMemory);
-    const [currentClasses, setCurrentClasses] = useState(userProfileDoc.academics.currentClasses);
-    const [plannedClasses, setPlannedClasses] = useState(userProfileDoc.academics.plannedClasses);
-    const [favClasses, setFavClasses] = useState(userProfileDoc.academics.favClasses);
-    const [studyAbroad, setStudyAbroad] = useState(userProfileDoc.academics.studyAbroad);
-    const [interestedIndustry, setInterestedIndustry] = useState(userProfileDoc.career.interestedIndustry);
-    const [jobExp, setJobExp] = useState(userProfileDoc.career.jobExp);
-    const [internshipExp, setInternshipExp] = useState(userProfileDoc.career.internshipExp);
+    const [profilePicUri, setProfilePicUri] = useState('https://picsum.photos/700');
+    const [name, setName] = useState('');
+    const [pronouns, setPronouns] = useState('');
+    const [bio, setBio] = useState('');
+    const [classYear, setClassYear] = useState('');
+    const [major, setMajor] = useState('');
+    const [minor, setMinor] = useState('');
+    const [hometown, setHometown] = useState('');
+    const [residenceHall, setResidenceHall] = useState('');
+    const [hobbies, setHobbies] = useState('');
+    const [clubs, setClubs] = useState('');
+    const [favPlaceOnCampus, setFavPlaceOnCampus] = useState('');
+    const [favWellesleyMemory, setFavWellesleyMemory] = useState('');
+    const [currentClasses, setCurrentClasses] = useState('');
+    const [plannedClasses, setPlannedClasses] = useState('');
+    const [favClasses, setFavClasses] = useState('');
+    const [studyAbroad, setStudyAbroad] = useState('');
+    const [interestedIndustry, setInterestedIndustry] = useState('');
+    const [jobExp, setJobExp] = useState('');
+    const [internshipExp, setInternshipExp] = useState('');  
 
-    
-    // if (props.route.params) {
-    //     console.log("Updated profile with new changes");
-    //     unpackProfile(props.route.params.updatedProfile);
-    // }
-
+    // Get user info when ExploreProfileScreen mounts.
     useEffect(() => {
-        console.log("Add focus listener");
-        const unsubscribe = props.navigation.addListener('focus', () => {
-          // Screen was focused
-          // Do something
-          console.log("Calling focus listener");
-          console.log("Call focus listener, params: ", props.route.params);
-          if (props.route.params) {
-            console.log("Updated profile with new changes");
-            unpackProfile(props.route.params.updatedProfile);
-            }
-            else {
-                firebaseGetUserProfile(userEmail);
-            }
-        });
-    
-        return unsubscribe;
-      }, [props.navigation]);
-    
-
-    // // Get user info when ProfileScreen mounts.
-    // useEffect(() => {
-    //     console.log("Mounting profile screen");
-    //     if (props.route.params) {
-    //         console.log("Updated profile with new changes");
-    //         unpackProfile(props.route.params.updatedProfile);
-    //     } else {
-    //         firebaseGetUserProfile(userEmail);
-    //     }
-    // }, []);
+        firebaseGetUserProfile(userEmail);
+    }, []);
 
     function unpackProfile(userDoc){
         setProfilePicUri(userDoc.profilePicUri);
@@ -109,7 +74,7 @@ export default function ProfileScreen(props) {
     }
 
     /**
-   * Get current logged-in user's profile info from Firebase's Firestore
+   * Get user's profile info from Firebase's Firestore
    */ 
     async function firebaseGetUserProfile(email) {
         // alert("CURRENT USER'S EMAIL, PROFILE SCREEN", formatJSON(email)); 
@@ -118,7 +83,6 @@ export default function ProfileScreen(props) {
 
         if (docSnap.exists()) {
             // console.log("Document data:", docSnap.data());
-            setUserProfileDoc(docSnap.data());
             unpackProfile(docSnap.data());
             
         } else {
@@ -129,7 +93,6 @@ export default function ProfileScreen(props) {
 
     return (
         <ScrollView style={{backgroundColor: '#FFF0BB'}}>
-            {/* <SafeAreaView style={isFinishedLoading ? globalStyles.container : globalStyles.hidden}> */}
             <SafeAreaView style={globalStyles.container}>
                 <View style={globalStyles.userInfoSection}>
                     <View style={{marginTop:15}}>
@@ -148,15 +111,24 @@ export default function ProfileScreen(props) {
                                 <Caption style={[globalStyles.caption, {fontStyle: 'italic'}]}>{pronouns}</Caption>
                             </View>
                             <Caption style={globalStyles.caption}>{userEmail}</Caption>
-                            <View style={bio ? {marginTop: 4, marginBottom: 10} : globalStyles.hidden}>
+                            <View style={bio ? {marginTop: 4} : globalStyles.hidden}>
                                 <Text style={globalStyles.caption}>"{bio}"</Text>
                             </View>
                         </View>
                     </View>
-                    <TouchableOpacity onPress={() => props.navigation.navigate('Edit Profile')} 
-                        style={globalStyles.editProfileButton}>
-                        <Text style={globalStyles.buttonText}>Edit Profile</Text>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row'}}>
+                       <TouchableOpacity onPress={() => {}} 
+                            style={[globalStyles.editProfileButton, {flex: 1}]}>
+                            <Text style={globalStyles.buttonText}>Message</Text>
+                        </TouchableOpacity> 
+                        <TouchableOpacity style={{ justifyContent: 'center', flex: .3}}>
+                            <Image 
+                                style={{ width: 28, height: 28, marginLeft: 30 }}
+                                source={require('../assets/star.png')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    
                 </View>
 
                 <View
@@ -168,18 +140,18 @@ export default function ProfileScreen(props) {
                 />
 
                 <View style={globalStyles.userInfoSection}>
-                    {/* Section Header */}
+                    {/* Personal Section Header */}
                     <View style={{flexDirection: 'row'}}>
                         <Icon style={{alignSelf: 'center', marginRight: 10}} name="heart-outline" color="#ef476f" size={25}/>
                         <Title style={globalStyles.title}>Personal</Title>
                     </View>
-                    {/* Section Details */}
+                    {/* Personal Section Details */}
                     <View style={{marginTop: 10}}>
-                        <View style={globalStyles.infoField}>
+                        <View style={classYear ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Class Year:</Text>
                             <Text style={globalStyles.profileText}>{classYear}</Text>
                         </View>
-                        <View style={globalStyles.infoField}>
+                        <View style={major ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Major:</Text>
                             <Text style={globalStyles.profileText}>{major}</Text>
                         </View>
@@ -242,12 +214,12 @@ export default function ProfileScreen(props) {
                 </View>
 
                 <View style={globalStyles.userInfoSection}>
-                    {/* Section Header */}
+                    {/* Career Section Header */}
                     <View style={{flexDirection: 'row'}}>
                         <Icon style={{alignSelf: 'center', marginRight: 10}} name="chevron-down-circle-outline" color="#7209b7" size={25}/>
                         <Title style={globalStyles.title}>Career</Title>
                     </View>
-                    {/* Section Details */}
+                    {/* Career Section Details */}
                     <View style={{marginTop: 10}}>
                         <View style={interestedIndustry ? globalStyles.infoField : globalStyles.hidden}>
                             <Text style={globalStyles.textType}>Interested Industry:</Text>

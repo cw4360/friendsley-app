@@ -7,8 +7,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, LogBox } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileScreen from './components/ProfileScreen';
-import ProfileScreenContext from './components/ProfileScreenContext';
 import ExploreScreen from './components/ExploreScreen';
+import ExploreProfileScreen from './components/ExploreProfileScreen';
 import LoginScreen from './components/LoginScreen';
 import EditProfileScreen from './components/EditProfileScreen';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -60,8 +60,26 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
-const storage = getStorage(firebaseApp, 
-  firebaseConfig.storageBucket) // for storaging images in Firebase storage
+// for storaging images in Firebase storage
+const storage = getStorage(firebaseApp, firebaseConfig.storageBucket) 
+
+const ExploreStack = createNativeStackNavigator();
+function ExploreStackScreen() {
+  return (
+    <ExploreStack.Navigator screenOptions={{
+      headerTitleAlign: 'center',
+      headerStyle: {
+        backgroundColor: "#FFF0BB",
+      },
+      headerTitleStyle: {
+        fontFamily: "RobotoMono_500Medium"
+      },
+    }}>
+      <ExploreStack.Screen name="Explore" component={ExploreScreen}/>
+      <ExploreStack.Screen name="Explore Profile" component={ExploreProfileScreen}/>
+    </ExploreStack.Navigator>
+  );
+}
 
 const MessageStack = createNativeStackNavigator();
 function MessageStackScreen() {
@@ -107,11 +125,11 @@ function HomeTabs() {
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'Explore') {
+        if (route.name === 'Explore Stack') {
         iconName = focused ? 'compass' : 'compass-outline';
         } else if (route.name === 'Messages') {
         iconName = focused ? 'md-chatbubble-ellipses' : 'md-chatbubble-ellipses-outline';
-        } else if (route.name === 'Profiles') {
+        } else if (route.name === 'Profile Stack') {
         iconName = focused ? 'md-person-circle' : 'md-person-circle-outline';
         } else if (route.name === 'Settings') {
         iconName = focused ? 'settings' : 'settings-outline';
@@ -130,10 +148,11 @@ function HomeTabs() {
         fontFamily: "RobotoMono_500Medium"
       },
     })}>
-      <Tab.Screen name="Explore" component={ExploreScreen}/>
+      <Tab.Screen name="Explore Stack" component={ExploreStackScreen}
+        options={{ title: 'Explore', headerShown: false}}/>
       <Tab.Screen name="Messages" component={MessageStackScreen}
         options={{headerShown: false}}/>
-      <Tab.Screen name="Profiles" component={ProfileStackScreen}
+      <Tab.Screen name="Profile Stack" component={ProfileStackScreen}
         options={{ title: 'Profile', headerShown: false}}/>
       <Tab.Screen name="Settings" component={SettingsScreen}/>
     </Tab.Navigator>
@@ -142,7 +161,7 @@ function HomeTabs() {
 
 
 LogBox.ignoreLogs([
-  // 'Setting a timer',
+  'Setting a timer',
   'AsyncStorage',                                	 
 ]);
 
@@ -160,6 +179,7 @@ export default function App() {
   const [messages, setMessages] = React.useState([]); // HOW EXACTLY TO STRUCTURE THIS DATA STRUCTURE IN FIREBASE? 
   const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles};
 
+  // Loading fonts DM Sans and Roboto Mono
   let [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_400Regular_Italic,
@@ -196,11 +216,9 @@ export default function App() {
                 fontFamily: "RobotoMono_500Medium"
               }
             }}>
-              <Stack.Screen name="Welcome" component={WelcomeScreen}
-                options={{
-                  cardStyle: { backgroundColor: 'blue' }}}/>
+              <Stack.Screen name="Welcome" component={WelcomeScreen}/>
               <Stack.Screen name="Sign Up" component={SignupScreen}
-                options={{headerShown: true, headerTintColor: 'none'}}/>
+                options={{headerShown: true}}/>
               <Stack.Screen name="Login" component={LoginScreen}
                 options={{headerShown: true}}/>
               <Stack.Screen name="Friendsley" component={HomeTabs}/>
