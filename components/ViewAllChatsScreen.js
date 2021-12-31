@@ -73,10 +73,10 @@ export default function ViewAllChatsScreens(props) {
                     // value={searchQuery}
                 />
                 {/* Loop through the current user's message contacts */}
-                {userContacts ? (userContacts.map( (email) => {
+                {userContacts ? (userContacts.map( (contact) => {
                     // console.log("Current user", formatJSON(user));
                     return (
-                        <View key={email} 
+                        <View key={contact.email} 
                             style={{ flexDirection: 'row', backgroundColor: 'white', 
                                 paddingHorizontal: 20, paddingVertical: 10, 
                                 borderBottomWidth: 1}}>
@@ -90,7 +90,7 @@ export default function ViewAllChatsScreens(props) {
                             <TouchableOpacity onPress={() => props.navigation.navigate('Message')}
                                 style={{ flex: .8, backgroundColor: 'white'}}>
                                 <List.Item 
-                                    title={email}
+                                    title={contact.email}
                                     description="Most recent message"
                                 />
                             </TouchableOpacity>

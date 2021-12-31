@@ -87,20 +87,29 @@ export default function ExploreScreen({ navigation }) {
         firebaseGetAllProfiles();
     }, []);
 
+    // Searches a list of messageContact objects for a specific email, returns whether that email exists
+    function searchMessageContactsForEmail(messageContacts, email) {
+        let relevantContacts = messageContacts.filter(contact => contact.email == email); 
+        if (relevantContacts.length > 0) {
+            return true; 
+        }
+        return false; 
+    }
+
     // Adds a person to the user's messageContacts list in Firebase 
     async function addPersonToContacts(email) {
-        if (!userContacts.includes(email)) {
+        if (!searchMessageContactsForEmail(userProfileDoc.messageContacts, email)) {
             // Add recipient's email to the list of the current user's/sender's message contacts
             const profileRef = doc(db, 'profiles', userEmail);
             const newProfile = {
-                messageContacts: [...userContacts, email], 
+                messageContacts: [...userContacts, {'email': email, 'timestamp': null}], 
             };  
             // Add current user's/sender's email to the list of the recipient's message contacts 
             const recipientProfileRef = doc(db, "profiles", email); 
             const recipientProfileSnap = await getDoc(recipientProfileRef);
             const recipientProfileContacts = recipientProfileSnap.data().messageContacts; 
             const newRecipientProfile = {
-                messageContacts: [...recipientProfileContacts, userEmail], 
+                messageContacts: [...recipientProfileContacts, {'email': userEmail, 'timestamp': null}], 
             }
             // Set the new documents in Firebase
             await setDoc(profileRef, newProfile, { merge: true }); // sender
@@ -111,7 +120,7 @@ export default function ExploreScreen({ navigation }) {
             const docSnap = await getDoc(docRef); 
             let userDoc = docSnap.data(); 
             setUserProfileDoc(userDoc);
-            setUserContacts([...userContacts, email]); 
+            setUserContacts([...userContacts, {'email': email, 'timestamp': null}]); 
         }
         // HOW TO NAVIGATE TO A SUBTAB?! 
         /* Navigation not defined even I imported? 
@@ -138,7 +147,6 @@ export default function ExploreScreen({ navigation }) {
             });
         }
         setAllProfiles(profiles); 
-        // console.log("All profiles:", profiles);
     }
 
     // Filters out the currently logged-in user from allProfiles 
