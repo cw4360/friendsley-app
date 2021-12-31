@@ -101,7 +101,7 @@ import { // access to Firestore storage features:
          getFirestore, 
          // for storage access
          collection, doc, addDoc, setDoc,
-         query, where, getDocs
+         query, where, getDocs, getDoc
   } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -387,23 +387,40 @@ export default function MessageScreen() {
     setTextInputValue('');
   }
 
+  // Finds the timestamp of the first chat between the current user and the recipient 
+  async function findTimestampOfFirstChat() {
+    const userProfileRef = doc(db, "profiles", auth.currentUser.email); 
+    const userProfileSnap = await getDoc(userProfileRef); 
+    const userProfileContacts = userProfileSnap.data().messageContacts; 
+    let relevantContact = userProfileContacts.filter(contact => contact.email == recipient)[0]; 
+    //console.log(relevantContact); 
+    return relevantContact.timestamp; 
+  }
+
   async function firebasePostMessage(msg) {
     // Add a new document in collection "messages"
-    // Timestamp: the time that the first chat/message occurred between person 1 and person 2
-    const timestampString = msg.timestamp.toString();
+    // Grab the time that the first chat/message occurred between person 1 and person 2
+    const firstChatTimeStamp = await(findTimestampOfFirstChat()); 
+    // Get the corresponding object from the messages database (chat history between person 1 and person 2)
+    console.log(firstChatTimeStamp); 
+    const messageRef = doc(db, "messages", firstChatTimeStamp); 
+    const messageSnap = await getDoc(messageRef);
+    console.log(formatJSON(messageSnap.data())); 
+    const messageObjects = messageSnap.data().messageObjects;
 
+    let newMessage = {
+      'timestamp': msg.timestamp, 
+      'author': msg.author, 
+      //'channel': msg.channel, 
+      'content': msg.content, 
+      'recipient': msg.recipient, 
+    }
+
+    const newMessageRef = {
+      messageObjects: [...messageObjects, newMessage], 
+    }; 
     // If the sender has not chatted with the message recipient before, set their first timestamp in messageContacts
-
-
-    await setDoc(doc(db, "messages", timestampString), 
-        {
-          'timestamp': msg.timestamp, 
-          'author': msg.author, 
-          //'channel': msg.channel, 
-          'content': msg.content, 
-          'recipient': "", // getRecipientEmail(msg.channel)
-        }
-      );
+    await setDoc(messageRef, newMessageRef, { merge: true });
   }
 
   // messages = test messages (from fake database) 
