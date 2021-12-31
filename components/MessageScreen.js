@@ -266,8 +266,8 @@ export default function MessageScreen() {
       //console.log(`on mount: checkEmailVerification()`);
       //checkEmailVerification();
 
-      console.log(`on mount: getMessagesForChannel('${selectedChannel}')`);
-      getMessagesForChannel(selectedChannel); // find messages on mount 
+      //console.log(`on mount: getMessagesForChannel('${selectedChannel}')`);
+      //getMessagesForChannel(selectedChannel); // find messages on mount 
       
       // This has worked already, so commenting it out
       // console.log(`on mount: populateFirestoreDB(testMessages)`);
@@ -285,6 +285,7 @@ export default function MessageScreen() {
    ***************************************************************************/
 
   // Update messages when selectedChannel or localMessageDB changes
+  /*
   useEffect(
     () => { 
       getMessagesForChannel(selectedChannel); 
@@ -293,6 +294,7 @@ export default function MessageScreen() {
     },
     [selectedChannel, localMessageDB]
   ); 
+  */
 
   function toggleStorageMode() {
     setUsingFirestore(!usingFirestore);
@@ -304,6 +306,7 @@ export default function MessageScreen() {
    const querySnapshot = await getDocs(q);
   */ 
 
+  /*
   async function getMessagesForChannel(chan) {
     console.log(`getMessagesForChannel(${chan}); usingFirestore=${usingFirestore}`);
     if (usingFirestore) {
@@ -313,6 +316,7 @@ export default function MessageScreen() {
       setSelectedMessages(localMessageDB.filter( msg => msg.channel === chan));
     }
   }
+  */
 
   function docToMessage(msgDoc) {
     // msgDoc has the form {id: timestampetring, 
@@ -327,6 +331,7 @@ export default function MessageScreen() {
     return {...data, date: new Date(data.timestamp)}
   }
 
+  /*
   async function firebaseGetMessagesForChannel(chan) {
     // Imported functions 
     // Ex: collection(db, 'messages') goes into db and finds a collection called 'messages', query means that you want to query that collection 
@@ -341,7 +346,9 @@ export default function MessageScreen() {
     });
     setSelectedMessages( messages );
   }
+  */
 
+  /*
   function composeMessage() {
     setIsComposingMessage(true);
   }
@@ -349,6 +356,7 @@ export default function MessageScreen() {
   function cancelMessage() {
     setIsComposingMessage(false);
   }
+  */
 
   function postMessage() {
     alert("Warning: Messages do not update on page automatically; you have to navigate away from the person being messaged and then reselect them in order to see the message. Also, people that we message are not real people yet (they're simply test channels)."); 
@@ -359,7 +367,7 @@ export default function MessageScreen() {
       'author': auth.currentUser.email, 
       'date': now, 
       'timestamp': now.getTime(), // millsecond timestamp
-      'channel': selectedChannel, 
+      //'channel': selectedChannel, 
       'content': textInputValue, 
     }
     if (usingFirestore) {
@@ -373,24 +381,25 @@ export default function MessageScreen() {
 
   async function firebasePostMessage(msg) {
     // Add a new document in collection "messages"
+    // Timestamp: the time that the first chat/message occurred between person 1 and person 2
     const timestampString = msg.timestamp.toString();
+
+    // If the sender has not chatted with the message recipient before, set their first timestamp in messageContacts
+
+
     await setDoc(doc(db, "messages", timestampString), 
         {
           'timestamp': msg.timestamp, 
           'author': msg.author, 
-          'channel': msg.channel, 
+          //'channel': msg.channel, 
           'content': msg.content, 
           'recipient': "", // getRecipientEmail(msg.channel)
         }
       );
   }
 
-  // Get the email of the recipient from their name
-  function getRecipientEmail(name) {
-    alert("YEE"); 
-  }
-
   // messages = test messages (from fake database) 
+  /*
   async function populateFirestoreDB(messages) {
 
     // Returns a promise to add message to firestore
@@ -416,6 +425,7 @@ export default function MessageScreen() {
     );
 
   }
+  */
 
   /***************************************************************************
    AUTHENTICATION CODE
@@ -542,8 +552,8 @@ export default function MessageScreen() {
 
   function debug() {
     const debugObj = {
-      channels: channels, 
-      selectedChannel, selectedChannel, 
+      //channels: channels, 
+      //selectedChannel, selectedChannel, 
       selectedMessages: selectedMessages, 
     }
     alert(formatJSON(debugObj));
@@ -674,6 +684,7 @@ export default function MessageScreen() {
           {/*WHERE YOU CAN SELECT DIFFERENT PEOPLE TO CHAT WITH*/}
 
           <Text style={styles.header}>Selected Person</Text>
+          {/*}
           <Picker
             style={styles.pickerStyles}
             mode='dropdown' // or 'dialog'; chooses mode on Android
@@ -681,6 +692,7 @@ export default function MessageScreen() {
             onValueChange={(itemValue, itemIndex) => setSelectedChannel(itemValue)}>
             {channels.map(chan => <Picker.Item key={chan} label={chan} value={chan}/>)}
           </Picker>
+          */}
           {/*WHERE THE CHAT HISTORY IS LISTED*/}
           <Text style={styles.header}>Messages</Text> 
           {(selectedMessages.length === 0) ? 
