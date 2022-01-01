@@ -22,6 +22,24 @@ export default function FavoriteProfilesScreen({ navigation }) {
         firebaseGetFavorites(); 
     }, []);
 
+    // State for search bar
+    const [searchQuery, setSearchQuery] = React.useState('');
+    function onChangeSearch(query) {
+        setSearchQuery(query);
+    }
+
+    // Filters search query
+    function filterAllFavorites() {
+        if (favorites.length > 0) {
+            return favorites.filter( user => nameMatchesQuery(user.name)); 
+        }
+    }
+
+    function nameMatchesQuery(name) {
+        const lQuery = searchQuery.toLowerCase();
+        return name.toLowerCase().includes(lQuery) 
+    }
+
     async function firebaseGetFavorites() {
         const docRef = doc(db, "favorites", userEmail);
         const docSnap = await getDoc(docRef);
@@ -43,15 +61,16 @@ export default function FavoriteProfilesScreen({ navigation }) {
     return (
     <ScrollView style={{backgroundColor: '#FFF0BB'}}>
         <SafeAreaView>
-            <View>
-                {/* <Searchbar
-                    style={[globalStyles.searchbar, {marginTop: 10, marginHorizontal: 10}]}
+            <View style={{marginTop: 10}}>
+                <Searchbar
+                    style={[globalStyles.searchbar, {marginHorizontal: 10}]}
                     placeholder="Search"
-                    // onChangeText={onChangeSearch}
-                    // value={searchQuery}
-                /> */}
+                    onChangeText={onChangeSearch}
+                    value={searchQuery}
+                    selectionColor={'#5971B5'}
+                />
                 {/* Favorite profiles are sorted in alphabetical order by name */}
-                {favorites.length ? (favorites.sort((a, b) => a.name < b.name ? -1 : 1).map( (user) => {
+                {favorites.length ? (filterAllFavorites().sort((a, b) => a.name < b.name ? -1 : 1).map( (user) => {
                     return (
                         <TouchableOpacity key={user.email}
                             onPress={() => navigation.navigate('Explore Stack', 
