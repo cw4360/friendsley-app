@@ -5,11 +5,11 @@ TODO:
 */
 
 import React, {useContext, useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, LogBox } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, Button, Image, ScrollView, TouchableOpacity, FlatList, LogBox } from 'react-native';
 import Constants from 'expo-constants';
 import { setStatusBarNetworkActivityIndicatorVisible, StatusBar } from 'expo-status-bar';
 //import {Picker} from '@react-native-picker/picker';
-import { Avatar, Card, List, Title, Paragraph, Searchbar } from 'react-native-paper';
+import { Avatar, List, Title, Paragraph, Searchbar } from 'react-native-paper';
 import { globalStyles } from '../styles/globalStyles';
 import StateContext from './StateContext'; 
 import { 
@@ -20,18 +20,13 @@ import {
 } from "firebase/firestore";
 
 function formatJSON(jsonVal) {
-    // Lyn sez: replacing \n by <br/> not necesseary if use this CSS:
-    //   white-space: break-spaces; (or pre-wrap)
-    // let replacedNewlinesByBRs = prettyPrintedVal.replace(new RegExp('\n', 'g'), '<br/>')
-    //console.log(JSON.stringify(jsonVal, null, 2)); 
     return JSON.stringify(jsonVal, null, 2);
 }
 
-export default function ViewAllChatsScreens(props) {
+export default function ViewAllChatsScreens({ navigation}) {
     const stateProps = useContext(StateContext);
-    const auth = stateProps.auth; 
-    const db = stateProps.db; 
-    const userEmail = auth.currentUser.email; 
+    const db = stateProps.db;  
+
     const userProfileDoc = stateProps.userProfileDoc; 
     const allProfiles = stateProps.allProfiles;  
     const recipient = stateProps.recipient; 
@@ -39,7 +34,7 @@ export default function ViewAllChatsScreens(props) {
     // Used to just be const userContacts = stateProps.userProfileDoc.messageContacts, but if you log in an navigate directly to the ViewAllChats screen, this line throws an error (probably thinks that the current profile is null) 
     //const [userContacts, setUserContacts] = useState([]);
     //console.log("CURRENT USER", formatJSON(userProfileDoc)); 
-    const userContacts = userProfileDoc.messageContacts; 
+    const messageContacts = userProfileDoc.messageContacts; 
 
     // Get user's contacts when View All Chats screen mounts
     /*
@@ -56,9 +51,17 @@ export default function ViewAllChatsScreens(props) {
         }
     }
     
-    function messageUser(email) {
-        setRecipient(email); 
-        props.navigation.navigate('Message'); 
+    function messageUser(receipentEmail) {
+        // setRecipient(receipentEmail); 
+    //    navigation.navigate('Message'); 
+        const chatUID = firebaseGetChatUID(receipentEmail);
+        navigation.navigate('Message', { receipentEmail: receipentEmail, chatUID: chatUID });
+    }
+
+    function firebaseGetChatUID(receipentEmail) {
+        const receipentContact = messageContacts.filter( contact => contact.email === receipentEmail)[0];
+        const chatUID = receipentContact.timestamp;
+        return chatUID;
     }
 
     return (
@@ -72,40 +75,28 @@ export default function ViewAllChatsScreens(props) {
                     // value={searchQuery}
                 />
                 {/* Loop through the current user's message contacts */}
-                {userContacts ? (userContacts.map( (contact) => {
-                    // console.log("Current user", formatJSON(user));
+                {messageContacts ? (messageContacts.map( (contact) => {
                     return (
                         <View key={contact.email} 
                             style={{ flexDirection: 'row', backgroundColor: 'white', 
                                 paddingHorizontal: 20, paddingVertical: 10, 
-                                borderBottomWidth: 1, borderBottomColor: 'lightgrey'}}>
+                                borderBottomWidth: 1, borderBottomColor: 'lightgrey', 
+                                alignContents: 'center'}}>
                             <Avatar.Image 
                                 style={{alignSelf: 'center', marginVertical: 10}}
-                                size={50}
+                                size={65}
                                 source={{
                                     uri: 'https://picsum.photos/700'
                                 }} 
                             />
                             <TouchableOpacity onPress={() => messageUser(contact.email)}
-                                style={{ flex: .8, backgroundColor: 'white'}}>
-                                <List.Item 
-                                    title={contact.email}
-                                    description="Most recent message"
-                                    titleStyle={globalStyles.cardName}
-                                />
+                                style={{ flex: .8, backgroundColor: 'white', justifyContent: 'center'}}>
+                                <Text style={globalStyles.messageName}>{contact.name}</Text>
                             </TouchableOpacity>
                         </View>
                     );
                 })): <View></View>}
-
-            {/*<Button title="Go to Login Screen" onPress={() => props.navigation.navigate('Login')}/>*/} 
             </View>
-            {/* <View>
-                <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
-            </View>
-            <View>
-                <Button title = "Go to View All Chats Screen" onPress={() => props.navigation.navigate('View All Chats')}/>
-            </View> */}
         </SafeAreaView>
     </ScrollView>
     );

@@ -4,13 +4,13 @@ import { Avatar, Button, Card, Title, Paragraph, Searchbar } from 'react-native-
 import DropDownPicker from 'react-native-dropdown-picker';
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
-//import { NavigationActions } from 'react-navigation';
-import { MessageStackScreen } from "../App";
+
 import { 
     // for storage access
     collection, getDocs,
     doc, addDoc, setDoc,
-    query, where, getDoc
+    query, where, getDoc,
+    updateDoc, arrayUnion
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { NavigationHelpersContext } from "@react-navigation/native";
@@ -89,44 +89,55 @@ export default function ExploreScreen({ navigation }) {
         firebaseGetAllProfiles();
     }, []);
 
-    // Searches a list of messageContact objects for a specific email, returns whether that email exists
-    function searchMessageContactsForEmail(messageContacts, email) {
-        let relevantContacts = messageContacts.filter(contact => contact.email == email); 
-        if (relevantContacts.length > 0) {
-            return true; 
-        }
-        return false; 
+    // Searches the messageContact objects for a specific email
+    function isContact(messageContacts, email) {
+        return messageContacts.filter(contact => contact.email === email).length > 0; 
     }
 
     // Adds a person to the user's messageContacts list in Firebase 
-    async function addPersonToContacts(email) {
-        if (!searchMessageContactsForEmail(userProfileDoc.messageContacts, email)) {
-            const now = new Date().getTime().toString(); // Create timestamp (first occurred contact between current user and recipient)
-            // Update "Profile" database with correct information 
-            // Add recipient's email to the list of the current user's/sender's message contacts
-            const profileRef = doc(db, 'profiles', userEmail);
-            const newProfile = {
-                messageContacts: [...userContacts, {'email': email, 'timestamp': now}], 
-            };  
-            
-            // Add current user's/sender's email to the list of the recipient's message contacts 
-            const recipientProfileRef = doc(db, "profiles", email); 
-            const recipientProfileSnap = await getDoc(recipientProfileRef);
-            const recipientProfileContacts = recipientProfileSnap.data().messageContacts; 
-            //console.log(formatJSON(recipientProfileSnap.data())); 
-            const newRecipientProfile = {
-                messageContacts: [...recipientProfileContacts, {'email': userEmail, 'timestamp': now}], 
-            }; 
-            // Set the new documents in Firebase
-            await setDoc(profileRef, newProfile, { merge: true }); // sender
-            await setDoc(recipientProfileRef, newRecipientProfile, { merge: true }); // recipient 
+    async function addPersonToContacts(recipentEmail) {
+        if (!isContact(userProfileDoc.messageContacts, recipentEmail)) {
+            // Create timestamp (first occurred contact between current user and recipient)
+            const now = new Date().getTime().toString(); 
 
-            // Get new sender/current user profile from Firebase, update userProfileDoc in stateProps
+            // Get user and recipent's profile documents in Firebase
+            const profileRef = doc(db, "profiles", userEmail);
+            // User's profile doc is already stored in stateProps as userProfileDoc
+
+            const recipientProfileRef = doc(db, "profiles", recipentEmail); 
+            const recipientProfileSnap = await getDoc(recipientProfileRef);
+            const recipentProfileDoc = recipientProfileSnap.data();
+            // const recipientProfileContacts = recipentProfileDoc.messageContacts; 
+
+            // Add recipient's email to the list of the current user's/sender's message contacts
+            const newContact = {
+                'email': recipentEmail, 
+                'name': recipentProfileDoc.basics.name,
+                'profilePicUri': recipentProfileDoc.profilePicUri,
+                'timestamp': now,
+            };
+
+            const newRecipientContact = {
+                'email': userEmail, 
+                'name': userProfileDoc.basics.name,
+                'profilePicUri': userProfileDoc.profilePicUri,
+                'timestamp': now,
+            };
+
+            // Write the new documents in Firebase
+            await updateDoc(profileRef, { messageContacts: arrayUnion(newContact) });
+            console.log("Updated user's message contacts");
+
+            await updateDoc(recipientProfileRef, { messageContacts: arrayUnion(newRecipientContact) });
+            console.log("Updated receipents's message contacts");
+
+            // Update userProfileDoc in stateProps and userContacts
             const docRef = doc(db, "profiles", userEmail); 
             const docSnap = await getDoc(docRef); 
             let userDoc = docSnap.data(); 
+
             setUserProfileDoc(userDoc);
-            setUserContacts([...userContacts, {'email': email, 'timestamp': now}]); 
+            setUserContacts([...userContacts, newContact]); 
 
             // Create new entry in "Messages" database
             await setDoc(doc(db, "messages", now), 
@@ -136,27 +147,16 @@ export default function ExploreScreen({ navigation }) {
             );
 
         }
-        // HOW TO NAVIGATE TO A SUBTAB?! 
-        /* Navigation not defined even I imported? 
-        props.navigation.navigate(
-            'Friendsley', 
-            {}, 
-            NavigationActions.navigate({
-                routeName: 'Message'
-            })
-        ); 
-        Catherine: You can always navigate to a sub-tab, but 
-        not to a higher level tab. I think you should try doing:
-        () => navigation.navigate('Message')
-        */
     }
 
     // Adds recipients to user's list of contacts (and vice versa), updates recipient state property
     function messageUser(recipientEmail) {
         addPersonToContacts(recipientEmail); 
-        setRecipient(recipientEmail);
-        // Navigating to another sub-tab in another navigator? 
-        navigation.navigate('Messages', { screen: 'Message'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
+        // setRecipient(recipientEmail);
+        //Navigate to Message screen
+        // navigation.navigate('Messages', { screen: 'Message'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
+        navigation.navigate('Messages', { screen: 'View All Chats'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
+
     }
 
     // Grabs all profiles from Firebase, sets the "AllProfiles" state property 
@@ -275,7 +275,6 @@ export default function ExploreScreen({ navigation }) {
                     />
                     {/*If allProfiles isn't empty, render each profile as a Card*/}
                     {allProfiles.length ? (sortProfiles(filterAllProfiles()).map( (user) => {
-                        // console.log("Current user", formatJSON(user));
                         return (
                             <View key={user.email}
                                 style={{
@@ -320,12 +319,6 @@ export default function ExploreScreen({ navigation }) {
                         );
                     })): <View></View>}
                 </View>
-                {/* <View>
-                    <Button title = "Go to Message Screen" onPress={() => props.navigation.navigate('Message')}/>
-                </View>
-                <View>
-                    <Button title = "Go to View All Chats Screen" onPress={() => props.navigation.navigate('View All Chats')}/>
-                </View> */}
             </SafeAreaView>
         </ScrollView>
     );

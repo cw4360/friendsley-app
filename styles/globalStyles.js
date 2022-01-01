@@ -181,6 +181,39 @@ export const globalStyles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 1,
   },
+  messageName: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 20,
+    marginLeft: 20
+  },
+  senderMessageBox: {
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: '#5971B5', 
+    padding: 15, 
+  },
+  senderText: {
+    color: '#FFF', 
+    fontFamily: 'RobotoMono_500Medium', 
+    marginBottom: 5
+  },
+  receipentText: {
+    color: '#000', 
+    fontFamily: 'RobotoMono_500Medium', 
+    marginBottom: 5
+  },
+  receipentMessageBox: {
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: '#FFF', 
+    padding: 15
+  },
+  messageInput: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: 'lightgrey',
+    borderRadius: 20
+  },
   hidden: {
       display: 'none',
   },

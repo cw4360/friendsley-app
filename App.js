@@ -14,6 +14,7 @@ import EditProfileScreen from './components/EditProfileScreen';
 import FavoriteProfilesScreen from './components/FavoriteProfilesScreen';
 import WelcomeScreen from './components/WelcomeScreen';
 import SignupScreen from './components/SignupScreen';
+import MessageScreenPREV from './components/MessageScreenPREV';
 import MessageScreen from './components/MessageScreen';
 import ViewAllChatsScreen from './components/ViewAllChatsScreen'; 
 import SettingsScreen from './components/SettingsScreen';
@@ -179,9 +180,7 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = React.useState(null); 
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
   const [allProfiles, setAllProfiles] = React.useState([]); 
-  const [recipient, setRecipient] = React.useState(''); // For keeping track of who the current user is messaging
-  //const [messages, setMessages] = React.useState([]); 
-  const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles, recipient, setRecipient};
+  const stateProps = { auth, db, storage, loggedInUser, setLoggedInUser, userProfileDoc, setUserProfileDoc, allProfiles, setAllProfiles};
 
   // Loading fonts DM Sans and Roboto Mono
   let [fontsLoaded] = useFonts({

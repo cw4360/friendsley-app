@@ -208,7 +208,7 @@ export default function EditProfileScreen(props) {
 
     return (
         <ScrollView style={{backgroundColor: '#FFF0BB'}}>
-            <SafeAreaView style={[globalStyles.container, {marginTop: 20}]}>
+            <SafeAreaView style={[globalStyles.container, {marginTop: 10}]}>
                 {/* <Button title="Get user" onPress={() => alert(formatJSON(auth.currentUser))}/> */}
                 {/* <Button title="load user" onPress={() => firebaseGetUserProfile(userEmail)}/> */}
                 <View style={globalStyles.userInfoSection}>

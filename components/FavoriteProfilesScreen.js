@@ -2,8 +2,7 @@ import React, {useContext, useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, LogBox } from 'react-native';
 import Constants from 'expo-constants';
 import { setStatusBarNetworkActivityIndicatorVisible, StatusBar } from 'expo-status-bar';
-//import {Picker} from '@react-native-picker/picker';
-import { Avatar, Card, List, Title, Paragraph, Searchbar } from 'react-native-paper';
+import { Avatar, Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import { globalStyles } from '../styles/globalStyles';
 import StateContext from './StateContext'; 
@@ -26,7 +25,6 @@ export default function FavoriteProfilesScreen({ navigation }) {
     const [favorites, setFavorites] = useState([]);
 
     // Get user's contacts when Favorite Profiles screen mounts
-
     useEffect(() => {
         firebaseGetFavorites();
         // setFavorites(userProfileDoc.favorites); 
