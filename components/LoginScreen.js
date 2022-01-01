@@ -37,8 +37,8 @@ export default function LoginScreen(props) {
     const userProfileDoc = stateProps.userProfileDoc; 
     const setUserProfileDoc = stateProps.setUserProfileDoc; 
 
-    const [email, setEmail] = React.useState("cw4@wellesley.edu");
-    const [password, setPassword] = React.useState("123456");
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
     const [errorMsg, setErrorMsg] = React.useState(''); 
 
     // Usually, React only does an update to the state if it causes something to change (i.e. the render to change)
@@ -60,7 +60,7 @@ export default function LoginScreen(props) {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        // console.log("Document data:", docSnap.data());
+        console.log("Document data:", docSnap.data());
         let userDoc = docSnap.data();
 
         return userDoc;
@@ -88,8 +88,9 @@ export default function LoginScreen(props) {
             // Only log in auth.currentUser if their email is verified
             checkEmailVerification();
 
+            console.log(auth.currentUser.email);
             // Set logged-in user's profile in stateProps
-            firebaseGetUserProfile(auth.currentUser.email).then( (value) => {
+            firebaseGetUserProfile(auth.currentUser.email.toLowerCase()).then( (value) => {
               setUserProfileDoc(value);
             })
             //.catch(e => console.log(e));

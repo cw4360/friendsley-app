@@ -100,7 +100,7 @@ export default function MessageScreen({ route, navigation }) {
             <View style={{ height: 75, backgroundColor: '#FFF', padding: 15}}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View style={globalStyles.messageInput}>
-                        <TextInput placeholder="Message Content"
+                        <TextInput placeholder={"Message to " + receipentEmail}
                         style={{color: '#000', fontFamily: 'RobotoMono_500Medium', paddingLeft: 15}}
                         placeholderTextColor='grey'
                         value={content}

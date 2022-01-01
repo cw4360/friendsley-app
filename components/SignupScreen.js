@@ -69,7 +69,8 @@ export default function SignupScreen(props) {
         // If the profile with the specified email is not in Firebase
         if (!bool) {
             // Create a new empty profile 
-            const profileRef = doc(db, 'profiles', email);
+            console.log(email);
+            const profileRef = doc(db, 'profiles', email.toLowerCase());
             setDoc(profileRef, {
                 email: email.toLowerCase(), 
                 profilePicUri: 'https://picsum.photos/700',
