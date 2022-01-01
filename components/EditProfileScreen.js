@@ -1,24 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, ImageBackground, TextInput, Keyboard, 
-    Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
+import React, { useState, useContext } from "react";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaView, View, TextInput,
+    ScrollView, TouchableOpacity } from 'react-native';
+import { Avatar, Text } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import ImageResizer from "react-native-image-resizer";
+// Would be used to resize iOS images, because 
+// currently only Android images can be uploaded without crashing
+// import ImageResizer from "react-native-image-resizer";
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 
 import { 
-    // access to Firestore storage features:
     // for storage access
-    doc, getDoc, setDoc
-    // , collection, addDoc,
-    // query, where, getDocs
+    doc, setDoc
 } from "firebase/firestore";
-import { // access to Firebase storage features (for files like images, video, etc.)
-    getStorage, 
+import { 
+    // access to Firebase storage features (for files like images, video, etc.)
    ref, uploadBytes, uploadBytesResumable, getDownloadURL
   } from "firebase/storage";
-import { getGlobal } from "@firebase/util";
 
 function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
@@ -58,7 +57,7 @@ export default function EditProfileScreen(props) {
     // State for image picker
     const [pickedImagePath, setPickedImagePath] = useState('');
 
-    // This function is triggered when the "Select an image" button pressed
+    // This function is triggered when the "Choose from Library" button pressed
     async function showImagePicker() {
         // Ask the user for the permission to access the media library 
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -71,12 +70,12 @@ export default function EditProfileScreen(props) {
         const result = await ImagePicker.launchImageLibraryAsync();
         
         // Explore the result
-        console.log(result);
+        // console.log(result);
 
         if (!result.cancelled) {
             setPickedImagePath(result.uri);
             setProfilePicUri(result.uri);
-            console.log(result.uri);
+            // console.log(result.uri);
             // ImageResizer.createResizedImage(result.uri, 100, 100, 'JPEG', 
             // 100, 0, undefined, false).then ( response => {
             //     setPickedImagePath(response.uri);
@@ -89,6 +88,7 @@ export default function EditProfileScreen(props) {
         }
     }
     
+    // This function is triggered when the "Take Photo" button pressed
     async function openCamera() {
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -100,12 +100,12 @@ export default function EditProfileScreen(props) {
         const result = await ImagePicker.launchCameraAsync();
 
         // Explore the result
-        console.log(result);
+        // console.log(result);
 
         if (!result.cancelled) {
             setPickedImagePath(result.uri);
             setProfilePicUri(result.uri);
-            console.log("Selected image path:", result.uri);
+            // console.log("Selected image path:", result.uri);
         }
     }
 
@@ -207,208 +207,208 @@ export default function EditProfileScreen(props) {
     }
 
     return (
-        <ScrollView style={{backgroundColor: '#FFF0BB'}}>
-            <SafeAreaView style={[globalStyles.container, {marginTop: 10}]}>
-                {/* <Button title="Get user" onPress={() => alert(formatJSON(auth.currentUser))}/> */}
-                {/* <Button title="load user" onPress={() => firebaseGetUserProfile(userEmail)}/> */}
-                <View style={globalStyles.userInfoSection}>
-                    <View style={{alignItems: 'center', marginBottom: 20}}>
-                        {pickedImagePath ? 
-                            <Avatar.Image 
+        <KeyboardAwareScrollView>
+            <ScrollView style={{backgroundColor: '#FFF0BB'}}>
+                <SafeAreaView style={[globalStyles.container, {marginTop: 10}]}>
+                    <View style={globalStyles.userInfoSection}>
+                        <View style={{alignItems: 'center', marginBottom: 20}}>
+                            {pickedImagePath ? 
+                                <Avatar.Image 
+                                    style={{alignSelf: 'center', marginBottom: 10}}
+                                    size={100}
+                                    source={{
+                                        uri: pickedImagePath
+                                    }} /> : 
+                                <Avatar.Image 
                                 style={{alignSelf: 'center', marginBottom: 10}}
                                 size={100}
                                 source={{
-                                    uri: pickedImagePath
-                                }} /> : 
-                            <Avatar.Image 
-                            style={{alignSelf: 'center', marginBottom: 10}}
-                            size={100}
-                            source={{
-                                uri: profilePicUri
-                            }} />
-                        }
-                        <TouchableOpacity onPress={showImagePicker}>
-                            <Text style={{color: 'dodgerblue'}}>Choose from Library</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={openCamera}>
-                            <Text style={{color: 'dodgerblue'}}>Take Photo</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            setPickedImagePath('https://picsum.photos/700');
-                        }}>
-                            <Text style={{color: 'dodgerblue'}}>Remove Photo</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{flexDirection: 'column', marginTop: 10}}>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Name</Text>
-                            <TextInput placeholder="Name"
-                                style={globalStyles.textInput}
-                                value={name}
-                                onChangeText={(value) => setName(value)}/>
+                                    uri: profilePicUri
+                                }} />
+                            }
+                            <TouchableOpacity onPress={showImagePicker}>
+                                <Text style={{color: 'dodgerblue'}}>Choose from Library</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={openCamera}>
+                                <Text style={{color: 'dodgerblue'}}>Take Photo</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                setPickedImagePath('https://picsum.photos/700');
+                            }}>
+                                <Text style={{color: 'dodgerblue'}}>Remove Photo</Text>
+                            </TouchableOpacity>
                         </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Pronouns</Text>
-                            <TextInput placeholder="Pronouns"
-                                style={globalStyles.textInput}
-                                value={pronouns}
-                                onChangeText={(value) => setPronouns(value)}/>
+                        <View style={{flexDirection: 'column', marginTop: 10}}>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Name</Text>
+                                <TextInput placeholder="Name"
+                                    style={globalStyles.textInput}
+                                    value={name}
+                                    onChangeText={(value) => setName(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Pronouns</Text>
+                                <TextInput placeholder="Pronouns"
+                                    style={globalStyles.textInput}
+                                    value={pronouns}
+                                    onChangeText={(value) => setPronouns(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Bio</Text>
+                                <TextInput placeholder="Bio"
+                                    maxLength={300}
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={bio}
+                                    onChangeText={(value) => setBio(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Class Year</Text>
+                                <TextInput placeholder="Class Year"
+                                    keyboardType="number-pad"
+                                    style={globalStyles.textInput}
+                                    value={classYear}
+                                    onChangeText={(value) => setClassYear(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Major</Text>
+                                <TextInput placeholder="Major"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={major}
+                                    onChangeText={(value) => setMajor(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Minor</Text>
+                                <TextInput placeholder="Minor"
+                                    style={globalStyles.textInput}
+                                    value={minor}
+                                    onChangeText={(value) => setMinor(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Hometown</Text>
+                                <TextInput placeholder="Hometown"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={hometown}
+                                    onChangeText={(value) => setHometown(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Residence Hall</Text>
+                                <TextInput placeholder="Residence Hall"
+                                    style={globalStyles.textInput}
+                                    value={residenceHall}
+                                    onChangeText={(value) => setResidenceHall(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Hobbies</Text>
+                                <TextInput placeholder="Hobbies"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={hobbies}
+                                    onChangeText={(value) => setHobbies(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Clubs</Text>
+                                <TextInput placeholder="Clubs"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={clubs}
+                                    onChangeText={(value) => setClubs(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Favorite Place On Campus</Text>
+                                <TextInput placeholder="Favorite Place On Campus"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={favPlaceOnCampus}
+                                    onChangeText={(value) => setFavPlaceOnCampus(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Favorite Wellesley Memory</Text>
+                                <TextInput placeholder="Favorite Wellesley Memory"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={favWellesleyMemory}
+                                    onChangeText={(value) => setFavWellesleyMemory(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Current Classes</Text>
+                                <TextInput placeholder="Current Classes"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={currentClasses}
+                                    onChangeText={(value) => setCurrentClasses(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Classes I Plan to Take</Text>
+                                <TextInput placeholder="Classes I Plan to Take"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={plannedClasses}
+                                    onChangeText={(value) => setPlannedClasses(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Favorite Classes</Text>
+                                <TextInput placeholder="Favorite Classes"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={favClasses}
+                                    onChangeText={(value) => setFavClasses(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Study Abroad Experience</Text>
+                                <TextInput placeholder="Study Abroad Experience"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={studyAbroad}
+                                    onChangeText={(value) => setStudyAbroad(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Interested Industry</Text>
+                                <TextInput placeholder="Interested Industry"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={interestedIndustry}
+                                    onChangeText={(value) => setInterestedIndustry(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Job Experience</Text>
+                                <TextInput placeholder="Job Experience"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={jobExp}
+                                    onChangeText={(value) => setJobExp(value)}/>
+                            </View>
+                            <View style={globalStyles.profileField}>
+                                <Text style={globalStyles.textType}>Internship Experience</Text>
+                                <TextInput placeholder="Internship Experience"
+                                    multiline
+                                    numberOfLines={3}
+                                    style={globalStyles.textInput}
+                                    value={internshipExp}
+                                    onChangeText={(value) => setInternshipExp(value)}/>
+                            </View>
                         </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Bio</Text>
-                            <TextInput placeholder="Bio"
-                                maxLength={300}
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={bio}
-                                onChangeText={(value) => setBio(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Class Year</Text>
-                            <TextInput placeholder="Class Year"
-                                keyboardType="number-pad"
-                                style={globalStyles.textInput}
-                                value={classYear}
-                                onChangeText={(value) => setClassYear(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Major</Text>
-                            <TextInput placeholder="Major"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={major}
-                                onChangeText={(value) => setMajor(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Minor</Text>
-                            <TextInput placeholder="Minor"
-                                style={globalStyles.textInput}
-                                value={minor}
-                                onChangeText={(value) => setMinor(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Hometown</Text>
-                            <TextInput placeholder="Hometown"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={hometown}
-                                onChangeText={(value) => setHometown(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Residence Hall</Text>
-                            <TextInput placeholder="Residence Hall"
-                                style={globalStyles.textInput}
-                                value={residenceHall}
-                                onChangeText={(value) => setResidenceHall(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Hobbies</Text>
-                            <TextInput placeholder="Hobbies"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={hobbies}
-                                onChangeText={(value) => setHobbies(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Clubs</Text>
-                            <TextInput placeholder="Clubs"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={clubs}
-                                onChangeText={(value) => setClubs(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Favorite Place On Campus</Text>
-                            <TextInput placeholder="Favorite Place On Campus"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={favPlaceOnCampus}
-                                onChangeText={(value) => setFavPlaceOnCampus(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Favorite Wellesley Memory</Text>
-                            <TextInput placeholder="Favorite Wellesley Memory"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={favWellesleyMemory}
-                                onChangeText={(value) => setFavWellesleyMemory(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Current Classes</Text>
-                            <TextInput placeholder="Current Classes"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={currentClasses}
-                                onChangeText={(value) => setCurrentClasses(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Classes I Plan to Take</Text>
-                            <TextInput placeholder="Classes I Plan to Take"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={plannedClasses}
-                                onChangeText={(value) => setPlannedClasses(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Favorite Classes</Text>
-                            <TextInput placeholder="Favorite Classes"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={favClasses}
-                                onChangeText={(value) => setFavClasses(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Study Abroad Experience</Text>
-                            <TextInput placeholder="Study Abroad Experience"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={studyAbroad}
-                                onChangeText={(value) => setStudyAbroad(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Interested Industry</Text>
-                            <TextInput placeholder="Interested Industry"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={interestedIndustry}
-                                onChangeText={(value) => setInterestedIndustry(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Job Experience</Text>
-                            <TextInput placeholder="Job Experience"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={jobExp}
-                                onChangeText={(value) => setJobExp(value)}/>
-                        </View>
-                        <View style={globalStyles.profileField}>
-                            <Text style={globalStyles.textType}>Internship Experience</Text>
-                            <TextInput placeholder="Internship Experience"
-                                multiline
-                                numberOfLines={3}
-                                style={globalStyles.textInput}
-                                value={internshipExp}
-                                onChangeText={(value) => setInternshipExp(value)}/>
-                        </View>
-                    </View>
-                    <TouchableOpacity style={globalStyles.submitButton} onPress={() => submitProfile()}>
-                        <Text style={globalStyles.buttonText}>Submit</Text>
-                    </TouchableOpacity> 
-                </View>                
-            </SafeAreaView>
-        </ScrollView>
+                        <TouchableOpacity style={globalStyles.submitButton} onPress={() => submitProfile()}>
+                            <Text style={globalStyles.buttonText}>Submit</Text>
+                        </TouchableOpacity> 
+                    </View>                
+                </SafeAreaView>
+            </ScrollView>
+        </KeyboardAwareScrollView>
     );
 }

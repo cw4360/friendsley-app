@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, Image, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
+import { SafeAreaView, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Avatar, Title, Caption, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 
 import { 
-    // access to Firestore storage features:
     // for storage access
-    collection, doc, addDoc, setDoc,
-    query, where, getDoc, getDocs
+    doc, getDoc
 } from "firebase/firestore";
-import { getGlobal } from "@firebase/util";
 
 function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
@@ -20,7 +17,6 @@ function formatJSON(jsonVal) {
 export default function ProfileScreen(props) {
     console.log("Params: ", props.route.params);
     const stateProps = useContext(StateContext);
-    const auth = stateProps.auth;
     const db = stateProps.db;
     const userProfileDoc = stateProps.userProfileDoc;
     const setUserProfileDoc = stateProps.setUserProfileDoc;
@@ -48,17 +44,11 @@ export default function ProfileScreen(props) {
     const [jobExp, setJobExp] = useState(userProfileDoc.career.jobExp);
     const [internshipExp, setInternshipExp] = useState(userProfileDoc.career.internshipExp);
 
-    
-    // if (props.route.params) {
-    //     console.log("Updated profile with new changes");
-    //     unpackProfile(props.route.params.updatedProfile);
-    // }
 
     useEffect(() => {
         console.log("Add focus listener");
         const unsubscribe = props.navigation.addListener('focus', () => {
           // Screen was focused
-          // Do something
           console.log("Calling focus listener");
           console.log("Call focus listener, params: ", props.route.params);
           if (props.route.params) {
@@ -72,18 +62,6 @@ export default function ProfileScreen(props) {
     
         return unsubscribe;
       }, [props.navigation]);
-    
-
-    // // Get user info when ProfileScreen mounts.
-    // useEffect(() => {
-    //     console.log("Mounting profile screen");
-    //     if (props.route.params) {
-    //         console.log("Updated profile with new changes");
-    //         unpackProfile(props.route.params.updatedProfile);
-    //     } else {
-    //         firebaseGetUserProfile(userEmail);
-    //     }
-    // }, []);
 
     function unpackProfile(userDoc){
         setProfilePicUri(userDoc.profilePicUri);
@@ -112,7 +90,6 @@ export default function ProfileScreen(props) {
    * Get current logged-in user's profile info from Firebase's Firestore
    */ 
     async function firebaseGetUserProfile(email) {
-        // alert("CURRENT USER'S EMAIL, PROFILE SCREEN", formatJSON(email)); 
         const docRef = doc(db, "profiles", email);
         const docSnap = await getDoc(docRef);
 
@@ -129,7 +106,6 @@ export default function ProfileScreen(props) {
 
     return (
         <ScrollView style={{backgroundColor: '#FFF0BB'}}>
-            {/* <SafeAreaView style={isFinishedLoading ? globalStyles.container : globalStyles.hidden}> */}
             <SafeAreaView style={globalStyles.container}>
                 <View style={globalStyles.userInfoSection}>
                     <View style={{marginTop:15}}>

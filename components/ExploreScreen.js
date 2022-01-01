@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { Avatar, Button, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
+import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Avatar, Card, Title, Paragraph, Searchbar } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
@@ -8,12 +8,9 @@ import StateContext from './StateContext';
 import { 
     // for storage access
     collection, getDocs,
-    doc, addDoc, setDoc,
-    query, where, getDoc,
+    doc, setDoc, getDoc,
     updateDoc, arrayUnion
 } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-import { NavigationHelpersContext } from "@react-navigation/native";
 
 function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
@@ -23,18 +20,15 @@ export default function ExploreScreen({ navigation }) {
     const stateProps = useContext(StateContext);
     const auth = stateProps.auth;
     const db = stateProps.db;
+
     const allProfiles = stateProps.allProfiles; 
     const setAllProfiles = stateProps.setAllProfiles; 
-    //const [userProfileDoc, setUserProfileDoc] = useState({}); 
     const userProfileDoc = stateProps.userProfileDoc; 
     const setUserProfileDoc = stateProps.setUserProfileDoc; 
-    const userEmail = userProfileDoc.email; 
-    const recipient = stateProps.recipient; 
-    const setRecipient = stateProps.setRecipient; 
-    const [userContacts, setUserContacts] = useState(userProfileDoc.messageContacts);  
-    //const userContacts = userProfileDoc.messageContacts; 
 
-    //const [allProfiles, setAllProfiles] = React.useState([]); 
+    const userEmail = userProfileDoc.email; 
+    const [userContacts, setUserContacts] = useState(userProfileDoc.messageContacts);  
+
     // State for search bar
     const [searchQuery, setSearchQuery] = React.useState('');
     function onChangeSearch(query) {
@@ -68,24 +62,8 @@ export default function ExploreScreen({ navigation }) {
     ]);
     const [selectedSort, setSelectedSort] = useState('Name (A to Z)');
 
-    /*
-    useEffect(() => {
-        console.log("userProfileDoc", userProfileDoc);
-        console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
-        if (userProfileDoc) { 
-          //props.navigation.navigate("Friendsley"); 
-          console.log("USER PROFILE DOC IN EXPLORE", formatJSON(userProfileDoc)); 
-          setUserContacts(userProfileDoc.messageContacts);
-        }
-      }, [userProfileDoc]); // When userProfileDoc changes, this effect is triggered 
-      */
-
-
     // Get user info when ExploreScreen mounts (when the ExploreScreen loads for the first time)
-    useEffect(() => {
-        // setAllProfiles([]); 
-        console.log("userProfileDoc", userProfileDoc);
-        console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
+    useEffect(() => { 
         firebaseGetAllProfiles();
     }, []);
 
@@ -107,9 +85,8 @@ export default function ExploreScreen({ navigation }) {
             const recipientProfileRef = doc(db, "profiles", recipentEmail); 
             const recipientProfileSnap = await getDoc(recipientProfileRef);
             const recipentProfileDoc = recipientProfileSnap.data();
-            // const recipientProfileContacts = recipentProfileDoc.messageContacts; 
 
-            // Add recipient's email to the list of the current user's/sender's message contacts
+            // Create contact objects for the user and recipent's messageContacts
             const newContact = {
                 'email': recipentEmail, 
                 'name': recipentProfileDoc.basics.name,
@@ -139,7 +116,7 @@ export default function ExploreScreen({ navigation }) {
             setUserProfileDoc(userDoc);
             setUserContacts([...userContacts, newContact]); 
 
-            // Create new entry in "Messages" database
+            // Create new entry in "Messages" collection database
             await setDoc(doc(db, "messages", now), 
                 {
                     'messageObjects': [],  
@@ -152,10 +129,8 @@ export default function ExploreScreen({ navigation }) {
     // Adds recipients to user's list of contacts (and vice versa), updates recipient state property
     function messageUser(recipientEmail) {
         addPersonToContacts(recipientEmail); 
-        // setRecipient(recipientEmail);
-        //Navigate to Message screen
-        // navigation.navigate('Messages', { screen: 'Message'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
-        navigation.navigate('Messages', { screen: 'View All Chats'}); // This doesn't work (says there's no such screen named MessageStackScreen), but it seems to be the correct approach given the thing here - https://reactnavigation.org/docs/nesting-navigators/#navigating-to-a-screen-in-a-nested-navigator
+        // Navigate to View All Chats Screen
+        navigation.navigate('Messages', { screen: 'View All Chats'}); 
 
     }
 
@@ -172,17 +147,17 @@ export default function ExploreScreen({ navigation }) {
     }
 
     // Filters out the currently logged-in user from allProfiles 
-    // Helps ensure that currently logged-in user does not see themselves on the Explore Screen 
+    // Filters search query
     function filterAllProfiles() {
         if (allProfiles.length > 0) {
-            // DO NOT call setAllProfiles, since we want the allProfiles state property to reflect ALL users in database
             return allProfiles.filter(profile => profile.email != auth.currentUser.email && 
                 profileMatchesQuery(profile)); 
         }
     }
 
     function profileMatchesQuery(profile) {
-        // everything includes the empty string
+        // Everything includes the empty string, so if search query is '', 
+        // all profiles will be displayed
         const lQuery = searchQuery.toLowerCase();
         const bas = profile.basics;
         const pers = profile.personal;
@@ -236,10 +211,6 @@ export default function ExploreScreen({ navigation }) {
         <ScrollView style={{backgroundColor: '#FFF0BB'}}>
             <SafeAreaView>
                 <View style={{margin: 10}}>
-                    {/* <TouchableOpacity onPress={() => firebaseGetAllProfiles()} 
-                        style={globalStyles.editProfileButton}>
-                        <Text style={{color: 'black'}}>Get All Profiles</Text>
-                    </TouchableOpacity>                 */}
                     <Searchbar
                         style={globalStyles.searchbar}
                         placeholder="Search"
@@ -273,7 +244,7 @@ export default function ExploreScreen({ navigation }) {
                             setSelectedSort(value);
                         }}
                     />
-                    {/*If allProfiles isn't empty, render each profile as a Card*/}
+                    {/*If allProfiles isn't empty, render each profile as a Profile Card*/}
                     {allProfiles.length ? (sortProfiles(filterAllProfiles()).map( (user) => {
                         return (
                             <View key={user.email}

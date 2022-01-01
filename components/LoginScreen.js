@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Button, ScrollView, Text, TextInput, 
+import { StyleSheet, ScrollView, Text, TextInput, 
     TouchableOpacity, View } from 'react-native';
 import Constants from 'expo-constants';
 import { globalStyles } from "../styles/globalStyles";
@@ -8,15 +8,11 @@ import StateContext from './StateContext';
 
 import { 
     // for email/password authentication: 
-    createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification,
-    // for logging out:
-    signOut
+    signInWithEmailAndPassword,
   } from "firebase/auth";
 import { 
     // for storage access
     doc, getDoc
-    // , collection, addDoc, setDoc,
-    // query, where, getDocs
 } from "firebase/firestore";
 
 function formatJSON(jsonVal) {
@@ -48,11 +44,9 @@ export default function LoginScreen(props) {
     // Usually, React only does an update to the state if it causes something to change (i.e. the render to change)
     // UseEffect says: if userProfileDoc ever changes, you better execute this effect before you go to the Explore page
     useEffect(() => {
-      //console.log("userProfileDoc", userProfileDoc);
-      //console.log("stateProps.userProfileDoc", stateProps.userProfileDoc);  
+      //console.log("userProfileDoc", userProfileDoc); 
       if (userProfileDoc) { 
         props.navigation.navigate("Friendsley"); 
-        // props.navigation.navigate("Sign Up"); 
 
       }
     }, [userProfileDoc]); // When userProfileDoc changes, this effect is triggered 
@@ -60,7 +54,7 @@ export default function LoginScreen(props) {
     // However, download messages from Firestore every 5-10 minutes (are there messages sooner than this timestamp about me)
     
 
-    // Receive and set logged-in user's profile from Firebase into stateProps
+    /* Receive and set logged-in user's profile from Firebase into stateProps */
     async function firebaseGetUserProfile(email) {
       const docRef = doc(db, "profiles", email);
       const docSnap = await getDoc(docRef);
@@ -68,6 +62,7 @@ export default function LoginScreen(props) {
       if (docSnap.exists()) {
         // console.log("Document data:", docSnap.data());
         let userDoc = docSnap.data();
+
         return userDoc;
         // setUserProfileDoc(userDoc); 
         // console.log("Set userProfileDoc to:", formatJSON(userProfileDoc));
@@ -94,17 +89,11 @@ export default function LoginScreen(props) {
             checkEmailVerification();
 
             // Set logged-in user's profile in stateProps
-            // FirebaseGetUserProfile is a promise - doesn't return the actual data (need an await?)
             firebaseGetUserProfile(auth.currentUser.email).then( (value) => {
               setUserProfileDoc(value);
-              console.log("After then:", value); // Prints correct statement
-              // However, why is userProfileDoc still considered null even after the promise is resolved??
-              console.log("After then:", formatJSON(userProfileDoc)); 
             })
             //.catch(e => console.log(e));
             //});
-
-            //firebaseGetUserProfile(auth.currentUser); 
             
             // Clear email/password inputs 
             setEmail('');
@@ -113,9 +102,6 @@ export default function LoginScreen(props) {
             // Note: could store userCredential here if wanted it later ...
             // console.log(`createUserWithEmailAndPassword: setCredential`);
             // setCredential(userCredential);
-
-            // If the current-logged in user has been verified, log them in and navigate to to the Explore page 
-            //props.navigation.navigate("Friendsley"); 
         
             })
             .catch((error) => {
@@ -142,18 +128,6 @@ export default function LoginScreen(props) {
             setErrorMsg(`You cannot sign in as ${auth.currentUser.email} until you verify that this is your email address. You can verify this email address by clicking on the link in a verification email sent by this app to ${auth.currentUser.email}.`)
           }
         }
-    }
-
-    function logOut() {
-        console.log('logOut'); 
-        console.log(`logOut: emailOf(auth.currentUser)=${emailOf(auth.currentUser)}`);
-        console.log(`logOut: emailOf(loggedInUser)=${emailOf(loggedInUser)}`);
-        console.log(`logOut: setLoggedInUser(null)`);
-        setLoggedInUser(null);
-        console.log('logOut: signOut(auth)');
-        setUserProfileDoc(null);
-        console.log('logOut: setUserProfileDoc(null)');
-        signOut(auth); // Will eventually set auth.currentUser to null     
     }
 
     return (
@@ -200,72 +174,16 @@ export default function LoginScreen(props) {
             <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
               <Text style={styles.errorMessage}>{errorMsg}</Text>
             </View>
-            {/* <ScrollView style={styles.jsonContainer}>
-              <Text style={styles.json}>Logged In User: {formatJSON(loggedInUser)}</Text>
-            </ScrollView> */}
-            {/* <ScrollView style={styles.jsonContainer}>
-              <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
-            </ScrollView> */}
           </View>
         </ScrollView>
       );
     }
     
     const styles = StyleSheet.create({
-    screen: {
-    flex: 1,
-    paddingTop: Constants.statusBarHeight,
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: "#fff",
-    paddingTop: '30%'
-    }, 
-    loginLogoutPane: {
-        flex: 3, 
-        alignItems: 'center',
-        justifyContent: 'center',
-    }, 
     labeledInput: {
         width: "100%",
-        // alignItems: 'center',
         justifyContent: 'center',
     }, 
-    inputLabel: {
-        fontSize: 20,
-    }, 
-    textInput: {
-        width: 300,
-        fontSize: 20,
-        borderRadius: 5,
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderColor: "rgba(0, 0, 0, 0.2)",
-        borderWidth: 1,
-        marginBottom: 8,
-    },
-    buttonHolder: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-
-    },
-    button: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 32,
-        borderRadius: 10,
-        elevation: 3,
-        backgroundColor: 'blue',
-        margin: 5,
-    },
-    buttonText: {
-        fontSize: 20,
-        lineHeight: 21,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
-        color: 'white',
-    },
     errorBox: {
         width: '80%',
         borderWidth: 1,
@@ -279,9 +197,6 @@ export default function LoginScreen(props) {
     },
     hidden: {
         display: 'none',
-    },
-    visible: {
-        display: 'flex',
     },
     jsonContainer: {
         flex: 1,

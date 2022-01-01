@@ -3,10 +3,7 @@ import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { globalStyles } from '../styles/globalStyles';
 import StateContext from './StateContext';
 
-import { // access to authentication features:
-    getAuth, 
-    // for email/password authentication: 
-    createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification,
+import { 
     // for logging out:
     signOut
 } from "firebase/auth";
@@ -47,7 +44,6 @@ export default function SettingsScreen(props) {
                     onPress={() => logOut()}>
                     <Text style={globalStyles.buttonText}>Log Out</Text>
                 </TouchableOpacity> 
-                {/* <Text>{signedInProps.signedInUser}</Text> */}
             </View>
         </SafeAreaView>
     );

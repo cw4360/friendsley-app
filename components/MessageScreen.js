@@ -1,12 +1,14 @@
 import React, {useContext, useEffect, useState, useRef } from 'react';
-import { SafeAreaView, View, Text, TextInput, Image, ScrollView, TouchableOpacity} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { View, Text, TextInput, ScrollView, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import { globalStyles } from '../styles/globalStyles';
 import StateContext from './StateContext'; 
 
 import { 
     // for storage access
-    doc, getDoc, setDoc, updateDoc, arrayUnion
+    doc, getDoc, updateDoc, arrayUnion, 
+    // onSnapshot
 } from "firebase/firestore";
 
 function formatJSON(jsonVal) {
@@ -29,7 +31,7 @@ export default function MessageScreen({ route, navigation }) {
     // Get chat messages when Message screen mounts
     useEffect(() => {
         firebaseGetMessages();
-        // console.log(chatUID);
+        // scrollViewRef.current.scrollToEnd({ animated: true })
     }, []);
 
     async function firebaseGetMessages() {
@@ -75,8 +77,8 @@ export default function MessageScreen({ route, navigation }) {
     }
 
     return (
-        <View style={{backgroundColor: '#FFF0BB', flex: 1}}>
-            <ScrollView ref={scrollViewRef} style={{ padding: 15, paddingBottom: 25}}
+        <KeyboardAwareScrollView style={{backgroundColor: '#FFF0BB', flex: 1}}>
+            <ScrollView ref={scrollViewRef} style={{ padding: 15}}
                 onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
                 {messages.length ? ( messages.map( (obj) => {
                     return (
@@ -88,14 +90,14 @@ export default function MessageScreen({ route, navigation }) {
                         </View>
                     );
                 })) : 
-                <View style={{paddingHorizontal: '10%'}}>
+                <View style={{paddingHorizontal: '10%', paddingVertical: '10%'}}>
                     <Text style={{color: '#000', fontFamily: 'RobotoMono_500Medium',
                         textAlign: 'center'}}>
                         Begin the conversation by sending a message</Text>
                 </View>
                 }
             </ScrollView>
-            <View style={{ height: '50%', backgroundColor: '#FFF', padding: 15}}>
+            <View style={{ height: 75, backgroundColor: '#FFF', padding: 15}}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View style={globalStyles.messageInput}>
                         <TextInput placeholder="Message Content"
@@ -112,6 +114,6 @@ export default function MessageScreen({ route, navigation }) {
                 </View>
                 
             </View>
-        </View>
+        </KeyboardAwareScrollView>
     );
 }

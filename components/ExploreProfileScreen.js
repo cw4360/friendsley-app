@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, View, Alert, Image, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
+import { SafeAreaView, View, Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { Avatar, Title, Caption, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { globalStyles } from "../styles/globalStyles";
 import StateContext from './StateContext';
 
 import { 
-    // access to Firestore storage features:
     // for storage access
-    collection, doc, addDoc, setDoc,
-    query, where, getDoc, getDocs
+    doc, setDoc, getDoc, 
 } from "firebase/firestore";
-import { getGlobal } from "@firebase/util";
-import FavoriteProfilesScreen from "./FavoriteProfilesScreen";
 
 function formatJSON(jsonVal) {
     return JSON.stringify(jsonVal, null, 2);
@@ -85,7 +81,6 @@ export default function ExploreProfileScreen({ route, navigation }) {
    * Get user's profile info from Firebase's Firestore
    */ 
     async function firebaseGetUserProfile(email) {
-        // alert("CURRENT USER'S EMAIL, PROFILE SCREEN", formatJSON(email)); 
         const docRef = doc(db, "profiles", email);
         const docSnap = await getDoc(docRef);
 
@@ -99,6 +94,7 @@ export default function ExploreProfileScreen({ route, navigation }) {
         }
     }
 
+    // Checks if displayed user is one of the logged in user's favorites
     async function firebaseGetUserFavorites() {
         const docRef = doc(db, "favorites", userProfileDoc.email);
         const docSnap = await getDoc(docRef);
@@ -126,7 +122,6 @@ export default function ExploreProfileScreen({ route, navigation }) {
     }
 
     function makeFavorite() {
-        console.log("made it");
         setDoc(doc(db, 'favorites', userProfileDoc.email), 
             { 
                 favorite: [...userFavorites, {
@@ -168,6 +163,74 @@ export default function ExploreProfileScreen({ route, navigation }) {
         createTwoButtonAlert();
     }
 
+       // Searches the messageContact objects for a specific email
+       function isContact(messageContacts, email) {
+        return messageContacts.filter(contact => contact.email === email).length > 0; 
+    }
+
+    // Adds a person to the user's messageContacts list in Firebase 
+    async function addPersonToContacts(recipentEmail) {
+        if (!isContact(userProfileDoc.messageContacts, recipentEmail)) {
+            // Create timestamp (first occurred contact between current user and recipient)
+            const now = new Date().getTime().toString(); 
+
+            // Get user and recipent's profile documents in Firebase
+            const profileRef = doc(db, "profiles", userProfileDoc.email);
+            // User's profile doc is already stored in stateProps as userProfileDoc
+
+            const recipientProfileRef = doc(db, "profiles", recipentEmail); 
+            const recipientProfileSnap = await getDoc(recipientProfileRef);
+            const recipentProfileDoc = recipientProfileSnap.data();
+
+            // Create contact objects for the user and recipent's messageContacts
+            const newContact = {
+                'email': recipentEmail, 
+                'name': recipentProfileDoc.basics.name,
+                'profilePicUri': recipentProfileDoc.profilePicUri,
+                'timestamp': now,
+            };
+
+            const newRecipientContact = {
+                'email': userProfileDoc.email, 
+                'name': userProfileDoc.basics.name,
+                'profilePicUri': userProfileDoc.profilePicUri,
+                'timestamp': now,
+            };
+
+            // Write the new documents in Firebase
+            await updateDoc(profileRef, { messageContacts: arrayUnion(newContact) });
+            console.log("Updated user's message contacts");
+
+            await updateDoc(recipientProfileRef, { messageContacts: arrayUnion(newRecipientContact) });
+            console.log("Updated receipents's message contacts");
+
+            // Update userProfileDoc in stateProps and userContacts
+            const docRef = doc(db, "profiles", userProfileDoc.email); 
+            const docSnap = await getDoc(docRef); 
+            let userDoc = docSnap.data(); 
+
+            setUserProfileDoc(userDoc);
+            setUserContacts([...userContacts, newContact]); 
+
+            // Create new entry in "Messages" collection database
+            await setDoc(doc(db, "messages", now), 
+                {
+                    'messageObjects': [],  
+                },     
+            );
+
+        }
+    }
+
+    
+    // Adds recipients to user's list of contacts (and vice versa), updates recipient state property
+    function messageUser(recipientEmail) {
+        addPersonToContacts(recipientEmail); 
+        // Navigate to View All Chats Screen
+        navigation.navigate('Messages', { screen: 'View All Chats'}); 
+
+    }
+
     return (
         <ScrollView style={{backgroundColor: '#FFF0BB'}}>
             <SafeAreaView style={globalStyles.container}>
@@ -194,7 +257,7 @@ export default function ExploreProfileScreen({ route, navigation }) {
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row'}}>
-                       <TouchableOpacity onPress={() => {}} 
+                       <TouchableOpacity onPress={() => messageUser(userEmail)}
                             style={[globalStyles.editProfileButton, {flex: 1}]}>
                             <Text style={globalStyles.buttonText}>Message</Text>
                         </TouchableOpacity> 

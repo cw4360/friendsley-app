@@ -1,6 +1,5 @@
 import React, {useContext} from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Button, ScrollView, Text, TextInput, 
+import { StyleSheet,  ScrollView, Text, TextInput, 
     TouchableOpacity, View } from 'react-native';
 import Constants from 'expo-constants';
 import { globalStyles } from '../styles/globalStyles';
@@ -15,8 +14,8 @@ import {
 import { 
     // access to Firestore storage features:
     // for storage access
-    collection, doc, addDoc, setDoc,
-    query, where, getDoc, getDocs
+    collection, doc, setDoc,
+    query, where, getDocs
 } from "firebase/firestore";
 
 
@@ -41,7 +40,6 @@ export default function SignupScreen(props) {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [errorMsg, setErrorMsg] = React.useState(''); 
-    // const [loggedInUser, setLoggedInUser] = React.useState(null);
 
     async function isProfileInFirebase(email) {
         const q = query(collection(db, "profiles"), where("email", "==", email)); 
@@ -71,8 +69,6 @@ export default function SignupScreen(props) {
         // If the profile with the specified email is not in Firebase
         if (!bool) {
             // Create a new empty profile 
-            // alert("Adding new profile!", formatJSON(email)); 
-            // setDoc is a promise
             const profileRef = doc(db, 'profiles', email);
             setDoc(profileRef, {
                 email: email.toLowerCase(), 
@@ -168,7 +164,7 @@ export default function SignupScreen(props) {
         <ScrollView style={{flex: 1, paddingTop: 80, paddingBottom: 20}}>
             <View style={{
                 backgroundColor: '#FFD34F', 
-                opacity: .7, 
+                opacity: .8, 
                 borderRadius: 20,
                 paddingTop: 30,
                 width: '85%',
@@ -213,70 +209,15 @@ export default function SignupScreen(props) {
             <View style={errorMsg === '' ? styles.hidden : styles.errorBox}>
                 <Text style={styles.errorMessage}>{errorMsg}</Text>
             </View>
-            {/* <ScrollView style={styles.jsonContainer}>
-                <Text style={styles.json}>State Props: {formatJSON(stateProps)}</Text>
-            </ScrollView> */}
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    screen: {
-    flex: 1,
-    paddingTop: Constants.statusBarHeight,
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: "#fff",
-    paddingLeft: 30,
-    paddingRight: 30,
-    }, 
-    loginLogoutPane: {
-        flex: 3, 
-        alignItems: 'center',
-        justifyContent: 'center',
-    }, 
     labeledInput: {
         width: "100%",
-        // alignItems: 'center',
         justifyContent: 'center',
     }, 
-    inputLabel: {
-        fontSize: 18,
-        margin: 5,
-    }, 
-    textInput: {
-        width: 300,
-        fontSize: 16,
-        borderRadius: 5,
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderColor: "rgba(0, 0, 0, 0.2)",
-        borderWidth: 1,
-        marginBottom: 10,
-    },
-    buttonHolder: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-
-    },
-    button: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 32,
-        borderRadius: 10,
-        elevation: 3,
-        backgroundColor: 'blue',
-        margin: 10,
-    },
-    buttonText: {
-        fontSize: 20,
-        lineHeight: 21,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
-        color: 'white',
-    },
     errorBox: {
         width: '80%',
         borderWidth: 1,

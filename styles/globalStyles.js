@@ -30,9 +30,6 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: '#5971B5',
     marginTop: 15,
     alignSelf: 'center',
-    // shadowColor: 'grey',
-    // shadowOffset: {width: 0,height: 3},
-    // shadowOpacity: .5,
   },
   signupButton: {
     alignItems: 'center',
@@ -45,9 +42,6 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: '#FFD34F',
     marginTop: 15,
     alignSelf: 'center',
-    // shadowColor: 'grey',
-    // shadowOffset: {width: 0,height: 1},
-    // shadowOpacity: .5,
   },
   welcomeText: {
     fontFamily: 'RobotoMono_500Medium',
@@ -62,7 +56,6 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 0.8,
     marginLeft: 30,
     marginBottom: 30,
-    // opacity: 1,
   },
   signInUpText: {
     fontFamily: 'RobotoMono_500Medium',
@@ -72,7 +65,6 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 5,
   },
   signInUpTextInput: {
-    // width: 300,
     fontFamily: 'RobotoMono_400Regular',
     fontSize: 16,
     borderRadius: 10,
@@ -191,22 +183,24 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#5971B5', 
     padding: 15, 
-  },
-  senderText: {
-    color: '#FFF', 
-    fontFamily: 'RobotoMono_500Medium', 
-    marginBottom: 5
-  },
-  receipentText: {
-    color: '#000', 
-    fontFamily: 'RobotoMono_500Medium', 
-    marginBottom: 5
+    marginLeft: 40
   },
   receipentMessageBox: {
     marginBottom: 10,
     borderRadius: 10,
     backgroundColor: '#FFF', 
-    padding: 15
+    padding: 15,
+    marginRight: 40
+  },
+  senderText: {
+    color: '#FFF', 
+    fontFamily: 'RobotoMono_500Medium', 
+    marginBottom: 5,
+  },
+  receipentText: {
+    color: '#000', 
+    fontFamily: 'RobotoMono_500Medium', 
+    marginBottom: 5
   },
   messageInput: {
     flex: 1,

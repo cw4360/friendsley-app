@@ -1,21 +1,14 @@
 import React, {useContext, useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, Button, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, LogBox } from 'react-native';
-import Constants from 'expo-constants';
-import { setStatusBarNetworkActivityIndicatorVisible, StatusBar } from 'expo-status-bar';
+import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Avatar, Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import { globalStyles } from '../styles/globalStyles';
 import StateContext from './StateContext'; 
-import { 
-    // access to Firestore storage features:
-    // for storage access
-    collection, doc, addDoc, setDoc,
-    query, where, getDoc, getDocs
-} from "firebase/firestore";
 
-function formatJSON(jsonVal) {
-    return JSON.stringify(jsonVal, null, 2);
-}
+import { 
+    // for storage access
+    doc, getDoc
+} from "firebase/firestore";
 
 export default function FavoriteProfilesScreen({ navigation }) {
     const stateProps = useContext(StateContext);
@@ -26,8 +19,7 @@ export default function FavoriteProfilesScreen({ navigation }) {
 
     // Get user's contacts when Favorite Profiles screen mounts
     useEffect(() => {
-        firebaseGetFavorites();
-        // setFavorites(userProfileDoc.favorites); 
+        firebaseGetFavorites(); 
     }, []);
 
     async function firebaseGetFavorites() {
@@ -52,14 +44,14 @@ export default function FavoriteProfilesScreen({ navigation }) {
     <ScrollView style={{backgroundColor: '#FFF0BB'}}>
         <SafeAreaView>
             <View>
-                <Searchbar
+                {/* <Searchbar
                     style={[globalStyles.searchbar, {marginTop: 10, marginHorizontal: 10}]}
                     placeholder="Search"
                     // onChangeText={onChangeSearch}
                     // value={searchQuery}
-                />
-                
-                {favorites.length ? (favorites.map( (user) => {
+                /> */}
+                {/* Favorite profiles are sorted in alphabetical order by name */}
+                {favorites.length ? (favorites.sort((a, b) => a.name < b.name ? -1 : 1).map( (user) => {
                     return (
                         <TouchableOpacity key={user.email}
                             onPress={() => navigation.navigate('Explore Stack', 

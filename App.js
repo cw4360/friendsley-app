@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {  Provider as PaperProvider, } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
@@ -14,7 +14,6 @@ import EditProfileScreen from './components/EditProfileScreen';
 import FavoriteProfilesScreen from './components/FavoriteProfilesScreen';
 import WelcomeScreen from './components/WelcomeScreen';
 import SignupScreen from './components/SignupScreen';
-import MessageScreenPREV from './components/MessageScreenPREV';
 import MessageScreen from './components/MessageScreen';
 import ViewAllChatsScreen from './components/ViewAllChatsScreen'; 
 import SettingsScreen from './components/SettingsScreen';
@@ -46,9 +45,9 @@ import {
   // access to Firestore storage features:
   getFirestore, 
 } from "firebase/firestore";
-import { // access to Firebase storage features (for files like images, video, etc.)
+import {
+  // access to Firebase storage features (for files like images, video, etc.)
   getStorage, 
- ref, uploadBytes, uploadBytesResumable, getDownloadURL
 } from "firebase/storage";
 
 const firebaseConfig = {
@@ -79,7 +78,6 @@ function ExploreStackScreen() {
     }}>
       <ExploreStack.Screen name="Explore" component={ExploreScreen}/>
       <ExploreStack.Screen name="Explore Profile" component={ExploreProfileScreen}/>
-      {/* <ExploreStack.Screen name="Message" component = {MessageScreen}/> Can we have duplicate screens across different navigators? */}
     </ExploreStack.Navigator>
   );
 }
@@ -172,11 +170,6 @@ LogBox.ignoreLogs([
 
 const Stack = createNativeStackNavigator();
 export default function App() {
-  // const [signedInUser, setSignedInUser] = useState(null); 
-  // const signInUser = username => (setSignedInUser(username));
-  // const signOutUser = () => (setSignedInUser(null)); // Only the settings screen needs access to this, because the logout button will be on that screen
-  // // Properties to pass to the rest of the screens
-  // const stateProps = { signedInUser, signInUser, signOutUser, auth, db }; 
   const [loggedInUser, setLoggedInUser] = React.useState(null); 
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
   const [allProfiles, setAllProfiles] = React.useState([]); 
