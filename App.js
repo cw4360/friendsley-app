@@ -161,7 +161,8 @@ function HomeTabs() {
   );
 }
 
-
+// The log box is the error console that appears. This is telling the console to not send us 
+// any error messages relating to setting a timer or asyncStorage.
 LogBox.ignoreLogs([
   'Setting a timer',
   'AsyncStorage',                                	 
@@ -170,6 +171,7 @@ LogBox.ignoreLogs([
 
 const Stack = createNativeStackNavigator();
 export default function App() {
+  // React hooks for React context
   const [loggedInUser, setLoggedInUser] = React.useState(null); 
   const [userProfileDoc, setUserProfileDoc] = React.useState(null); 
   const [allProfiles, setAllProfiles] = React.useState([]); 
@@ -188,11 +190,13 @@ export default function App() {
     RobotoMono_400Regular_Italic,
   });
 
+  // If fonts haven't loaded then display an empty View
   if (!fontsLoaded) {
     return (
         <View></View>
     );
   }  else { 
+  // Else, display the app
     return (
       <StateContext.Provider value = {stateProps}>
         <PaperProvider>
@@ -200,6 +204,7 @@ export default function App() {
             <StatusBar style="auto" />
             <Stack.Navigator 
             screenOptions={{
+              // Catherine: look into
               headerShown: false,
               headerTitleAlign: 'center',
               contentStyle:{
@@ -212,11 +217,13 @@ export default function App() {
                 fontFamily: "RobotoMono_500Medium"
               }
             }}>
+              {/* At the highest level, there is a stack of 4 screens that one can navigate to */}
               <Stack.Screen name="Welcome" component={WelcomeScreen}/>
               <Stack.Screen name="Sign Up" component={SignupScreen}
                 options={{headerShown: true}}/>
               <Stack.Screen name="Login" component={LoginScreen}
                 options={{headerShown: true}}/>
+              {/* Home Tabs is a component that uses tab navigation */}
               <Stack.Screen name="Friendsley" component={HomeTabs}/>
             </Stack.Navigator>
           </NavigationContainer>
